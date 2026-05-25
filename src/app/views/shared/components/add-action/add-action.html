@@ -1,0 +1,1132 @@
+<h3 mat-dialog-title class="text-uppercase dialog-title"> {{ data.member_name }} | #{{ this.medicaid_id }}
+  | {{ this.member_dob }} | {{ data.addr }} | {{ data.phone | phoneFormat }} | {{ data.practice }}</h3>
+<mat-dialog-content>
+
+  @if (isInitializing()) {
+  <div class="init-loader-overlay">
+    <mat-progress-spinner diameter="56" mode="indeterminate"></mat-progress-spinner>
+    <span class="init-loader-label">Loading...</span>
+  </div>
+  }
+
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-tab label="TO-DO/DONE">
+      <div>
+
+        <form enctype="multipart/form-data" (ngSubmit)="add_update_action_submit()" [formGroup]="addActionFormGroup">
+
+          <div class="grid-2-col">
+
+            <!-- LEFT COLUMN -->
+            <div>
+              <div class="w-100">
+                <div class="mb-3 text-center text-uppercase">
+                  <h2><b>Current Activity</b></h2>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                  <label class="form-label text-uppercase fw-bold">Category:</label>
+                  <mat-radio-group formControlName="action_id" class="text-uppercase">
+                    @for (reagon of action_activity_category; track reagon.id) {
+                    <mat-radio-button class="me-3" [value]="reagon.id">
+                      {{ reagon.Panel_Name }}
+                    </mat-radio-button>
+                    }
+                  </mat-radio-group>
+                </div>
+
+                <!-- Type -->
+                <div class="mb-3">
+                  <label class="form-label text-uppercase fw-bold">Type:</label>
+                  <mat-radio-group formControlName="panel_id" class="text-uppercase">
+                    @for (type of action_ativity_type; track type.id) {
+                    <mat-radio-button class="me-3" [value]="type.id">
+                      {{ type.action_type }}
+                    </mat-radio-button>
+                    }
+                  </mat-radio-group>
+                </div>
+
+                <!-- Action Date / Status / Result -->
+                <div class="action-row mb-3">
+                  <mat-form-field appearance="outline" class="w-100 flex-item">
+                    <mat-label>ACTION DATE</mat-label>
+                    <input #actionDateInput matInput [matDatepicker]="picker" formControlName="action_date" (keydown)="allowOnlyDateChars($event)" maxlength="10" placeholder="MM/DD/YYYY"
+                      />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+
+                     
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="w-100 flex-item">
+                    <mat-label>ACTION STATUS</mat-label>
+                    <mat-select formControlName="action_status" class="text-uppercase">
+                      <mat-option value="Scheduled" class="text-uppercase">Scheduled</mat-option>
+                      <mat-option value="Success" class="text-uppercase">Success</mat-option>
+                      <mat-option value="Failure" class="text-uppercase">Failure</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="w-100 flex-item">
+                    <mat-label>ACTION RESULT</mat-label>
+                    <mat-select formControlName="action_result_id" class="text-uppercase">
+                      <mat-option value="">-- ACTION RESULT --</mat-option>
+                      @for (result of actionresult_followup_list; track result.id) {
+                      <mat-option [value]="result.id" class="text-uppercase" style="font-size: 14px;">
+                        {{ result.action_result }}
+                      </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- Notes -->
+                <div class="mb-3">
+                  <mat-form-field appearance="fill" class="w-100 textarea-no-ripple ">
+                    <mat-label>Type your text...</mat-label>
+                    <textarea matInput formControlName="action_note" rows="2"></textarea>
+                  </mat-form-field>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div>
+              <div class="mb-3 text-center text-uppercase">
+                <h2><b>Next Activity</b></h2>
+              </div>
+
+              <!-- Next Type -->
+              <div class="mb-3">
+                <label class="form-label text-uppercase fw-bold">Next Type:</label>
+                <mat-radio-group formControlName="next_panel_id" class="ms-2 text-uppercase">
+                  @for (type of action_ativity_type; track type.id) {
+                  <mat-radio-button class="me-3" [value]="type.id">
+                    {{ type.action_type }}
+                  </mat-radio-button>
+                  }
+                </mat-radio-group>
+              </div>
+
+              <!-- Next Date -->
+              <div class="next-row mb-3">
+                <mat-form-field appearance="outline" class="flex-item w-100">
+                  <mat-label>NEXT ACTION DATE</mat-label>
+                  <input #nextActionDateInput matInput [matDatepicker]="nextPicker" formControlName="next_action_date"
+                    placeholder="MM/DD/YYYY" (keydown)="allowOnlyDateChars($event)" maxlength="10" />
+                  <mat-datepicker-toggle matSuffix [for]="nextPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #nextPicker></mat-datepicker>                  
+                </mat-form-field>
+              </div>
+
+              <!-- Next Action Note -->
+              <div class="mb-3">
+                <mat-form-field appearance="fill" class="w-100 textarea-no-ripple">
+                  <mat-label>Type your text...</mat-label>
+                  <textarea matInput formControlName="next_action_note" rows="2"></textarea>
+                </mat-form-field>
+              </div>
+
+              <!-- MATERIAL TASK TABLE -->
+              <div class="mb-3">
+                <table mat-table [dataSource]="memberTaskList" class="mat-elevation-z8 full-width text-uppercase">
+
+                  <!-- Task Type Column -->
+                  <ng-container matColumnDef="action_type">
+                    <th mat-header-cell *matHeaderCellDef> Task Type </th>
+                    <td mat-cell *matCellDef="let task"> {{ task.action_type || '' }} </td>
+                  </ng-container>
+
+                  <!-- Task Date Column -->
+                  <ng-container matColumnDef="action_date">
+                    <th mat-header-cell *matHeaderCellDef> Task Date </th>
+                    <td mat-cell *matCellDef="let task" [style.color]="task.bg_color || ''">
+                      {{ task.action_date | date : 'MM/dd/yyyy' }}
+                    </td>
+                  </ng-container>
+
+                  <!-- Status Column -->
+                  <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                    <td mat-cell *matCellDef="let task"> {{ task.status || '' }} </td>
+                  </ng-container>
+
+                  <!-- Assign To Column -->
+                  <ng-container matColumnDef="initial">
+                    <th mat-header-cell *matHeaderCellDef> Assign To </th>
+                    <td mat-cell *matCellDef="let task"> {{ task.initial || '' }} </td>
+                  </ng-container>
+
+                  <!-- Note Column -->
+                  <ng-container matColumnDef="action_note">
+                    <th mat-header-cell *matHeaderCellDef> Note </th>
+                    <td mat-cell *matCellDef="let task"> {{ task.action_note || '' }} </td>
+                  </ng-container>
+
+                  <!-- Header & Row Definitions -->
+                  <tr mat-header-row *matHeaderRowDef="taskColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: taskColumns">
+                  </tr>
+
+                  <!-- NO RECORDS MESSAGE -->
+                  <tr class="mat-row" *matNoDataRow>
+                    <td colspan="5" class="text-center py-3">No records found</td>
+                  </tr>
+
+                </table>
+              </div>
+
+            </div>
+          </div>
+          <!-- ACTIVITY LIST -->
+          <div class="p-3 mt-3">
+             <h4 (click)="toggleActivity()" style="cursor:pointer;">
+              <b>ACTIVITY LIST</b>
+            </h4>    
+            <div *ngIf="showActivityTable" class="activity-table-container">        
+              <table mat-table [dataSource]="activityList" class="mat-elevation-z8 full-width text-uppercase">
+              <ng-container matColumnDef="Panel_Name">
+                <th mat-header-cell *matHeaderCellDef>ACTIVITY CATEGORY</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.Panel_Name }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action_type">
+                <th mat-header-cell *matHeaderCellDef>ACTIVITY TYPE</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.action_type }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action_result">
+                <th mat-header-cell *matHeaderCellDef>ACTION RESULT</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.action_result }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action_date">
+                <th mat-header-cell *matHeaderCellDef>ACTION DATE</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.action_date | date:'MM/dd/yyyy' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="action_status">
+                <th mat-header-cell *matHeaderCellDef>ACTION STATUS</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.action_status }}</td>
+              </ng-container>   
+              <ng-container matColumnDef="action_note">
+                <th mat-header-cell *matHeaderCellDef style="width: 45%;">ACTION NOTE</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.action_note }}</td>     
+              </ng-container>           
+
+              <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef>ADD BY</th>
+                <td mat-cell *matCellDef="let activity">{{ activity.username }}</td>
+              </ng-container>   
+              
+               <!-- Header & Row -->
+              <tr mat-header-row *matHeaderRowDef="activityColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: activityColumns;"></tr>
+
+              <!-- No Data -->
+              <tr class="mat-row" *matNoDataRow>
+                <td colspan="11" class="text-center">No records found</td>
+              </tr>
+
+              </table>
+              </div> 
+          </div>
+
+          <!-- PCR TABLE INSIDE FORM -->
+          <div class="p-3 mt-3">
+            <h4><b>PCR DATA</b></h4>
+
+            <table mat-table [dataSource]="cihpcrList" class="mat-elevation-z8 full-width">
+              <ng-container matColumnDef="DISCHARGE_CC_DESC_1">
+                <th mat-header-cell *matHeaderCellDef>DISCHARGE CC_DESC_1</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.DISCHARGE_CC_DESC_1 }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="DISCHARGE_CC_DESC_2">
+                <th mat-header-cell *matHeaderCellDef>DISCHARGE CC_DESC_2</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.DISCHARGE_CC_DESC_2 }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="DISCHARGE_CC_DESC_3">
+                <th mat-header-cell *matHeaderCellDef>DISCHARGE CC_DESC_3</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.DISCHARGE_CC_DESC_3 }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="DISCH_ORDER">
+                <th mat-header-cell *matHeaderCellDef>DISCH_ORDER</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.DISCH_ORDER }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="INDEX_ADMIT_DT">
+                <th mat-header-cell *matHeaderCellDef>INDEX_ADMIT_DT</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.INDEX_ADMIT_DT }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="INDEX_DISCH_DT">
+                <th mat-header-cell *matHeaderCellDef>INDEX_DISCH_DT</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.INDEX_DISCH_DT }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="INDEX_STAY">
+                <th mat-header-cell *matHeaderCellDef>INDEX_STAY</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.INDEX_STAY }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="NUMER">
+                <th mat-header-cell *matHeaderCellDef>NUMER</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.NUMER }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="READMISSION">
+                <th mat-header-cell *matHeaderCellDef>READMISSION</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.READMISSION }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="READMT_ADMIT_DT">
+                <th mat-header-cell *matHeaderCellDef>READMT_ADMIT_DT</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.READMT_ADMIT_DT }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="READMT_DISCH_DT">
+                <th mat-header-cell *matHeaderCellDef>READMT_DISCH_DT</th>
+                <td mat-cell *matCellDef="let pcr">{{ pcr.READMT_DISCH_DT }}</td>
+              </ng-container>
+
+              <!-- Header & Row -->
+              <tr mat-header-row *matHeaderRowDef="pcrColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: pcrColumns;"></tr>
+
+              <!-- No Data -->
+              <tr class="mat-row" *matNoDataRow>
+                <td colspan="11" class="text-center">No records found</td>
+              </tr>
+            </table>
+          </div>
+
+
+
+          <div class="grid-2-col">
+
+            <!-- LEFT COLUMN -->
+            <div>
+              <h4 class="mb-2 text-uppercase fw-bold" style="cursor:pointer">
+                <b>Risk Gaps </b>
+              </h4>
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab *ngFor="let year of riskTabarray; trackBy: trackByIndex" label="{{year.label}}">
+                  <div formArrayName="riskGapsList">
+                    <mat-accordion multi>
+
+                      <ng-container *ngFor="let gap of riskGapsList.controls; let i = index" [formGroupName]="i">
+                        
+                        <mat-expansion-panel class="mb-2"  *ngIf="year.value == (gap.get('PLAN_YEAR')?.value || '')">
+                            <input type="hidden" formControlName="RISKGAP_ID">
+                          <!-- HEADER -->
+                          <mat-expansion-panel-header style="height: auto;font-size: 13px;">
+
+
+                            <mat-panel-title class="text-uppercase panel-title-10">
+                              
+                              <mat-checkbox formControlName="PROCESS_STATUS" class="me-2">
+                              </mat-checkbox>
+                            </mat-panel-title>
+
+                            <mat-panel-description class="panel-desc-100 text-uppercase">
+                              {{ gap.get('DIAG_DESC')?.value }} | {{ gap.get('DIAG_CODE')?.value }}
+                              | {{ gap.get('HCC_CATEGORY')?.value }} | {{ gap.get('HCC_MODEL')?.value }}
+                              | {{ gap.get('RELEVANT_DATE')?.value }} | {{ gap.get('PROCESS_STATUS')?.value ? 'COMPLETE' : 'OPEN' }}
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+
+                          <!-- BODY -->
+                          <div class="row mt-3">
+                            <!-- PLAN YEAR -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>PLAN YEAR</mat-label>
+                                <mat-select formControlName="PLANYEAR">
+                                 <mat-option *ngFor="let y of riskTabarray; trackBy: trackByValue" [value]="y.value">
+                                  {{ y.label }}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Observation Date -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Observation Date</mat-label>
+
+                                <input matInput [matDatepicker]="picker" formControlName="Observation_Date"
+                                  placeholder="MM/DD/YYYY" (keydown)="allowOnlyDateChars($event)" maxlength="10"/>
+
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Observation Code -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Observation Code</mat-label>
+                                <input matInput formControlName="Observation_Code">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- CPT Code Modifier -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>CPT Code Modifier</mat-label>
+                                <input matInput formControlName="CPT_Code_Modifier">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Observation Code Set -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Observation Code Set</mat-label>
+                                <input matInput formControlName="Observation_Code_Set">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Observation Result -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Observation Result</mat-label>
+                                <mat-select formControlName="Observation_Result">
+                                  <mat-option value="">-- Observation Result --</mat-option>
+                                  <mat-option value="Rejected">Rejected</mat-option>
+                                  <mat-option value="Addressed">Addressed</mat-option>
+                                  <mat-option value="Trumped">Trumped</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Service Provider NPI -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Service Provider NPI</mat-label>
+                                <input matInput formControlName="Service_Provider_NPI">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Service Provider Taxonomy -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Provider Taxonomy Code</mat-label>
+                                <input matInput formControlName="Service_Provider_Taxonomy_Code">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Service Provider Name -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Service Provider Name</mat-label>
+                                <input matInput formControlName="Service_Provider_Name">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Service Provider Type -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Service Provider Type</mat-label>
+                                <input matInput formControlName="Service_Provider_Type">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Rx Provider Flag -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Rx Provider Flag</mat-label>
+                                <input matInput formControlName="Service_Provider_RxProviderFlag">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Provider Group NPI -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Provider Group NPI</mat-label>
+                                <input matInput formControlName="Provider_Group_NPI">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Provider Group Taxonomy -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Provider Group Taxonomy</mat-label>
+                                <input matInput formControlName="Provider_Group_Taxonomy_Code">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Provider Group Name -->
+                            <div class="col-lg-3 col-md-6 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Provider Group Name</mat-label>
+                                <input matInput formControlName="Provider_Group_Name">
+                              </mat-form-field>
+                            </div>
+
+                            <!-- Note -->
+                            <div class="col-lg-9 col-md-12 mb-2">
+                              <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Note</mat-label>
+                                <textarea matInput rows="2" formControlName="note" style="height:32px;"></textarea>
+                              </mat-form-field>
+                            </div>
+
+                          </div>
+
+                        </mat-expansion-panel>
+
+                      </ng-container>
+
+                    </mat-accordion>
+                  </div>
+                </mat-tab>                 
+              </mat-tab-group>
+
+            </div>
+            <!-- LEFT COLUMN -->
+            <div>
+              <h4 class="mb-2 text-uppercase fw-bold" style="cursor:pointer">
+                <b>Quality Gaps</b>
+              </h4>
+              <div formArrayName="qualityGapsList">
+                <mat-accordion multi>
+
+                  <ng-container *ngFor="let qgap of qualityGapsList.controls; let i = index" [formGroupName]="i">
+
+                    <mat-expansion-panel class="mb-2">
+
+                      <!-- HEADER -->
+                      <mat-expansion-panel-header style="height: auto;font-size: 13px;">
+
+
+                        <mat-panel-title class="text-uppercase panel-title-10">
+                          
+                          <mat-checkbox formControlName="PROCESS_STATUS" [disabled]="true" class="me-2">
+                          </mat-checkbox>
+                        </mat-panel-title>
+
+                        <mat-panel-description class="panel-desc-100 text-uppercase">
+                          {{ qgap.get('MEASURE_NAME')?.value }} | {{ qgap.get('SUB_MEASURE')?.value }} | {{ qgap.get('PROCESS_STATUS')?.value ? 'COMPLETE' : 'OPEN' }}
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+
+                      <!-- BODY -->
+                      <div class="row mt-3">
+
+                        <div class="row">                          
+
+                              <div class="d-flex gap-3 align-items-start mb-2">
+                                <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>TINS</mat-label>
+                                   <mat-select formControlName="tin" style="text-transform: uppercase;"  (selectionChange)="onTinChange($event.value, i)">
+                                      @for (tin of availableTins; track tin) {
+                                      <mat-option [value]="tin.VENDOR_NUM" class="txupper"> {{tin.LAST_NAME}} ({{tin.VENDOR_NUM}})</mat-option>
+                                      }
+                                  </mat-select>
+                                   <!-- ✅ Error message -->
+                                    <mat-error *ngIf="qgap.get('tin')?.hasError('required')">
+                                      TIN is required
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;">
+                                <mat-label>PROVIDER</mat-label>
+
+                                <mat-select formControlName="provider_id" style="text-transform: uppercase;">
+                                <mat-option *ngFor="let p of providerLists[i]" [value]="p.Provider_ID">
+                                  {{ p.Provider_ID }} ({{ p.Provider_Name }})
+                                </mat-option>
+                              </mat-select>
+
+                                <!-- ✅ Error message -->
+                                <mat-error *ngIf="qgap.get('provider_id')?.hasError('required')">
+                                  Provider is required
+                                </mat-error>
+
+                                <!-- 🔥 Loader -->
+                                <mat-progress-spinner
+                                  *ngIf="tinLoading[i]"
+                                  matSuffix
+                                  diameter="40">
+                                </mat-progress-spinner>
+                              </mat-form-field>
+                              </div>  
+
+                              <!-- DOS -->
+                             <div class="d-flex gap-3 align-items-start mb-2"> 
+                                <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>DOS</mat-label>
+                                  <input matInput [matDatepicker]="dosPicker"
+                                        formControlName="Observation_Date"
+                                        placeholder="MM/DD/YYYY"
+                                        (keydown)="allowOnlyDateChars($event)"
+                                        maxlength="10" />
+                                  <mat-datepicker-toggle matSuffix [for]="dosPicker"></mat-datepicker-toggle>
+                                  <mat-datepicker #dosPicker></mat-datepicker>
+                                </mat-form-field>
+
+                                <!-- CPTPx -->
+                                <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;">
+                                  <mat-label>CPTPx</mat-label>
+
+                                  <input
+                                    type="text"
+                                    matInput
+                                    formControlName="CPTPx"
+                                    [matAutocomplete]="autoCpt">
+
+                                  <mat-autocomplete #autoCpt="matAutocomplete">
+                                    <mat-option *ngFor="let cpt of filteredCptOptions[i] | async; trackBy: trackByCpt" [value]="cpt.code">
+                                      {{ cpt.code }} - {{ cpt.label }}
+                                    </mat-option>
+                                  </mat-autocomplete>
+
+                                </mat-form-field>
+                              </div>                             
+
+                              <!-- HCPCSPx -->
+                               <div class="d-flex gap-3 align-items-start mb-2">
+                                <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>HCPCSPx</mat-label>
+                                  <!-- <input matInput formControlName="HCPCSPx"> -->
+
+                                  <input
+                                    type="text"
+                                    matInput
+                                    formControlName="HCPCSPx"
+                                    [matAutocomplete]="autoHcpcs">
+
+                                  <mat-autocomplete #autoHcpcs="matAutocomplete">
+                                    <mat-option *ngFor="let cpt of filteredhspcsOptions[i] | async; trackBy: trackByCpt" [value]="cpt.HCPCS_Code">
+                                      {{ cpt.HCPCS_Code }} - {{ cpt.subcategory }}
+                                    </mat-option>
+                                  </mat-autocomplete>
+                                </mat-form-field>                           
+
+
+                                 <!-- SNOMED -->
+                                 <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;">
+                                  <mat-label>SNOMED</mat-label>
+                                  <input matInput formControlName="SNOMED">
+                                </mat-form-field>
+                              </div>                  
+
+                              <!-- ICDDX -->
+                              <div class="d-flex gap-3 align-items-start mb-2">
+                                <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>ICDDX</mat-label>
+                                  <input matInput formControlName="ICDDX">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;">
+                                  <mat-label>ICDDX10</mat-label>
+                                  <!-- <input matInput formControlName="ICDDX10"> -->
+                                  <input
+                                    type="text"
+                                    matInput
+                                    formControlName="ICDDX10"
+                                    [matAutocomplete]="autoIcd">
+
+                                  <mat-autocomplete #autoIcd="matAutocomplete">
+                                    <mat-option *ngFor="let cpt of filteredicdOptions[i] | async; trackBy: trackByCpt" [value]="cpt.code">
+                                      {{ cpt.code }} - {{ cpt.label }}
+                                    </mat-option>
+                                  </mat-autocomplete>
+                                  
+                                  
+                                </mat-form-field>
+                              </div>
+
+                               <!-- LOINC -->
+                               <div class="d-flex gap-3 align-items-start mb-2">
+                                <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>LOINC</mat-label>
+                                  <input matInput formControlName="LOINC">
+                                </mat-form-field>
+
+                                <!-- LOINC Answer -->
+                                <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;" *ngIf="qgap.get('LOINC')?.value?.trim()">
+                                    <mat-label>LOINC Answer</mat-label>
+                                    <input matInput formControlName="LOINCAnswer">
+                                </mat-form-field>
+                              </div>      
+
+                              <!-- RxNorm -->
+                              <div class="d-flex gap-3 align-items-start mb-2">
+                                <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>RxNorm</mat-label>
+                                  <input matInput formControlName="RxNorm">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;">
+                                  <mat-label>CVX</mat-label>
+                                  <input matInput formControlName="CVX">
+                                </mat-form-field>
+                              </div>  
+
+                              <!-- RxProviderFlag -->
+                               <div class="col-lg-3 col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Rx PROVIDER FLAG</label>
+                                <mat-radio-group formControlName="RxProviderFlag" class="d-flex gap-3">
+                                  <mat-radio-button [value]="1">YES</mat-radio-button>
+                                  <mat-radio-button [value]="0">NO</mat-radio-button>
+                                </mat-radio-group>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <!-- PCPFlag -->
+                                <label class="form-label fw-semibold">PCP FLAG</label>
+                                <mat-radio-group formControlName="PCPFlag" class="d-flex gap-3">
+                                  <mat-radio-button [value]="1">YES</mat-radio-button>
+                                  <mat-radio-button [value]="0">NO</mat-radio-button>
+                                </mat-radio-group>
+                              </div>  
+                              
+
+                              <!-- Quantity Dispensed -->
+                              <div class="d-flex gap-3 align-items-start mb-2">
+                                  <mat-form-field appearance="outline" class="flex-fill" style="margin-right: 2%;width: 49%;">
+                                  <mat-label>Quantity Dispensed</mat-label>
+                                  <input matInput formControlName="QuantityDispensed">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="flex-fill" style="width: 49%;">
+                                  <mat-label>RESULT</mat-label>
+                                  <input matInput formControlName="Observation_Result" >
+                                </mat-form-field>
+                              </div> 
+
+                              <!-- SuppSource -->                               
+                              <div class="col-lg-3 col-md-6 mb-2">
+                                <mat-form-field appearance="outline" class="w-100">
+                                  <mat-label>SUPP SOURCE</mat-label>
+                                  <mat-select formControlName="SuppSource">
+                                    <mat-option *ngFor="let item of suppSourceList" [value]="item.value">
+                                      {{ item.value }} - {{ item.label }}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+
+                              <!-- Note -->
+                              <div class="col-lg-9 col-md-12 mb-2">
+                                <mat-form-field appearance="outline" class="w-100">
+                                  <mat-label>NOTE</mat-label>
+                                  <textarea matInput rows="2" formControlName="note" style="height:32px;"></textarea>
+                                </mat-form-field>
+                              </div>                             
+
+                        </div>
+                      </div>
+                    </mat-expansion-panel>
+
+                  </ng-container>
+
+                </mat-accordion>
+              </div>
+
+            </div>
+            <div>
+
+            </div>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <div class="text-end mt-3">
+            
+            <button mat-flat-button color="primary" type="submit" [disabled]="isProcessing">
+
+              <span *ngIf="!isProcessing">Submit</span>
+
+              <mat-progress-spinner *ngIf="isProcessing" diameter="20" mode="indeterminate">
+              </mat-progress-spinner>
+
+            </button>
+             @if (successMessage()) {
+              <span class="pcp-success-msg">
+                <mat-icon class="pcp-success-icon">check_circle</mat-icon>
+                {{ successMessage() }}
+              </span>
+              }
+          </div>
+
+        </form>
+
+      </div>
+    </mat-tab>
+
+    <mat-tab label="APPOINTMENT">
+      <div>
+        <form [formGroup]="appointmentFormGroup" (ngSubmit)="addAppointment()">
+          <!-- SUCCESS MESSAGE -->
+          @if (appSuccessMessage()) {
+          <div class="pcp-success-msg">
+            <mat-icon class="pcp-success-icon">check_circle</mat-icon>
+            {{ appSuccessMessage() }}
+          </div><br>
+          }
+
+          <div class="appt-form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>VENDOR</mat-label>
+              <mat-select formControlName="vendor_id" class="txupper" (selectionChange)="onVendorChange($event.value)">
+                <mat-option class="txupper" *ngFor="let vendor of vendorList" [value]="vendor.VENDOR_NUM">
+                  {{ vendor.ABBR }} ({{ vendor.VENDOR_NUM }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>PROVIDER</mat-label>
+              <mat-select formControlName="provider_id" class="txupper">
+                <mat-option *ngFor="let provider of providerList" [value]="provider.provider_id">
+                  {{ provider.provider_first_name }} {{ provider.provider_last_name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>APPOINTMENT DATE</mat-label>
+              <input matInput [matDatepicker]="picker1" formControlName="appointment_date" placeholder="APPOINTMENT DATE" readonly />
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>STATUS</mat-label>
+              <mat-select formControlName="action_status" class="txupper">
+                <mat-option class="txupper" value="Scheduled">Scheduled</mat-option>
+                <mat-option class="txupper" value="Rescheduled">Rescheduled</mat-option>
+                <mat-option class="txupper" value="Failure">Failure</mat-option>
+                <mat-option class="txupper" value="Success">Success</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>PLACE</mat-label>
+              <mat-select formControlName="place_of_appointment" class="txupper">
+                <mat-option class="txupper" *ngFor="let vendorL of vendorLocationList" [value]="vendorL.BILLING_ADDR_1">
+                  {{ vendorL.BILLING_ADDR_1 }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>APPOINTMENT TYPE</mat-label>
+              <mat-select formControlName="appointment_type" class="txupper">
+                <mat-option class="txupper" *ngFor="let appType of appointTypeList" [value]="appType.id">
+                  {{ appType.type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div class="time-field">
+              <label>TIME</label>
+              <input type="time" formControlName="appointment_time">
+            </div>
+          </div>
+
+          <mat-form-field appearance="fill" class="w-100 textarea-no-ripple" style="margin-top: 15px;">
+            <mat-label>TYPE YOUR TEXT...</mat-label>
+            <textarea matInput formControlName="appointment_note" rows="2"></textarea>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit" [disabled]="appointmentFormGroup.invalid"
+            style="margin-bottom: 10px;margin-top: 10px;">CREATE A APPOINTMENT</button>
+
+        </form>
+      </div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>APPOINTMENT DATE</th>
+            <th>TYPE</th>
+            <th>VENDOR</th>
+            <th>PROVIDER ID</th>
+            <th>STATUS</th>
+            <th>PLACE</th>
+            <th>NOTE</th>
+            <th>ADDED BY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of appointmentList; trackBy: trackByMedicaidIdapp">
+            <td>{{ app.action_date | date:'MM/dd/yyyy' }} {{ app.action_time }}</td>
+            <td>{{ app.type }}</td>
+            <td>{{ app.vendor_id }}</td>
+            <td>{{ app.provider_id }}</td>
+            <td>{{ app.status }}</td>
+            <td>{{ app.place_of_appointment }}</td>
+            <td>{{ app.note }}</td>
+            <td>{{ app.FistName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-tab>
+    <mat-tab label="STAR PERFORMANCE">
+      <div>
+        <div class="comparison-wrapper">
+
+          <!-- FILE TABLE -->
+          <mat-card class="comparison-card">
+            <h3 class="table-title">FILE</h3>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>CODE (MASTER)</th>
+                  <th>CODE (FILE)</th>
+                  <th>TIN</th>
+                  <th>NUMERATOR GAP</th>
+                  <th>ADDED DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+                 
+                <tr *ngFor="let star of starperformanceList; trackBy: trackByMedicaidId">
+                  <ng-container *ngIf="star.TYPE === 'FILE'">
+                    <td>{{ star.MEASURE_CODE }}</td>
+                    <td>{{ star.SUB_MEASURE }}</td>
+                    <td>{{ star.PCP_TAX_ID }}</td>
+                    <td>{{ star.NUMERATOR_GAP === 1 ? 'COMPLIANT' : 'NON-COMPLIANT' }}</td>
+                    <td>{{ star.ADDED_DATE | date:'MM/dd/yyyy' }}</td>
+                  </ng-container>
+                </tr>
+              </tbody>
+            </table>
+          </mat-card>
+
+          <!-- PRISM TABLE -->
+          <mat-card class="comparison-card">
+
+            <form *ngIf="showContent" [formGroup]="measureForm" (ngSubmit)="addMeasure()">
+              <mat-error *ngIf="measureForm.get('MEASURE')?.hasError('duplicateMeasure')">
+                This measure already exists for this member and TIN.
+              </mat-error>
+              <mat-form-field appearance="outline" class="mr">
+                <mat-label>MEASURE</mat-label>
+                <mat-select formControlName="MEASURE" class="txupper">
+                  @for (measure of measureList; track measure) {
+                  <mat-option [value]="measure.MEASURE_CODE" class="txupper">{{ measure.MEASURE_CODE }} </mat-option>
+                  }
+                </mat-select>
+
+                <mat-error *ngIf="measureForm.get('MEASURE')?.invalid">
+                  Measure is required
+                </mat-error>
+              </mat-form-field>
+
+              
+
+              <mat-form-field appearance="outline" class="mr" style="width:32%;">
+                <mat-label>MEASURE DATE</mat-label>
+                <input matInput [matDatepicker]="measureDatePicker" formControlName="MEASURE_DATE" readonly>
+                <mat-datepicker-toggle matSuffix [for]="measureDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #measureDatePicker></mat-datepicker>
+              </mat-form-field>
+
+
+              <mat-form-field appearance="outline" class="mr" style="width: 33%;">
+                <mat-label>TIN</mat-label>
+                <mat-select formControlName="PCP_TAX_ID" class="txupper">
+                  @for (tin of availableTins; track tin) {
+                  <mat-option [value]="tin.VENDOR_NUM" class="txupper">{{ tin.LAST_NAME }} ({{tin.VENDOR_NUM}})</mat-option>
+                  }
+                </mat-select>
+                <mat-error *ngIf="measureForm.get('PCP_TAX_ID')?.invalid">
+                  TIN is required
+                </mat-error>
+              </mat-form-field>
+
+              <div>
+                <mat-radio-group formControlName="NUM_COUNT">
+                  
+                  <mat-radio-button [value]="1">COMPLIANT</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-error *ngIf="measureForm.get('NUM_COUNT')?.invalid">
+                  Field is required
+                </mat-error>
+                <div style="float: right;">
+                  <button mat-raised-button class="mr" color="primary" type="submit" [disabled]="measureForm.invalid">
+                    @if (!isLoading) {
+                    SUBMIT
+                    } @else {
+                    <mat-progress-spinner diameter="20" mode="indeterminate">
+                    </mat-progress-spinner>
+                    }
+                  </button>                   
+                  <a (click)="cancel()" style="cursor: pointer;text-decoration: underline;">CANCEL</a>
+                </div>
+              </div>
+            </form>
+
+            <div>
+              <h3 class="table-title">PRISM <a
+                  style="text-decoration: underline;cursor:pointer;font-weight: normal;float: right;"
+                  *ngIf="!showContent" (click)="toggleContent()">+Add</a></h3>
+            </div>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>MEASURE</th>
+                  <th>TIN</th>
+                  <th>NUMERATOR GAP</th>
+                  <th>ADDED DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let star of starperformanceList; trackBy: trackByMedicaidId">
+                  <ng-container *ngIf="star.TYPE === 'PRISM'">
+                     
+                    <td>{{ star.SUB_MEASURE }}</td>
+                    <td>{{ star.PCP_TAX_ID }}</td>
+                    <td>{{ star.NUMERATOR_GAP === 1 ? 'COMPLIANT' : 'NON-COMPLIANT' }}</td>
+                    <td>{{ star.ADDED_DATE | date:'MM/dd/yyyy' }}</td>
+                  </ng-container>
+                </tr> 
+              </tbody>
+            </table>
+          </mat-card>
+
+        </div>
+
+      </div>
+
+    </mat-tab>
+
+    <!-- PCP VISIT SECTION -->
+    <mat-tab label="PCP VISIT">
+      <div class="pcp-visit-container mat-elevation-z2">
+        <!-- SUCCESS MESSAGE -->
+        @if (pcpSuccessMessage()) {
+        <span class="pcp-success-msg">
+          <mat-icon class="pcp-success-icon">check_circle</mat-icon>
+          {{ pcpSuccessMessage() }}
+        </span>
+        }
+
+        <!-- ADD FORM -->
+        <form [formGroup]="pcpVisitFormGroup">
+          <div class="pcp-visit-row">
+
+            <!-- VISIT DATE -->
+            <mat-form-field appearance="outline" class="mr">
+              <mat-label>PCP VISIT DATE</mat-label>
+              <input matInput [matDatepicker]="pcpPicker" formControlName="pcp_visit_date" readonly>
+              <mat-datepicker-toggle matSuffix [for]="pcpPicker"></mat-datepicker-toggle>
+              <mat-datepicker #pcpPicker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- VISIT TYPE -->
+            <mat-form-field appearance="outline">
+              <mat-label>PCP TYPE</mat-label>
+              <mat-select formControlName="visit_type">
+                <mat-option *ngFor="let type of pcpType" [value]="type.ID">
+                  {{ type.PCP_TYPE }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- NOTE -->
+            <mat-form-field appearance="outline" style="flex: 1; min-width: 200px;">
+              <mat-label>NOTE</mat-label>
+              <input matInput formControlName="pcp_visit_message" placeholder="PCP VISIT NOTE">
+            </mat-form-field>
+
+            <!-- SAVE BUTTON -->
+            <button mat-raised-button color="primary" type="button" (click)="savePcpVisit()"
+              [disabled]="isSavingPcpVisit() || pcpVisitFormGroup.invalid" style="margin-top:-10px;">
+
+              @if (isSavingPcpVisit()) {
+              <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+              } @else {
+              SAVE
+              }
+
+            </button>
+          </div>
+        </form>
+
+
+        <!-- PCP VISIT HISTORY -->
+        <div class="pcp-history-row mat-elevation-z1">
+
+          @if (isLoadingPcpHistory()) {
+          <div class="pcp-history-loader">
+            <mat-progress-spinner diameter="32" mode="indeterminate"></mat-progress-spinner>
+          </div>
+          }
+
+          @if (!isLoadingPcpHistory() && pcpVisitDataSource.data.length) {
+          <div style="display: flex;">
+
+            
+            <mat-form-field appearance="outline" class="search-box">
+              <mat-label>Search</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+            </mat-form-field>
+
+          </div>
+
+          <table mat-table [dataSource]="pcpVisitDataSource" matSort #mainSort="matSort"
+            class="pcp-history-table txupper">
+
+            <ng-container matColumnDef="visit_date">
+              <th mat-header-cell *matHeaderCellDef>VISIT DATE</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.VISIT_DATE | date:'MM/dd/yyyy' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="visit_type">
+              <th mat-header-cell *matHeaderCellDef>PCP TYPE</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.PCP_TYPE }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="message">
+              <th mat-header-cell *matHeaderCellDef>NOTE</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.MESSAGE }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="added_user_name">
+              <th mat-header-cell *matHeaderCellDef>ADDED BY</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.added_user_name }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="added_date">
+              <th mat-header-cell *matHeaderCellDef>ADDED DATE</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.ADDED_DATE | date:'MM/dd/yyyy' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="PCPVisitDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: PCPVisitDisplayedColumns;"></tr>
+
+          </table>
+          <mat-paginator #mainPaginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+          }
+
+          @if (!isLoadingPcpHistory() && !pcpVisitDataSource.data.length) {
+          <div class="pcp-no-data">
+            No PCP visit history available.
+          </div>
+          }
+
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>CLOSE</button>
+</mat-dialog-actions>

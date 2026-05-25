@@ -1,0 +1,10 @@
+<h2 mat-dialog-title class="dialog-title-center" style="text-align:center;width:100%;text-transform: uppercase;">{{ title }}</h2>
+
+<mat-dialog-content>
+  <div [innerHTML]="htmlContent"></div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  
+  <button mat-raised-button color="primary" (click)="close()">Close</button>
+</mat-dialog-actions>

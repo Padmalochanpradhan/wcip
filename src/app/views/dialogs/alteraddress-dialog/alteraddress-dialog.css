@@ -1,0 +1,35 @@
+.dialog-title-center {
+  text-align: center;
+  width: 100%;
+  text-transform: uppercase;
+  font-weight: normal !important;   /* Removes bold */
+}
+
+.dialog-layout {
+  display: flex;
+  gap: 16px;
+}
+
+.left-card {
+  width: 35%;
+}
+
+.right-table {
+  width: 65%;
+}
+
+.bot_12{
+    display: flex;
+    justify-content: space-between;
+}
+.error_message{
+  margin-top:-18px!important;
+  padding:0px 0px!important;
+}
+ 
+.mat-mdc-form-field-icon-suffix{
+    position: absolute;
+    z-index: 1;
+    right:0px;
+   
+}

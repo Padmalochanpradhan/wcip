@@ -1,0 +1,123 @@
+<div class="page-wrapper">
+
+  <!-- Brand header above card -->
+  <div class="brand-header">
+    <div class="brand-icon-box">
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
+        <circle cx="22" cy="22" r="15" stroke="#3C9E90" stroke-width="2.8"/>
+        <circle cx="22" cy="22" r="6.5" stroke="#3C9E90" stroke-width="2.8"/>
+        <line x1="22" y1="4" x2="22" y2="12" stroke="#3C9E90" stroke-width="2.8" stroke-linecap="round"/>
+        <line x1="22" y1="32" x2="22" y2="40" stroke="#3C9E90" stroke-width="2.8" stroke-linecap="round"/>
+        <line x1="4" y1="22" x2="12" y2="22" stroke="#3C9E90" stroke-width="2.8" stroke-linecap="round"/>
+        <line x1="32" y1="22" x2="40" y2="22" stroke="#3C9E90" stroke-width="2.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="brand-name">WellCentric</div>
+    <div class="brand-name">Field Intelligence</div>
+    <div class="brand-sub">WCIP™ · Community Outreach App</div>
+  </div>
+
+  <!-- Login card -->
+  <mat-card class="login-card">
+
+    @if (errorMessage) {
+      <div class="alert-box error-box">
+        <mat-icon>error</mat-icon>
+        {{ errorMessage }}
+      </div>
+    }
+    @if (successMessage) {
+      <div class="alert-box success-box">
+        <mat-icon>check_circle</mat-icon>
+        {{ successMessage }}
+      </div>
+    }
+
+    <!-- Login form -->
+    @if (!showQrScreen && !showOtpScreen) {
+      <h2 class="signin-heading">Sign in</h2>
+      <p class="signin-sub">Enter your username and password.</p>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username" name="username" required (input)="clearError()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" [(ngModel)]="password" name="password" required (input)="clearError()" (keyup.enter)="onSubmit()" />
+      </mat-form-field>
+
+      <button
+        class="signin-btn"
+        (click)="onSubmit()"
+        [disabled]="isLoading || !username || !password"
+      >
+        @if (!isLoading) {
+          Sign in
+        } @else {
+          <mat-progress-spinner diameter="22" mode="indeterminate" class="btn-spinner"></mat-progress-spinner>
+        }
+      </button>
+    }
+
+    <!-- MFA setup: QR code screen -->
+    @if (showQrScreen) {
+      <div class="mfa-section">
+        <h3>Setup Authenticator</h3>
+        <p>Scan this QR code using any Authenticator app<br>(Google Authenticator, Microsoft Authenticator, Authy, etc.)</p>
+        @if (qrCodeData) {
+          <qrcode [qrdata]="qrCodeData" [width]="220" [errorCorrectionLevel]="'M'"></qrcode>
+        }
+        <mat-form-field appearance="outline" class="otp-field">
+          <mat-label>Enter OTP</mat-label>
+          <input
+            #firstOtpInput
+            matInput
+            [(ngModel)]="otp"
+            name="firstOtp"
+            maxlength="6"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            class="otp-input"
+            placeholder="------"
+            (ngModelChange)="onOtpInput($event)"
+          />
+        </mat-form-field>
+        <button class="signin-btn" (click)="verifyFirstOtp()" [disabled]="!otp || isLoading">
+          @if (!isLoading) { Verify & Continue }
+          @else { <mat-progress-spinner diameter="22" mode="indeterminate" class="btn-spinner"></mat-progress-spinner> }
+        </button>
+      </div>
+    }
+
+    <!-- MFA verification: OTP screen -->
+    @if (showOtpScreen) {
+      <div class="mfa-section">
+        <h3>MFA Verification</h3>
+        <p>Enter code from your authenticator app</p>
+        <mat-form-field appearance="outline" class="otp-field">
+          <mat-label>Authenticator Code</mat-label>
+          <input
+            #loginOtpInput
+            matInput
+            [(ngModel)]="otp"
+            name="loginOtp"
+            maxlength="6"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            class="otp-input"
+            placeholder="------"
+            (ngModelChange)="onOtpInput($event)"
+          />
+        </mat-form-field>
+        <button class="signin-btn" (click)="verifyLoginOtp()" [disabled]="!otp || isLoading">
+          @if (!isLoading) { Verify & Login }
+          @else { <mat-progress-spinner diameter="22" mode="indeterminate" class="btn-spinner"></mat-progress-spinner> }
+        </button>
+      </div>
+    }
+
+  </mat-card>
+
+</div>

@@ -1,0 +1,35 @@
+<div class="sl-shell">
+
+  <!-- Top header -->
+  <header class="sl-header">
+    <div class="sl-header-left">
+      <div class="sl-greeting">{{ greeting }}</div>
+      <div class="sl-username">{{ userName }}</div>
+    </div>
+    <div class="sl-header-right">
+      <span class="sl-badge">{{ submittedCount }} submitted</span>
+      <button class="sl-signout" (click)="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <main class="sl-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Bottom nav -->
+  <nav class="sl-bottomnav">
+    <a routerLink="/field-home" routerLinkActive="sl-nav-active"
+       [routerLinkActiveOptions]="{exact: true}" class="sl-nav-item">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </a>
+    @for (s of surveys; track s.id) {
+      <a [routerLink]="['/survey', s.id]" routerLinkActive="sl-nav-active" class="sl-nav-item">
+        <mat-icon>{{ getIcon(s.icon) }}</mat-icon>
+        <span>{{ s.title.split(' ')[0] }}</span>
+      </a>
+    }
+  </nav>
+
+</div>

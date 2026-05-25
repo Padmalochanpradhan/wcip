@@ -1,0 +1,10 @@
+.mat-mdc-form-field-icon-suffix
+ {
+    align-self: center;
+    line-height: 0;
+    pointer-events: auto;
+    position: absolute;
+    z-index: 1;
+    top: 2px;
+    right: 0;
+}

@@ -1,0 +1,348 @@
+.sf-page {
+  padding: 20px 16px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.sf-loader {
+  display: flex;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.sf-load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.sf-load-error mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #d32f2f;
+  margin-bottom: 12px;
+}
+
+.sf-load-error-msg {
+  font-size: 14px;
+  color: #666;
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+/* ── Success state ── */
+.sf-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.sf-success mat-icon {
+  font-size: 56px;
+  width: 56px;
+  height: 56px;
+  color: #2B7A6F;
+  margin-bottom: 16px;
+}
+
+.sf-success-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.sf-success-sub { font-size: 14px; color: #888; }
+
+/* ── Header ── */
+.sf-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.sf-sub {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+/* ── Location row ── */
+.sf-location-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sf-field-group { display: flex; flex-direction: column; }
+
+.sf-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sf-select-wrap { position: relative; }
+
+.sf-select {
+  width: 100%;
+  padding: 12px 36px 12px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sf-select:focus { border-color: #2B7A6F; }
+
+.sf-select-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.sf-input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.sf-input:focus { border-color: #2B7A6F; }
+
+/* ── Section ── */
+.sf-section {
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  border: 1px solid #e8e5df;
+}
+
+.sf-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+
+.sf-section-collapsible { cursor: pointer; }
+.sf-section-collapsible:hover { background: #faf9f7; }
+
+.sf-section-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sf-section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f0ede7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #555;
+}
+
+.sf-section-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.sf-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sf-section-sub {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.sf-badge {
+  font-size: 11px;
+  font-weight: 500;
+  background: #FFE0D0;
+  color: #C0420A;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.sf-expand-icon { color: #aaa; }
+
+/* ── Section body ── */
+.sf-section-body {
+  padding: 0 16px 16px;
+  border-top: 1px solid #f0ede7;
+}
+
+/* ── Question ── */
+.sf-question { margin-top: 18px; }
+
+.sf-q-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.sf-required { color: #d32f2f; margin-left: 2px; }
+
+.sf-q-helper {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+/* ── Chips ── */
+.sf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sf-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1.5px solid;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+  background: #fff;
+}
+
+/* Unselected variants */
+.chip-positive { border-color: #3C9E90; color: #3C9E90; }
+.chip-neutral  { border-color: #999;    color: #555;    }
+.chip-warning  { border-color: #D4850A; color: #D4850A; }
+.chip-critical { border-color: #C94040; color: #C94040; }
+.chip-info     { border-color: #1976D2; color: #1976D2; }
+
+/* Selected — all use teal fill */
+.sf-chip.chip-selected {
+  background: #2B7A6F;
+  color: #fff;
+  border-color: #2B7A6F;
+}
+
+/* ── Textarea ── */
+.sf-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  resize: vertical;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+
+.sf-textarea:focus { border-color: #2B7A6F; }
+
+/* ── Error box ── */
+.sf-error-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8d7da;
+  border-left: 4px solid #d32f2f;
+  color: #7a1f23;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin: 16px 0 8px;
+}
+
+/* ── Buttons ── */
+.sf-submit-btn {
+  width: 100%;
+  height: 52px;
+  background: #2B7A6F;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+  transition: background 0.2s;
+}
+
+.sf-submit-btn:hover:not(:disabled) { background: #226059; }
+
+.sf-submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.sf-back-btn {
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: border-color 0.2s;
+}
+
+.sf-back-btn:hover { border-color: #aaa; color: #333; }
+
+.sf-btn-spinner { margin: auto; }
+::ng-deep .sf-btn-spinner circle { stroke: #fff !important; }
+
+/* ── Mobile ── */
+@media (max-width: 500px) {
+  .sf-location-row { grid-template-columns: 1fr; }
+}

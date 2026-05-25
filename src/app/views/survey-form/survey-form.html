@@ -1,0 +1,182 @@
+<div class="sf-page">
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="sf-loader">
+      <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  <!-- Load error -->
+  @if (loadError) {
+    <div class="sf-load-error">
+      <mat-icon>error_outline</mat-icon>
+      <div class="sf-load-error-msg">{{ loadError }}</div>
+      <button class="sf-back-btn" style="margin-top:16px;width:auto;padding:0 24px;" (click)="goBack()">← Back to home</button>
+    </div>
+  }
+
+  <!-- Success -->
+  @if (submitSuccess) {
+    <div class="sf-success">
+      <mat-icon>check_circle</mat-icon>
+      <div class="sf-success-title">Submitted!</div>
+      <div class="sf-success-sub">Your response has been recorded.</div>
+    </div>
+  }
+
+  <!-- Form -->
+  @if (survey && !isLoading && !submitSuccess) {
+    <h1 class="sf-title">{{ survey.title }}</h1>
+    <p class="sf-sub">Tap to rate what you observe. Add notes for anything the chips don't capture.</p>
+
+    <!-- Ward + Location -->
+    <div class="sf-location-row">
+      <div class="sf-field-group">
+        <label class="sf-field-label">Ward</label>
+        <div class="sf-select-wrap">
+          <select [(ngModel)]="selectedWardId" class="sf-select">
+            <option [ngValue]="null" disabled>Select ward...</option>
+            @for (ward of wards; track ward.id) {
+              <option [ngValue]="ward.id">{{ ward.name }}</option>
+            }
+          </select>
+          <mat-icon class="sf-select-icon">expand_more</mat-icon>
+        </div>
+      </div>
+      <div class="sf-field-group">
+        <label class="sf-field-label">Location</label>
+        <input [(ngModel)]="locationText" class="sf-input" placeholder="Block / intersection" />
+      </div>
+    </div>
+
+    <!-- Sections -->
+    @for (section of survey.sections; track section.id) {
+      <div class="sf-section">
+
+        <!-- Section header -->
+        <div class="sf-section-header"
+             [class.sf-section-collapsible]="section.is_collapsible"
+             (click)="section.is_collapsible && toggleSection(section.id)">
+          <div class="sf-section-left">
+            @if (section.icon) {
+              <div class="sf-section-icon">
+                <mat-icon>{{ getSectionIcon(section.icon) }}</mat-icon>
+              </div>
+            }
+            <div>
+              <div class="sf-section-title">
+                {{ section.title }}
+                @if (section.badge_label) {
+                  <span class="sf-badge">{{ section.badge_label }}</span>
+                }
+              </div>
+              @if (section.subtitle) {
+                <div class="sf-section-sub">{{ section.subtitle }}</div>
+              }
+            </div>
+          </div>
+          @if (section.is_collapsible) {
+            <mat-icon class="sf-expand-icon">
+              {{ expanded[section.id] ? 'expand_more' : 'chevron_right' }}
+            </mat-icon>
+          }
+        </div>
+
+        <!-- Section body -->
+        @if (isSectionVisible(section.id, section.is_collapsible)) {
+          <div class="sf-section-body">
+            @for (question of section.questions; track question.id) {
+              <div class="sf-question">
+
+                <div class="sf-q-label">
+                  {{ question.label }}
+                  @if (question.is_required) { <span class="sf-required">*</span> }
+                </div>
+                @if (question.helper_text) {
+                  <div class="sf-q-helper">{{ question.helper_text }}</div>
+                }
+
+                <!-- Dropdown -->
+                @if (question.question_type === 'dropdown') {
+                  <div class="sf-select-wrap">
+                    <select [(ngModel)]="dropdownAnswers[question.id]" class="sf-select">
+                      <option [ngValue]="null" disabled>Select...</option>
+                      @for (opt of question.options; track opt.id) {
+                        <option [ngValue]="opt.id">{{ opt.label }}</option>
+                      }
+                    </select>
+                    <mat-icon class="sf-select-icon">expand_more</mat-icon>
+                  </div>
+                }
+
+                <!-- Single chip -->
+                @if (question.question_type === 'single_chip') {
+                  <div class="sf-chips">
+                    @for (opt of question.options; track opt.id) {
+                      <span class="sf-chip chip-{{ opt.color_variant }}"
+                            [class.chip-selected]="isSelected(question.id, opt.id)"
+                            (click)="selectSingle(question.id, opt.id)">
+                        {{ opt.label }}
+                      </span>
+                    }
+                  </div>
+                }
+
+                <!-- Multi chip -->
+                @if (question.question_type === 'multi_chip') {
+                  <div class="sf-chips">
+                    @for (opt of question.options; track opt.id) {
+                      <span class="sf-chip chip-{{ opt.color_variant }}"
+                            [class.chip-selected]="isSelected(question.id, opt.id)"
+                            (click)="toggleMulti(question.id, opt.id)">
+                        {{ opt.label }}
+                      </span>
+                    }
+                  </div>
+                }
+
+                <!-- Textarea -->
+                @if (question.question_type === 'textarea') {
+                  <textarea [(ngModel)]="textAnswers[question.id]"
+                            class="sf-textarea"
+                            rows="5"
+                            [placeholder]="question.placeholder || 'Staff notes...'">
+                  </textarea>
+                }
+
+                <!-- Text / number / fallback -->
+                @if (question.question_type === 'text' || question.question_type === 'number') {
+                  <input [(ngModel)]="textAnswers[question.id]"
+                         class="sf-input"
+                         [type]="question.question_type === 'number' ? 'number' : 'text'"
+                         [placeholder]="question.placeholder || ''" />
+                }
+
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+    }
+
+    <!-- Error -->
+    @if (submitError) {
+      <div class="sf-error-box">
+        <mat-icon>error</mat-icon> {{ submitError }}
+      </div>
+    }
+
+    <!-- Submit -->
+    <button class="sf-submit-btn" (click)="submit()" [disabled]="isSubmitting">
+      @if (!isSubmitting) { Analyze & submit }
+      @else {
+        <mat-progress-spinner diameter="22" mode="indeterminate" class="sf-btn-spinner"></mat-progress-spinner>
+      }
+    </button>
+
+    <button class="sf-back-btn" (click)="goBack()">← Back to home</button>
+  }
+
+</div>

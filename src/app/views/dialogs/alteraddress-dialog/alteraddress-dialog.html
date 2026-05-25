@@ -1,0 +1,137 @@
+<h2 mat-dialog-title class="dialog-title-center">
+  {{ data.title }}
+</h2>
+
+<mat-dialog-content  style="max-height: 500px;">
+
+  <div class="dialog-layout">
+
+    <!-- LEFT: ADD ALTERNATE ADDRESS FORM -->
+    <mat-card class="left-card">
+      <mat-card-content>
+
+        <form
+          [formGroup]="addAltaddressFormGroup"
+          (ngSubmit)="submitAltAddress()"
+           
+        >
+
+          <!-- ADDRESS -->
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <input
+              matInput
+              formControlName="alt_address"
+              placeholder="ALTERNATE ADDRESS"
+            
+            />
+            <mat-error *ngIf="addAltaddressFormGroup.get('alt_address')?.touched"  class="error_message">
+              Alt address required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- CITY -->
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <input
+              matInput
+              formControlName="alt_city"
+              placeholder="ALTERNATE CITY"
+            />
+            <mat-error *ngIf="addAltaddressFormGroup.get('alt_city')?.touched" class="error_message">
+              Alt city required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- STATE -->
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <input
+              matInput
+              formControlName="alt_state"
+              placeholder="ALTERNATE STATE"
+            />
+            <mat-error *ngIf="addAltaddressFormGroup.get('alt_state')?.touched" class="error_message">
+              Alt state required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- ZIP -->
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <input
+              matInput
+              formControlName="alt_zip"
+              placeholder="ALTERNATE ZIP"
+              maxlength="10"
+              (input)="formatZip($event)"
+            />
+            <mat-error *ngIf="addAltaddressFormGroup.get('alt_zip')?.touched" class="error_message">
+              Alt zip required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- DATE -->
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="dp"
+              formControlName="add_date" readonly
+            />
+            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+            <mat-datepicker #dp></mat-datepicker>
+          </mat-form-field>
+
+          <!-- BUTTON -->
+          <div class="bot_12">
+            <div><button mat-raised-button color="primary" type="submit" [disabled]="isLoading">SUBMIT </button></div>
+            <div><button mat-raised-button color="primary" (click)="close()">Close</button></div>
+          </div>
+
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- RIGHT: ALTERNATE ADDRESS LIST -->
+    <div class="right-table">
+
+      <table class="table table-striped txupper" style="width: 100%;text-align: left;">
+        <thead>
+          <tr>
+            <th>ADDRESS</th>
+            <th>ADDED DATE</th>
+            <th>ADDED BY</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let alter of data.alt_address">
+            <td>
+              <span *ngIf="alter.alt_address">{{ alter.alt_address }}</span>
+              <span *ngIf="alter.alt_city">, {{ alter.alt_city }}</span>
+              <span *ngIf="alter.alt_state">, {{ alter.alt_state }}</span>
+              <span *ngIf="alter.alt_zip">, {{ alter.alt_zip }}</span>
+            </td>
+            <td>{{ alter.add_date }}</td>
+            <td>{{ alter.initial }}</td>
+          </tr>
+
+          <tr *ngIf="!data.alt_address?.length">
+            <td colspan="3" class="text-center text-muted">
+              No alternate address found.
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+</mat-dialog-content>
+
+
+
+<div class="dialog-loader" *ngIf="isLoading">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>

@@ -1,0 +1,42 @@
+.close-button{
+    float: right;
+    top: -24px;
+    right: -24px;
+}
+
+.mat-icon {
+    vertical-align: middle;
+}
+
+::ng-deep .error-dialog > mat-dialog-container {
+  background-color: #FF0000;
+}
+
+::ng-deep .warning-dialog > mat-dialog-container {
+  background-color: #ff9d15;
+  color: #000000;
+}
+
+::ng-deep .info-dialog > mat-dialog-container {
+  color: #e6ffff;
+}
+
+pre {
+    white-space: pre-line;
+}
+
+.dialog-title {
+    margin-bottom: 4px; /* Further reduce margin between title and message */
+}
+
+.dialog-content {
+    margin-top: 0; /* Keep no margin above the content */
+}
+
+.mat-dialog-title {
+    padding-bottom: 2px; /* Further reduce padding below the title */
+}
+
+.mat-dialog-content {
+    padding-top: 0; /* Keep no padding above the content */
+}

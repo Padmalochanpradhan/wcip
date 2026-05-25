@@ -1,0 +1,42 @@
+<h2 mat-dialog-title class="text-center">{{ data.title }}</h2>
+
+<mat-dialog-content class="text-center" >
+
+  <div style="font-weight:bold; font-size:16px;display: flex;justify-content:center;">
+    {{ data.name }},
+    <span class="material-icons" style="font-size: 18px;margin-right:3px;">phone</span> {{ data.phone | phoneFormat}},
+    <span class="material-icons" style="font-size: 18px;margin-right:3px;">calendar_today</span> {{ data.birth }}
+  </div>
+
+  <p style="margin-top:15px; font-size:16px;">
+    {{ data.messaage }} 
+  </p>
+
+ <form [formGroup]="noteForm">
+  <mat-form-field appearance="outline"  style="width: 400px;">
+    <mat-label>NOTE</mat-label>  <input matInput formControlName="note">
+
+    <mat-error *ngIf="noteForm.get('note')?.invalid">
+      Note is required
+    </mat-error>
+  </mat-form-field>
+</form>
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-raised-button color="primary" (click)="confirm(true, data.medicaid_id,data.action)" *ngIf="data.action === 1">Yes</button>
+  <button mat-raised-button color="primary" (click)="confirm(true, data.medicaid_id,data.action)" *ngIf="data.action === 0">Yes</button>
+
+  <button mat-raised-button color="warn" (click)="confirm(false, data.medicaid_id,2)">
+    No
+  </button>
+</mat-dialog-actions>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>
+
+ 
