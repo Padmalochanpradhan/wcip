@@ -83,4 +83,12 @@ export class SurveyDashboard implements OnInit {
   openSurvey(id: number) {
     this.router.navigate(['/survey', id]);
   }
+
+  openSubmissions() {
+    this.router.navigate(['/submissions']);
+  }
+
+  openDataExplorer() {
+    this.router.navigate(['/data-explorer']);
+  }
 }

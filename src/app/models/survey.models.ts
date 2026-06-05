@@ -70,3 +70,25 @@ export interface SubmissionPayload {
   location_text: string;
   answers: AnswerPayload[];
 }
+
+export interface AiAnalysis {
+  summary: string;
+  scores: { label: string; cls: string }[];
+  themes: string[];
+}
+
+export interface SurveySubmission {
+  id: number;
+  survey_id: number;
+  survey_title?: string;
+  user_id: number;
+  ward_id: number | null;
+  ward_name?: string;
+  location_text: string;
+  status: 'draft' | 'submitted' | 'reviewed' | 'flagged';
+  ai_analysis: AiAnalysis | null;
+  submitted_at: string;
+  created_at: string;
+  staff_name?: string;
+  staff_email?: string;
+}

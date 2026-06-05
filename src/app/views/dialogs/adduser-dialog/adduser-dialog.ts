@@ -68,7 +68,6 @@ export class AdduserDialog implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       role: ['', Validators.required],
-      department: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       status: ['', Validators.required]
@@ -91,9 +90,8 @@ export class AdduserDialog implements OnInit {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      password: '', // NEVER bind old password
+      password: '',
       role: user.roleId,
-      department: user.department_id,
       status: Number(user.member_status)
     });
 
@@ -163,9 +161,8 @@ export class AdduserDialog implements OnInit {
         EmailID: formValue.email,
         Password: formValue.password,
         role_id: formValue.role,
-        department_id: formValue.department,
         member_status: Number(formValue.status),
-        cognito_username: cognitoUsername // ✅ STORED
+        cognito_username: cognitoUsername
       };
 
       await this.apiService.insertUsers(payload);
@@ -206,7 +203,6 @@ private async updateUser(formValue: any): Promise<void> {
       LastName: formValue.lastName.trim(),
       ...(formValue.password && { Password: formValue.password }),
       role_id: formValue.role,
-      department_id: formValue.department,
       member_status: Number(formValue.status)
     };
 

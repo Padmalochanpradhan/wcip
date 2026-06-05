@@ -1,0 +1,18 @@
+<div class="al-shell">
+
+  <header class="al-header">
+    <div class="al-brand" (click)="goHome()">
+      <mat-icon>admin_panel_settings</mat-icon>
+      <span>WCIP Admin</span>
+    </div>
+    <div class="al-header-right">
+      <span class="al-username">{{ userName }}</span>
+      <button class="al-signout" (click)="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <main class="al-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

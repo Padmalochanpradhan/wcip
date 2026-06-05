@@ -1,0 +1,149 @@
+.sl-page {
+  padding: 20px 16px 32px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.sl-loader {
+  display: flex;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.sl-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 16px;
+  color: #b00;
+  font-size: 14px;
+}
+
+.sl-back-btn {
+  background: none;
+  border: none;
+  color: #2B7A6F;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.sl-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.sl-sub {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 20px;
+}
+
+/* ── Empty state ── */
+.sl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 60px 16px;
+  color: #aaa;
+  font-size: 15px;
+}
+
+.sl-empty mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+.sl-empty-sub {
+  font-size: 13px;
+}
+
+/* ── Cards ── */
+.sl-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 10px;
+  border: 1px solid #ebebeb;
+  cursor: pointer;
+  position: relative;
+  transition: box-shadow 0.15s;
+}
+
+.sl-card:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.sl-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sl-survey-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.sl-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.sl-status-submitted { background: #e0f2f1; color: #2B7A6F; }
+.sl-status-reviewed  { background: #e8f5e9; color: #388E3C; }
+.sl-status-flagged   { background: #fff3e0; color: #e65100; }
+.sl-status-draft     { background: #f5f5f5; color: #777; }
+
+.sl-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.sl-meta-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.sl-location {
+  color: #aaa;
+}
+
+.sl-date {
+  margin-left: auto;
+}
+
+.sl-ai-snippet {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  padding-right: 28px;
+}
+
+.sl-chevron {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+}

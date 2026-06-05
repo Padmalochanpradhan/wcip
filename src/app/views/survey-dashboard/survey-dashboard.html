@@ -20,7 +20,7 @@
       <div class="sd-stat-card">
         <div class="sd-stat-label">Platform status</div>
         <div class="sd-stat-connected">Connected</div>
-        <div class="sd-stat-caption">AI + Airtable ready</div>
+        <div class="sd-stat-caption">AI + AWS ready</div>
       </div>
     </div>
 
@@ -39,6 +39,31 @@
         <mat-icon class="sd-chevron">chevron_right</mat-icon>
       </div>
     }
+
+    <!-- Data Explorer link — disabled, re-enable when ready
+    <div class="sd-submissions-row sd-data-row" (click)="openDataExplorer()">
+      <div class="sd-submissions-icon sd-data-icon">
+        <mat-icon>science</mat-icon>
+      </div>
+      <div class="sd-submissions-info">
+        <div class="sd-submissions-title">Public Data Explorer</div>
+        <div class="sd-submissions-sub">Live Census ACS &amp; public API data</div>
+      </div>
+      <mat-icon class="sd-chevron">chevron_right</mat-icon>
+    </div>
+    -->
+
+    <!-- My Submissions link -->
+    <div class="sd-submissions-row" (click)="openSubmissions()">
+      <div class="sd-submissions-icon">
+        <mat-icon>history</mat-icon>
+      </div>
+      <div class="sd-submissions-info">
+        <div class="sd-submissions-title">My Submissions</div>
+        <div class="sd-submissions-sub">View past scans &amp; AI analysis</div>
+      </div>
+      <mat-icon class="sd-chevron">chevron_right</mat-icon>
+    </div>
 
     <!-- Today's field prompt -->
     @if (todayPrompt) {

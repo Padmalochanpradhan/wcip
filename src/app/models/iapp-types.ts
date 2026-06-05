@@ -3,5 +3,6 @@ export interface IAppEnvironment {
     storageEncryption?: boolean;
     version?: string;
     build?: string;
-    endpointUrl?:string;
+    endpointUrl?: string;
+    fieldApiUrl?: string;
 }

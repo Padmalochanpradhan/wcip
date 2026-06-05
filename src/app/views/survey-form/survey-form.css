@@ -79,10 +79,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .sf-field-group { display: flex; flex-direction: column; }
+
+.sf-location-full {
+  margin-bottom: 16px;
+}
 
 .sf-field-label {
   font-size: 12px;
@@ -91,6 +95,14 @@
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.sf-field-helper {
+  font-size: 11px;
+  font-weight: 400;
+  color: #999;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .sf-select-wrap { position: relative; }
@@ -339,8 +351,96 @@
 
 .sf-back-btn:hover { border-color: #aaa; color: #333; }
 
-.sf-btn-spinner { margin: auto; }
+.sf-submit-btn { gap: 0; }
+.sf-btn-spinner { flex-shrink: 0; }
 ::ng-deep .sf-btn-spinner circle { stroke: #fff !important; }
+
+/* ── AI results box ── */
+.sf-ai-box {
+  margin-top: 20px;
+  background: #f0f0eb;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid #e0ddd7;
+}
+
+.sf-ai-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2B7A6F;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+}
+
+.sf-ai-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2B7A6F;
+  flex-shrink: 0;
+}
+
+.sf-ai-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.sf-ai-score-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 20px;
+}
+
+.sf-ai-chip-pos {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.sf-ai-chip-neu {
+  background: #f0ede7;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.sf-ai-chip-neg {
+  background: #FCEBEB;
+  color: #C62828;
+}
+
+.sf-ai-summary {
+  font-size: 13.5px;
+  color: #1a1a1a;
+  line-height: 1.65;
+  background: #fff;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border-left: 3px solid #2B7A6F;
+  margin-bottom: 10px;
+}
+
+.sf-ai-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.sf-ai-theme-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: #E8F5F3;
+  color: #085041;
+  border: 1px solid #5DCAA5;
+}
 
 /* ── Mobile ── */
 @media (max-width: 500px) {

@@ -102,22 +102,6 @@
   </mat-error>
 
 </mat-form-field>
-        <!-- DEPARTMENT -->
-        <mat-form-field appearance="outline" class="mr common-field mt-5" >
-          <mat-label>DEPARTMENT</mat-label>
-          <mat-select formControlName="department" class="txupper">
-            <mat-option class="txupper" *ngFor="let d of data.departments" [value]="d.id">
-              {{ d.department }}
-            </mat-option>
-          </mat-select>
-
-          <mat-error *ngIf="
-            addUserFormGroup.get('department')?.touched &&
-            addUserFormGroup.get('department')?.invalid">
-            Department is required
-          </mat-error>
-        </mat-form-field>        
-
         <!-- STATUS -->
         <mat-form-field appearance="outline" class="common-field">
         <mat-label>STATUS</mat-label>

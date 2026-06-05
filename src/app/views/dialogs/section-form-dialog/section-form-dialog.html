@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Section' : 'Add Section' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" style="display:flex;flex-direction:column;gap:12px;padding-top:8px;">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title">
+      <mat-error>Title is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Subtitle</mat-label>
+      <input matInput formControlName="subtitle">
+    </mat-form-field>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <mat-form-field appearance="outline">
+        <mat-label>Icon</mat-label>
+        <mat-select formControlName="icon">
+          <mat-option value="">None</mat-option>
+          @for (ic of icons; track ic) {
+            <mat-option [value]="ic">{{ ic }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Badge label</mat-label>
+        <input matInput formControlName="badge_label" placeholder="e.g. NEW">
+      </mat-form-field>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <mat-form-field appearance="outline">
+        <mat-label>Display order</mat-label>
+        <input matInput type="number" formControlName="display_order">
+      </mat-form-field>
+
+      <div style="display:flex;align-items:center;gap:16px;padding-top:8px;">
+        <mat-checkbox formControlName="is_collapsible">Collapsible</mat-checkbox>
+        <mat-checkbox formControlName="is_required">Required</mat-checkbox>
+      </div>
+    </div>
+
+    @if (errorMsg) {
+      <div style="color:#b00;font-size:13px;">{{ errorMsg }}</div>
+    }
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="isLoading || form.invalid">
+    @if (isLoading) { <mat-progress-spinner diameter="16" mode="indeterminate" style="display:inline-block;margin-right:6px;"></mat-progress-spinner> }
+    {{ isEdit ? 'Update' : 'Add' }}
+  </button>
+</mat-dialog-actions>

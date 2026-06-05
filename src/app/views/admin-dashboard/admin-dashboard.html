@@ -1,0 +1,41 @@
+<div class="ad-page">
+  <h1 class="ad-title">Admin Dashboard</h1>
+  <p class="ad-sub">Manage field submissions and user accounts.</p>
+
+  <div class="ad-grid">
+
+    <div class="ad-card" (click)="go('/admin/submissions')">
+      <div class="ad-card-icon ad-icon-teal">
+        <mat-icon>assignment</mat-icon>
+      </div>
+      <div class="ad-card-body">
+        <div class="ad-card-title">Field Submissions</div>
+        <div class="ad-card-desc">View and review all field scan submissions from all staff.</div>
+      </div>
+      <mat-icon class="ad-chevron">chevron_right</mat-icon>
+    </div>
+
+    <div class="ad-card" (click)="go('/admin/users')">
+      <div class="ad-card-icon ad-icon-blue">
+        <mat-icon>manage_accounts</mat-icon>
+      </div>
+      <div class="ad-card-body">
+        <div class="ad-card-title">Manage Users</div>
+        <div class="ad-card-desc">Add, edit, and unlock user accounts across the platform.</div>
+      </div>
+      <mat-icon class="ad-chevron">chevron_right</mat-icon>
+    </div>
+
+    <div class="ad-card" (click)="go('/admin/surveys')">
+      <div class="ad-card-icon ad-icon-purple">
+        <mat-icon>dynamic_form</mat-icon>
+      </div>
+      <div class="ad-card-body">
+        <div class="ad-card-title">Manage Surveys</div>
+        <div class="ad-card-desc">Create surveys, configure sections and questions for field staff.</div>
+      </div>
+      <mat-icon class="ad-chevron">chevron_right</mat-icon>
+    </div>
+
+  </div>
+</div>

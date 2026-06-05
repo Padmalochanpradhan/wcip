@@ -10,7 +10,7 @@ import { SystemLogService } from './system-log';
 })
 export class IdleTimeoutService {
 
-  private readonly idleTime = 20 * 60 * 1000; // ✅ 10 minutes
+  private readonly idleTime = 60 * 60 * 1000; // 60 minutes
   private subscription!: Subscription;
   private storageSubscription!: Subscription;
 

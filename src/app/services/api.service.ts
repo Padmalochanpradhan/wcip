@@ -128,7 +128,7 @@ export class ConfigService {
   return commonPostApi<TResponse>(
     this.httpClient,
     this.environmentService,
-    'prismMultipleinsert',
+    'WCMultipleinsert',
     request
   );
 }
@@ -173,7 +173,7 @@ async updateUser<TResponse, TRequest>(request: TRequest): Promise<TResponse> {
     return await commonPostApi<TResponse>(
       this.httpClient,
       this.environmentService, 
-      'prismUserslist',
+      'WCUserslist',
       {}   
     );
   }
@@ -209,7 +209,7 @@ async updateUser<TResponse, TRequest>(request: TRequest): Promise<TResponse> {
     return await commonPostApi<TResponse>(
       this.httpClient,
       this.environmentService, 
-      'prismGetUserByEmail',
+      'WCGetUserByEmail',
       request   
     );
   }  

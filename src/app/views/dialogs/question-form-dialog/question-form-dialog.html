@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Question' : 'Add Question' }}</h2>
+
+<mat-dialog-content style="max-height:70vh;">
+  <form [formGroup]="form" style="display:flex;flex-direction:column;gap:12px;padding-top:8px;">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Label</mat-label>
+      <input matInput formControlName="label">
+      <mat-error>Label is required</mat-error>
+    </mat-form-field>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <mat-form-field appearance="outline">
+        <mat-label>Question type</mat-label>
+        <mat-select formControlName="question_type">
+          @for (t of questionTypes; track t) {
+            <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Display order</mat-label>
+        <input matInput type="number" formControlName="display_order">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Helper text</mat-label>
+      <input matInput formControlName="helper_text">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Placeholder</mat-label>
+      <input matInput formControlName="placeholder">
+    </mat-form-field>
+
+    <mat-checkbox formControlName="is_required">Required</mat-checkbox>
+
+    <!-- Options (for chip / dropdown types) -->
+    @if (needsOptions) {
+      <div class="qfd-options-section">
+        <div class="qfd-options-header">
+          <span>Options</span>
+          <button type="button" mat-stroked-button (click)="addOption()">
+            <mat-icon>add</mat-icon> Add option
+          </button>
+        </div>
+
+        <div formArrayName="options">
+          @for (opt of options.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="qfd-option-row">
+              <mat-form-field appearance="outline" style="flex:2">
+                <mat-label>Label</mat-label>
+                <input matInput formControlName="label">
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="flex:1">
+                <mat-label>Color</mat-label>
+                <mat-select formControlName="color_variant">
+                  @for (c of colorVariants; track c) {
+                    <mat-option [value]="c">{{ c }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <button type="button" mat-icon-button color="warn" (click)="removeOption(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+
+          @if (options.length === 0) {
+            <div style="color:#aaa;font-size:13px;padding:8px 0;">No options yet. Click "Add option".</div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (errorMsg) {
+      <div style="color:#b00;font-size:13px;">{{ errorMsg }}</div>
+    }
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="isLoading || form.invalid">
+    @if (isLoading) { <mat-progress-spinner diameter="16" mode="indeterminate" style="display:inline-block;margin-right:6px;"></mat-progress-spinner> }
+    {{ isEdit ? 'Update' : 'Add' }}
+  </button>
+</mat-dialog-actions>
+
+<style>
+.qfd-options-section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; }
+.qfd-options-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #555; }
+.qfd-option-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+</style>

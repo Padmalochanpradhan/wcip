@@ -2,8 +2,9 @@
     "storageEncryption": false,
     "version": "2.0.2",
     "build": "632",
-    "endpointUrl":"https://9enzmi08e6.execute-api.us-east-1.amazonaws.com/prod/", 
-    "envType": "prod" 
+    "endpointUrl":"https://9enzmi08e6.execute-api.us-east-1.amazonaws.com/prod/",
+    "fieldApiUrl": "https://9enzmi08e6.execute-api.us-east-1.amazonaws.com/prod/WCfieldAnalysis-prod",
+    "envType": "prod"
 }
 
 

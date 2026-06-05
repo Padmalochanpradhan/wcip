@@ -1,0 +1,126 @@
+<div class="as-page">
+
+  <!-- Header -->
+  <div class="as-header">
+    <div>
+      <button class="as-back" (click)="goBack()">← Back</button>
+      <h1 class="as-title">All Submissions</h1>
+      <p class="as-sub">
+        {{ filteredSubmissions.length }} of {{ submissions.length }} submission{{ submissions.length !== 1 ? 's' : '' }}
+        @if (hasActiveFilters) { <span class="as-filter-badge">filtered</span> }
+      </p>
+    </div>
+    <button class="as-search-toggle" [class.as-search-active]="showSearch || hasActiveFilters" (click)="toggleSearch()">
+      <mat-icon>{{ showSearch ? 'search_off' : 'manage_search' }}</mat-icon>
+      Advanced Search
+      @if (hasActiveFilters) { <span class="as-active-dot"></span> }
+    </button>
+  </div>
+
+  <!-- Advanced search panel -->
+  @if (showSearch) {
+    <div class="as-search-panel">
+      <div class="as-search-grid">
+
+        <!-- Date from -->
+        <div class="as-field">
+          <label class="as-field-label">Date from</label>
+          <input type="date" class="as-input" [(ngModel)]="filterDateFrom">
+        </div>
+
+        <!-- Date to -->
+        <div class="as-field">
+          <label class="as-field-label">Date to</label>
+          <input type="date" class="as-input" [(ngModel)]="filterDateTo">
+        </div>
+
+        <!-- Survey -->
+        <div class="as-field">
+          <label class="as-field-label">Survey</label>
+          <select class="as-select" [(ngModel)]="filterSurvey">
+            <option value="">All surveys</option>
+            @for (s of surveyOptions; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- User -->
+        <div class="as-field">
+          <label class="as-field-label">Staff / User</label>
+          <select class="as-select" [(ngModel)]="filterUser">
+            <option value="">All users</option>
+            @for (u of userOptions; track u) {
+              <option [value]="u">{{ u }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Ward -->
+        <div class="as-field">
+          <label class="as-field-label">Ward</label>
+          <select class="as-select" [(ngModel)]="filterWard">
+            <option value="">All wards</option>
+            @for (w of wardOptions; track w) {
+              <option [value]="w">{{ w }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Clear -->
+        <div class="as-field as-field-action">
+          <button class="as-clear-btn" (click)="clearFilters()" [disabled]="!hasActiveFilters">
+            <mat-icon>clear</mat-icon> Clear filters
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="as-loader">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  @if (loadError) {
+    <div class="as-error"><mat-icon>error_outline</mat-icon> {{ loadError }}</div>
+  }
+
+  @if (!isLoading && !loadError && filteredSubmissions.length === 0) {
+    <div class="as-empty">
+      <mat-icon>{{ hasActiveFilters ? 'filter_list_off' : 'inbox' }}</mat-icon>
+      <div>{{ hasActiveFilters ? 'No submissions match your filters.' : 'No submissions yet.' }}</div>
+      @if (hasActiveFilters) {
+        <button class="as-clear-btn" style="margin-top:8px;" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  }
+
+  @for (sub of filteredSubmissions; track sub.id) {
+    <div class="as-card" (click)="openDetail(sub.id)">
+      <div class="as-card-top">
+        <div class="as-survey-name">{{ sub.survey_title || 'Field Scan' }}</div>
+        <span class="as-status {{ statusClass(sub.status) }}">{{ sub.status }}</span>
+      </div>
+      <div class="as-meta">
+        @if (sub.staff_name) {
+          <span class="as-staff"><mat-icon class="as-icon">person</mat-icon>{{ sub.staff_name }}</span>
+        }
+        @if (sub.ward_name) {
+          <span><mat-icon class="as-icon">place</mat-icon>{{ sub.ward_name }}</span>
+        }
+        @if (sub.location_text) {
+          <span class="as-loc">{{ sub.location_text }}</span>
+        }
+        <span class="as-date">{{ formatDate(sub.submitted_at || sub.created_at) }}</span>
+      </div>
+      @if (sub.ai_analysis?.summary) {
+        <div class="as-snippet">{{ sub.ai_analysis!.summary.slice(0, 100) }}{{ sub.ai_analysis!.summary.length > 100 ? '…' : '' }}</div>
+      }
+      <mat-icon class="as-chevron">chevron_right</mat-icon>
+    </div>
+  }
+
+</div>

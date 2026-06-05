@@ -8,33 +8,12 @@ export class UsersDialogService {
   constructor(private readonly dialog: MatDialog) {}
 
   /** ---------------- ADD USER ---------------- */
-  addUsersDialog(
-    roles: any[],
-    departments: any[]
-  ): MatDialogRef<AdduserDialog> {
-
-    return this.openDialog({
-      title: 'ADD USER',
-      roles,
-      departments,
-      isEditMode: false
-    });
+  addUsersDialog(roles: any[]): MatDialogRef<AdduserDialog> {
+    return this.openDialog({ title: 'ADD USER', roles, isEditMode: false });
   }
 
-  /** ---------------- EDIT USER ---------------- */
-  editUsersDialog(
-    roles: any[],
-    departments: any[],
-    user: any
-  ): MatDialogRef<AdduserDialog> {
-
-    return this.openDialog({
-      title: 'UPDATE USER',
-      roles,
-      departments,
-      user,
-      isEditMode: true
-    });
+  editUsersDialog(roles: any[], user: any): MatDialogRef<AdduserDialog> {
+    return this.openDialog({ title: 'UPDATE USER', roles, user, isEditMode: true });
   }
 
   /** ---------------- PRIVATE COMMON DIALOG ---------------- */

@@ -1,0 +1,58 @@
+<div class="sl-page">
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="sl-loader">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (loadError) {
+    <div class="sl-error">
+      <mat-icon>error_outline</mat-icon>
+      <div>{{ loadError }}</div>
+    </div>
+  }
+
+  @if (!isLoading && !loadError) {
+    <div class="sl-header">
+      <button class="sl-back-btn" (click)="goBack()">← Back</button>
+      <h1 class="sl-title">My Submissions</h1>
+      <p class="sl-sub">{{ submissions.length }} scan{{ submissions.length !== 1 ? 's' : '' }} recorded</p>
+    </div>
+
+    <!-- Empty state -->
+    @if (submissions.length === 0) {
+      <div class="sl-empty">
+        <mat-icon>inbox</mat-icon>
+        <div>No submissions yet.</div>
+        <div class="sl-empty-sub">Complete a field scan to see it here.</div>
+      </div>
+    }
+
+    <!-- Submission cards -->
+    @for (sub of submissions; track sub.id) {
+      <div class="sl-card" (click)="openDetail(sub.id)">
+        <div class="sl-card-top">
+          <div class="sl-survey-name">{{ sub.survey_title || 'Environmental Scan' }}</div>
+          <span class="sl-status {{ statusClass(sub.status) }}">{{ sub.status }}</span>
+        </div>
+        <div class="sl-card-meta">
+          @if (sub.ward_name) {
+            <span><mat-icon class="sl-meta-icon">place</mat-icon>{{ sub.ward_name }}</span>
+          }
+          @if (sub.location_text) {
+            <span class="sl-location">{{ sub.location_text }}</span>
+          }
+          <span class="sl-date">{{ formatDate(sub.submitted_at || sub.created_at) }}</span>
+        </div>
+        @if (aiSnippet(sub)) {
+          <div class="sl-ai-snippet">{{ aiSnippet(sub) }}</div>
+        }
+        <mat-icon class="sl-chevron">chevron_right</mat-icon>
+      </div>
+    }
+  }
+
+</div>

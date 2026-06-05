@@ -1,0 +1,74 @@
+.ad-page { padding: 8px 0; }
+
+.ad-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px;
+}
+
+.ad-sub {
+  font-size: 14px;
+  color: #777;
+  margin: 0 0 28px;
+}
+
+.ad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.ad-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  border: 1px solid #e8e8e8;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.ad-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+  border-color: #d0d0d0;
+}
+
+.ad-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ad-card-icon mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.ad-icon-teal   { background: #e0f2f1; color: #2B7A6F; }
+.ad-icon-blue   { background: #e3f2fd; color: #1565c0; }
+.ad-icon-purple { background: #f3e5f5; color: #6a1b9a; }
+
+.ad-card-body { flex: 1; }
+
+.ad-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.ad-card-desc {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.ad-chevron { color: #ccc; flex-shrink: 0; }

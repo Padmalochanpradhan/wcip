@@ -308,7 +308,7 @@ async setupQrCode() {
     this.userId = user.ID;
     this.idleService.startWatching();
     this.addloginHistory();
-    this.router.navigate(['/field-home']);
+    this.router.navigate(user.role_id === 2 ? ['/admin'] : ['/field-home']);
   }
 
   addloginHistory() {

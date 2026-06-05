@@ -28,6 +28,9 @@ export class AppEnvService {
     endpointUrl(): string {
         return this.config.endpointUrl ?? 'unknown';
     }
+    fieldApiUrl(): string {
+        return this.config.fieldApiUrl ?? '';
+    }
     envType(): string {
         return this.config.envType ?? 'unknown';
     }

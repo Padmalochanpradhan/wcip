@@ -1,0 +1,86 @@
+<div class="sd-page">
+
+  @if (isLoading) {
+    <div class="sd-loader">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  @if (loadError) {
+    <div class="sd-error">
+      <mat-icon>error_outline</mat-icon>
+      <div>{{ loadError }}</div>
+      <button class="sd-back-btn" (click)="goBack()">← Back to submissions</button>
+    </div>
+  }
+
+  @if (submission && !isLoading) {
+    <button class="sd-back-btn" (click)="goBack()">← Back to submissions</button>
+
+    <div class="sd-title-row">
+      <h1 class="sd-title">{{ submission.survey_title || 'Environmental Scan' }}</h1>
+      <span class="sd-status {{ statusClass(submission.status) }}">{{ submission.status }}</span>
+    </div>
+
+    <!-- Meta -->
+    <div class="sd-meta">
+      @if (submission.ward_name) {
+        <div class="sd-meta-item">
+          <mat-icon>place</mat-icon>
+          <span>{{ submission.ward_name }}</span>
+        </div>
+      }
+      @if (submission.location_text) {
+        <div class="sd-meta-item">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ submission.location_text }}</span>
+        </div>
+      }
+      <div class="sd-meta-item">
+        <mat-icon>schedule</mat-icon>
+        <span>{{ formatDate(submission.submitted_at || submission.created_at) }}</span>
+      </div>
+    </div>
+
+    <!-- AI analysis -->
+    @if (submission.ai_analysis) {
+      <div class="sd-ai-box">
+        <div class="sd-ai-label">
+          <span class="sd-ai-dot"></span>
+          AI Analysis
+        </div>
+
+        <!-- Score chips -->
+        @if (submission.ai_analysis.scores.length) {
+          <div class="sd-ai-scores">
+            @for (score of submission.ai_analysis.scores; track score.label) {
+              <span class="sd-ai-chip sd-chip-{{ scoreClass(score.label) }}">
+                {{ score.label }}
+              </span>
+            }
+          </div>
+        }
+
+        <!-- Summary -->
+        <div class="sd-ai-summary">{{ submission.ai_analysis.summary }}</div>
+
+        <!-- Theme chips -->
+        @if (submission.ai_analysis.themes.length) {
+          <div class="sd-ai-themes">
+            @for (theme of submission.ai_analysis.themes; track theme) {
+              <span class="sd-ai-theme-chip">{{ theme }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (!submission.ai_analysis) {
+      <div class="sd-no-ai">
+        <mat-icon>auto_awesome</mat-icon>
+        No AI analysis available for this submission.
+      </div>
+    }
+  }
+
+</div>

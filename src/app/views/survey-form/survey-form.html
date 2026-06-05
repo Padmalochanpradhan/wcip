@@ -16,12 +16,12 @@
     </div>
   }
 
-  <!-- Success -->
+  <!-- Submit success -->
   @if (submitSuccess) {
     <div class="sf-success">
       <mat-icon>check_circle</mat-icon>
       <div class="sf-success-title">Submitted!</div>
-      <div class="sf-success-sub">Your response has been recorded.</div>
+      <div class="sf-success-sub">Your scan has been recorded.</div>
     </div>
   }
 
@@ -30,7 +30,7 @@
     <h1 class="sf-title">{{ survey.title }}</h1>
     <p class="sf-sub">Tap to rate what you observe. Add notes for anything the chips don't capture.</p>
 
-    <!-- Ward + Location -->
+    <!-- Ward + Specific location -->
     <div class="sf-location-row">
       <div class="sf-field-group">
         <label class="sf-field-label">Ward</label>
@@ -44,11 +44,19 @@
           <mat-icon class="sf-select-icon">expand_more</mat-icon>
         </div>
       </div>
-      <div class="sf-field-group">
-        <label class="sf-field-label">Location</label>
-        <input [(ngModel)]="locationText" class="sf-input" placeholder="Block / intersection" />
-      </div>
+      @if (survey.survey_type !== 'narrative') {
+        <div class="sf-field-group">
+          <label class="sf-field-label">Location</label>
+          <input [(ngModel)]="locationText" class="sf-input" placeholder="Block / intersection" />
+        </div>
+      }
     </div>
+    @if (survey.survey_type === 'narrative') {
+      <div class="sf-field-group sf-location-full">
+        <label class="sf-field-label">Specific location <span class="sf-field-helper">— optional: block, intersection, or building name</span></label>
+        <input [(ngModel)]="locationText" class="sf-input" placeholder="e.g. Alabama Ave & 14th St SE or Ballou High School" />
+      </div>
+    }
 
     <!-- Sections -->
     @for (section of survey.sections; track section.id) {
@@ -140,12 +148,12 @@
                 @if (question.question_type === 'textarea') {
                   <textarea [(ngModel)]="textAnswers[question.id]"
                             class="sf-textarea"
-                            rows="5"
+                            rows="3"
                             [placeholder]="question.placeholder || 'Staff notes...'">
                   </textarea>
                 }
 
-                <!-- Text / number / fallback -->
+                <!-- Text / number -->
                 @if (question.question_type === 'text' || question.question_type === 'number') {
                   <input [(ngModel)]="textAnswers[question.id]"
                          class="sf-input"
@@ -161,20 +169,76 @@
       </div>
     }
 
-    <!-- Error -->
-    @if (submitError) {
+    <!-- Analyze error -->
+    @if (analyzeError) {
       <div class="sf-error-box">
-        <mat-icon>error</mat-icon> {{ submitError }}
+        <mat-icon>error</mat-icon> {{ analyzeError }}
       </div>
     }
 
-    <!-- Submit -->
-    <button class="sf-submit-btn" (click)="submit()" [disabled]="isSubmitting">
-      @if (!isSubmitting) { Analyze & submit }
-      @else {
-        <mat-progress-spinner diameter="22" mode="indeterminate" class="sf-btn-spinner"></mat-progress-spinner>
-      }
-    </button>
+    <!-- Analyze & submit button -->
+    @if (!showAiResult) {
+      <button class="sf-submit-btn" (click)="analyzeAndSubmit()" [disabled]="isAnalyzing">
+        @if (!isAnalyzing) { Analyze &amp; submit }
+        @else {
+          <mat-progress-spinner diameter="20" mode="indeterminate" class="sf-btn-spinner"></mat-progress-spinner>
+          <span style="margin-left:10px;">Analyzing...</span>
+        }
+      </button>
+    }
+
+    <!-- AI results box -->
+    @if (showAiResult) {
+      <div class="sf-ai-box">
+
+        <!-- Header -->
+        <div class="sf-ai-label">
+          <span class="sf-ai-dot"></span>
+          AI analysis complete
+        </div>
+
+        <!-- Score chips -->
+        <div class="sf-ai-scores">
+          @for (score of aiScores; track score.label) {
+            <span class="sf-ai-score-chip sf-ai-chip-{{ score.cls }}">{{ score.label }}</span>
+          }
+        </div>
+
+        <!-- Summary -->
+        <div class="sf-ai-summary">{{ aiSummary }}</div>
+
+        <!-- Theme chips -->
+        @if (aiThemes.length) {
+          <div class="sf-ai-themes">
+            @for (theme of aiThemes; track theme) {
+              <span class="sf-ai-theme-chip">{{ theme }}</span>
+            }
+          </div>
+        }
+
+        <!-- Submit error -->
+        @if (submitError) {
+          <div class="sf-error-box" style="margin-top:12px;">
+            <mat-icon>error</mat-icon> {{ submitError }}
+          </div>
+        }
+
+        <!-- Save / submit -->
+        <button class="sf-submit-btn" (click)="submit()" [disabled]="isSubmitting" style="margin-top:16px;">
+          @if (!isSubmitting) {
+            <mat-icon style="font-size:18px;width:18px;height:18px;margin-right:6px;">save</mat-icon>
+            Save &amp; submit
+          } @else {
+            <mat-progress-spinner diameter="20" mode="indeterminate" class="sf-btn-spinner"></mat-progress-spinner>
+            <span style="margin-left:10px;">Saving...</span>
+          }
+        </button>
+
+        <!-- Edit scan -->
+        <button class="sf-back-btn" (click)="resetAi()">← Edit scan</button>
+
+      </div>
+    }
 
     <button class="sf-back-btn" (click)="goBack()">← Back to home</button>
   }

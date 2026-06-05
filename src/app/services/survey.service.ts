@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom, timeout, BehaviorSubject } from 'rxjs';
 import { AppEnvService } from './app-env.service';
-import { Survey, SurveyDetail, Ward, SubmissionPayload } from '../models/survey.models';
+import { Survey, SurveyDetail, Ward, SubmissionPayload, SurveySubmission } from '../models/survey.models';
 
 @Injectable({ providedIn: 'root' })
 export class SurveyService {
@@ -61,6 +61,93 @@ export class SurveyService {
   async submitSurvey(payload: SubmissionPayload): Promise<any> {
     return firstValueFrom(
       this.http.post<any>(this.url('survey-submit'), JSON.stringify(payload), { headers: this.headers }).pipe(timeout(60000))
+    );
+  }
+
+  async manageSurvey(payload: any): Promise<any> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCmanageSurveys'), JSON.stringify(payload), { headers: this.headers }).pipe(timeout(30000))
+    );
+    return this.unwrapLambda(res);
+  }
+
+  async getAllSubmissions(): Promise<SurveySubmission[]> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCgetAllSubmissions'), '{}', { headers: this.headers }).pipe(timeout(30000))
+    );
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
+    return (data ?? []).map((s: any) => ({
+      ...s,
+      ai_analysis: typeof s.ai_analysis === 'string' ? JSON.parse(s.ai_analysis) : s.ai_analysis
+    }));
+  }
+
+  async getSubmissions(userId: number): Promise<SurveySubmission[]> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCgetSubmissions'), JSON.stringify({ user_id: userId }), { headers: this.headers }).pipe(timeout(30000))
+    );
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
+    return (data ?? []).map((s: any) => ({
+      ...s,
+      ai_analysis: typeof s.ai_analysis === 'string' ? JSON.parse(s.ai_analysis) : s.ai_analysis
+    }));
+  }
+
+  async getSubmissionDetail(id: number): Promise<SurveySubmission> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCgetSubmissionDetail'), JSON.stringify({ id }), { headers: this.headers }).pipe(timeout(30000))
+    );
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
+    if (!data) throw new Error('Submission not found');
+    return {
+      ...data,
+      ai_analysis: typeof data.ai_analysis === 'string' ? JSON.parse(data.ai_analysis) : data.ai_analysis
+    };
+  }
+
+  private unwrapLambda(res: any): any {
+    if (res?.data != null) return res;                        // already unwrapped
+    if (typeof res?.body === 'string') return JSON.parse(res.body); // proxy string body
+    if (res?.body != null) return res.body;                   // proxy object body
+    return res;
+  }
+
+  async analyzeEnvScan(
+    envData: string,
+    ward: string,
+    location: string,
+    staffName: string
+  ): Promise<{ summary: string; scores: string[]; themes: string[] }> {
+    const payload = {
+      action: 'analyze',
+      system: `You are the WellCentric Community Intelligence Platform environmental AI for Washington DC. Respond ONLY with valid JSON, no markdown: {"summary":"3-4 sentence plain-language intelligence summary. Be specific and actionable.","scores":["Built environment: Good/Fair/Poor/Critical","Environmental burden: Low/Moderate/High/Critical","Food access: Good/Limited/Poor/Desert","Safety: High/Moderate/Low/Critical"],"themes":["theme1","theme2","theme3"]}`,
+      messages: [{
+        role: 'user',
+        content: `Ward: ${ward}\nLocation: ${location}\nStaff: ${staffName}\nDate: ${new Date().toLocaleDateString()}\n\n${envData}`
+      }]
+    };
+    const res = await firstValueFrom(
+      this.http.post<any>(this.env.fieldApiUrl(), JSON.stringify(payload), { headers: this.headers }).pipe(timeout(60000))
+    );
+    // Unwrap Lambda proxy response ({ statusCode, body: "..." }) or use direct Claude message
+    const message = res?.content
+      ? res
+      : typeof res?.body === 'string'
+        ? JSON.parse(res.body)
+        : res?.body;
+    return JSON.parse(message.content[0].text);
+  }
+
+  async saveEnvScanToAirtable(fields: Record<string, string>): Promise<void> {
+    await firstValueFrom(
+      this.http.post<any>(
+        this.env.fieldApiUrl(),
+        JSON.stringify({ action: 'save', fields }),
+        { headers: this.headers }
+      ).pipe(timeout(30000))
     );
   }
 }

@@ -1,0 +1,85 @@
+.au-page { padding: 8px 0 32px; }
+
+.au-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+}
+
+.au-back {
+  background: none; border: none; color: #2B7A6F;
+  font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block;
+}
+
+.au-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
+.au-sub { font-size: 13px; color: #888; margin: 0; }
+
+.au-add-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: #2B7A6F; color: #fff; border: none;
+  border-radius: 8px; padding: 10px 18px; font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: background 0.15s;
+  align-self: center;
+}
+.au-add-btn:hover { background: #245f56; }
+.au-add-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+.au-loader { display: flex; justify-content: center; padding: 48px; }
+
+.au-error { display: flex; align-items: center; gap: 8px; color: #b00; padding: 24px 0; font-size: 14px; }
+
+/* ── Table ── */
+.au-table-wrap {
+  background: #fff; border-radius: 12px;
+  border: 1px solid #ebebeb; overflow: hidden;
+}
+
+.au-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 14px;
+}
+
+.au-table thead th {
+  background: #f8f8f8; padding: 12px 16px;
+  text-align: left; font-size: 12px; font-weight: 600;
+  color: #666; text-transform: uppercase; letter-spacing: 0.04em;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.au-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.12s;
+}
+
+.au-table tbody tr:last-child { border-bottom: none; }
+.au-table tbody tr:hover { background: #fafafa; }
+
+.au-table td { padding: 12px 16px; color: #333; }
+
+.au-name { font-weight: 500; }
+.au-email { color: #666; }
+
+.au-empty { text-align: center; color: #aaa; padding: 32px; }
+
+.au-status {
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; display: inline-block;
+}
+.au-active   { background: #e8f5e9; color: #2e7d32; }
+.au-inactive { background: #fce4ec; color: #c62828; }
+
+.au-actions { display: flex; gap: 6px; }
+
+.au-btn {
+  background: none; border: 1px solid #e0e0e0;
+  border-radius: 6px; width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.12s, border-color 0.12s;
+}
+
+.au-btn mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+.au-btn-edit { color: #1565c0; }
+.au-btn-edit:hover { background: #e3f2fd; border-color: #90caf9; }
+
+.au-btn-unlock { color: #e65100; }
+.au-btn-unlock:hover { background: #fff3e0; border-color: #ffcc02; }

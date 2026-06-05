@@ -43,6 +43,7 @@ export class SurveyLayout implements OnInit, OnDestroy {
     const h = new Date().getHours();
     this.greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
     const user = this.userData.getUser<any>();
+    console.log(user);
     this.userName = user?.name || user?.username || '';
 
     this.countSub = this.surveyService.todayCount$.subscribe(n => this.submittedCount = n);

@@ -135,7 +135,7 @@ export class Dashboard extends BaseComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.titleService.setTitle('PRISM :: DASHBOARD');
+    this.titleService.setTitle('WCIP :: DASHBOARD');
     this.headerService.setTitle('DASHBOARD');
 
     await Promise.all([this.loadTableData(), this.loadVendors()]);
