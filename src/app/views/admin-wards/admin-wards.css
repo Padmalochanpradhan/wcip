@@ -1,0 +1,87 @@
+.awd-page { padding: 28px 32px 40px; max-width: 1080px; }
+
+.awd-page-head { margin-bottom: 24px; }
+.awd-page-title { font-size: 26px; font-weight: 700; color: #1a3a32; margin: 0 0 4px; }
+.awd-page-sub   { font-size: 13px; color: #888; margin: 0; }
+
+/* ── Ward card ── */
+.awd-card {
+  background: #fff;
+  border: 1px solid #e8ecef;
+  border-radius: 14px;
+  padding: 20px 22px 18px;
+  margin-bottom: 14px;
+}
+
+.awd-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.awd-card-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.awd-card-meta {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* ── Stat boxes row ── */
+.awd-stats-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.awd-stat {
+  flex: 1;
+  min-width: 100px;
+  border-radius: 10px;
+  padding: 14px 16px 12px;
+}
+
+.awd-stat-neutral  { background: #f5f6f7; }
+.awd-stat-urgent   { background: #fce8e8; }
+.awd-stat-lowtrust { background: #fef6e4; }
+
+.awd-stat-num {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.awd-stat-neutral  .awd-stat-num { color: #2b7a6f; }
+.awd-stat-urgent   .awd-stat-num { color: #c62828; }
+.awd-stat-lowtrust .awd-stat-num { color: #b45309; }
+
+.awd-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.awd-stat-neutral  .awd-stat-label { color: #999; }
+.awd-stat-urgent   .awd-stat-label { color: #c62828; }
+.awd-stat-lowtrust .awd-stat-label { color: #b45309; }
+
+/* ── Theme chips ── */
+.awd-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.awd-theme-chip {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  background: #f0f2f4;
+  border-radius: 20px;
+  padding: 4px 12px;
+}

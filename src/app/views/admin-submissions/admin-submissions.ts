@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SurveyService } from '../../services/survey.service';
-import { SurveySubmission } from '../../models/survey.models';
+import { AdminStateService } from '../../services/admin-state.service';
 
 @Component({
   selector: 'app-admin-submissions',
@@ -14,61 +13,63 @@ import { SurveySubmission } from '../../models/survey.models';
   templateUrl: './admin-submissions.html',
   styleUrl: './admin-submissions.css'
 })
-export class AdminSubmissions implements OnInit {
-  submissions: SurveySubmission[] = [];
-  isLoading = true;
-  loadError = '';
+export class AdminSubmissions {
 
-  /* ── Search state ── */
-  showSearch = false;
+  /* ── Quick filter chips ── */
+  quickFilter: 'all' | 'urgent' | 'narrative' | 'scan' = 'all';
+
+  /* ── Local search filters (date, survey, user) ── */
+  showSearch     = false;
   filterDateFrom = '';
   filterDateTo   = '';
   filterSurvey   = '';
   filterUser     = '';
-  filterWard     = '';
+
+  /* ── Ward filter delegates to shared state (synced with sidebar) ── */
+  get filterWard(): string         { return this.state.filterWard; }
+  set filterWard(v: string)        { this.state.setFilter(v); }
 
   constructor(
     private readonly router: Router,
-    private readonly surveyService: SurveyService
+    readonly state: AdminStateService
   ) {}
 
-  async ngOnInit() {
-    try {
-      this.submissions = await this.surveyService.getAllSubmissions();
-    } catch (err: any) {
-      this.loadError = err?.message || 'Failed to load submissions.';
-    } finally {
-      this.isLoading = false;
-    }
-  }
+  get isLoading() { return this.state.isLoading; }
+  get loadError()  { return this.state.loadError; }
 
-  /* ── Filter options derived from loaded data ── */
+  /* ── Filter options derived from all submissions ── */
   get surveyOptions(): string[] {
-    return [...new Set(this.submissions.map(s => s.survey_title || 'Field Scan').filter(Boolean))].sort();
+    return [...new Set(this.state.submissions.map(s => s.survey_title || 'Field Scan').filter(Boolean))].sort();
   }
 
   get userOptions(): string[] {
-    return [...new Set(this.submissions.map(s => s.staff_name || '').filter(Boolean))].sort();
+    return [...new Set(this.state.submissions.map(s => s.staff_name || '').filter(Boolean))].sort();
   }
 
-  get wardOptions(): string[] {
-    return [...new Set(this.submissions.map(s => s.ward_name || '').filter(Boolean))].sort();
-  }
+  get wardOptions(): string[] { return this.state.allWards; }
 
   /* ── Filtered list ── */
-  get filteredSubmissions(): SurveySubmission[] {
-    return this.submissions.filter(s => {
-      const dateStr = (s.submitted_at || s.created_at || '').slice(0, 10);
+  get filteredSubmissions() {
+    return this.state.submissions.filter(s => {
+      // Quick filter chips
+      if (this.quickFilter === 'urgent'    && !this.state.isUrgent(s)) return false;
+      if (this.quickFilter === 'narrative' && !s.survey_title?.toLowerCase().includes('narrative')) return false;
+      if (this.quickFilter === 'scan'      &&  s.survey_title?.toLowerCase().includes('narrative')) return false;
 
+      // Advanced search filters
+      const dateStr = (s.submitted_at || s.created_at || '').slice(0, 10);
       if (this.filterDateFrom && dateStr < this.filterDateFrom) return false;
       if (this.filterDateTo   && dateStr > this.filterDateTo)   return false;
       if (this.filterSurvey && (s.survey_title || 'Field Scan') !== this.filterSurvey) return false;
       if (this.filterUser   && (s.staff_name  || '') !== this.filterUser)              return false;
       if (this.filterWard   && (s.ward_name   || '') !== this.filterWard)              return false;
-
       return true;
     });
   }
+
+  get urgentCount()    { return this.state.submissions.filter(s => this.state.isUrgent(s)).length; }
+  get narrativeCount() { return this.state.submissions.filter(s => s.survey_title?.toLowerCase().includes('narrative')).length; }
+  get scanCount()      { return this.state.submissions.filter(s => !s.survey_title?.toLowerCase().includes('narrative')).length; }
 
   get hasActiveFilters(): boolean {
     return !!(this.filterDateFrom || this.filterDateTo || this.filterSurvey || this.filterUser || this.filterWard);
@@ -81,7 +82,7 @@ export class AdminSubmissions implements OnInit {
     this.filterDateTo   = '';
     this.filterSurvey   = '';
     this.filterUser     = '';
-    this.filterWard     = '';
+    this.state.setFilter('');
   }
 
   openDetail(id: number) { this.router.navigate(['/admin/submissions', id]); }

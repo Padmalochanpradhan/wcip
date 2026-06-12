@@ -33,12 +33,14 @@ export class SurveyForm implements OnInit, OnDestroy {
   expanded: Record<number, boolean> = {};
 
   /* ── Analyze state ── */
-  isAnalyzing  = false;
-  analyzeError = '';
-  showAiResult = false;
-  aiSummary    = '';
-  aiScores: { label: string; cls: 'pos' | 'neu' | 'neg' }[] = [];
+  isAnalyzing    = false;
+  analyzeError   = '';
+  showAiResult   = false;
+  aiSummary      = '';
+  aiScores: { label: string; value: string; cls: string }[] = [];
   aiThemes: string[] = [];
+  aiSentiment    = '';
+  aiTrustSignal  = '';
 
   /* ── Submit state ── */
   isSubmitting  = false;
@@ -197,13 +199,16 @@ export class SurveyForm implements OnInit, OnDestroy {
       const result = await this.surveyService.analyzeEnvScan(envData, ward, location, staffName);
 
       this.aiSummary = result.summary;
-      this.aiScores  = (result.scores || []).map(s => ({
-        label: s,
-        cls:   /(Poor|Critical|Desert|Low safety|Unsafe)/i.test(s) ? 'neg'
-             : /(Good|Abundant|Low burden|High safety)/i.test(s)   ? 'pos' : 'neu'
-      }));
-      this.aiThemes  = result.themes || [];
-      this.showAiResult = true;
+      this.aiScores  = (result.scores || []).map((s: any) => {
+        const isStr  = typeof s === 'string';
+        const label: string = isStr ? String(s).split(':')[0].trim() : String(s?.label ?? '');
+        const value: string = isStr ? (String(s).split(':')[1] ?? '').trim() : String(s?.value ?? '');
+        return { label, value, cls: this.scoreToCls(label, value) };
+      });
+      this.aiThemes      = result.themes       || [];
+      this.aiSentiment   = result.sentiment    || '';
+      this.aiTrustSignal = result.trust_signal || '';
+      this.showAiResult  = true;
     } catch (err: any) {
       this.analyzeError = err?.message || 'Analysis failed. Please try again.';
     } finally {
@@ -219,20 +224,76 @@ export class SurveyForm implements OnInit, OnDestroy {
 
     try {
       const user = this.userData.getUser<any>();
+      const userId: number = Number(user?.ID || user?.id || user?.userId || user?.user_id || 0);
+      if (!userId) {
+        this.submitError = 'Session expired. Please log in again.';
+        this.isSubmitting = false;
+        return;
+      }
+
+      // Read engagement tone and institutional trust directly from chip selections
+      const allQ = this.survey.sections.flatMap(s => s.questions);
+
+      const toneQ = allQ.find(q => /engagement.?tone/i.test(q.label));
+      const toneLabels = toneQ
+        ? (this.optionAnswers[toneQ.id] ?? []).map(id => toneQ.options.find(o => o.id === id)?.label ?? '').filter(Boolean)
+        : [];
+      const urgentByTone = toneLabels.some(l => /urgent/i.test(l));
+
+      const trustQ = allQ.find(q => /institutional.?trust|trust.?observed/i.test(q.label));
+      const trustLabels = trustQ
+        ? (this.optionAnswers[trustQ.id] ?? []).map(id => trustQ.options.find(o => o.id === id)?.label ?? '').filter(Boolean)
+        : [];
+      const trustLabel = trustLabels[0] ?? '';
+
+      // Flag if engagement tone is Urgent, OR AI says Urgent, OR Safety/Env burden is critical
+      const isUrgent =
+        urgentByTone ||
+        this.aiSentiment === 'Urgent' ||
+        this.aiScores.some(sc =>
+          sc.cls === 'critical' &&
+          (sc.label === 'Safety' || sc.label === 'Environmental burden')
+        );
+
+      // Collect all text/textarea answers as field notes
+      const fieldNotes: { label: string; note: string }[] = [];
+      for (const section of this.survey.sections) {
+        for (const q of section.questions) {
+          if ((q.question_type === 'textarea' || q.question_type === 'text') && this.textAnswers[q.id]?.trim()) {
+            fieldNotes.push({ label: q.label, note: this.textAnswers[q.id].trim() });
+          }
+        }
+      }
+
+      const aiAnalysis: any = {
+        summary:     this.aiSummary,
+        scores:      this.aiScores,
+        themes:      this.aiThemes,
+        field_notes: fieldNotes.length ? fieldNotes : undefined,
+      };
+
+      // Sentiment: chip takes priority over AI
+      if (urgentByTone)          aiAnalysis.sentiment = 'Urgent';
+      else if (this.aiSentiment) aiAnalysis.sentiment = this.aiSentiment;
+
+      // Trust signal: chip takes priority over AI
+      if (trustLabel) {
+        aiAnalysis.trust_signal = /erosion/i.test(trustLabel) ? 'Erosion'
+          : /low/i.test(trustLabel) ? 'Low'
+          : /moderate/i.test(trustLabel) ? 'Moderate' : 'High';
+      } else if (this.aiTrustSignal) {
+        aiAnalysis.trust_signal = this.aiTrustSignal;
+      }
 
       await this.apiService.insert<any, any>({
         table_name: 'survey_submissions',
         insertDataArray: [{
           survey_id:     this.survey.id,
-          user_id:       user?.ID || user?.id || 0,
+          user_id:       userId,
           ward_id:       this.selectedWardId,
           location_text: this.locationText,
-          status:        'submitted',
-          ai_analysis:   JSON.stringify({
-            summary: this.aiSummary,
-            scores:  this.aiScores,
-            themes:  this.aiThemes
-          }),
+          status:        isUrgent ? 'flagged' : 'submitted',
+          ai_analysis:   JSON.stringify(aiAnalysis),
           submitted_at:  new Date().toISOString()
         }]
       });
@@ -250,11 +311,32 @@ export class SurveyForm implements OnInit, OnDestroy {
 
   /* ── Reset AI panel (edit scan) ── */
   resetAi() {
-    this.showAiResult = false;
-    this.aiSummary    = '';
-    this.aiScores     = [];
-    this.aiThemes     = [];
-    this.submitError  = '';
+    this.showAiResult  = false;
+    this.aiSummary     = '';
+    this.aiScores      = [];
+    this.aiThemes      = [];
+    this.aiSentiment   = '';
+    this.aiTrustSignal = '';
+    this.submitError   = '';
+  }
+
+  private scoreToCls(label: string, value: string): string {
+    const v = (value ?? '').toLowerCase().trim();
+    if (label === 'Safety') {
+      if (v === 'high')     return 'positive';
+      if (v === 'moderate') return 'neutral';
+      return 'critical';  // Low, Critical, Unsafe → dangerous
+    }
+    if (label === 'Environmental burden') {
+      if (v === 'low')      return 'positive';
+      if (v === 'moderate') return 'neutral';
+      if (v === 'high')     return 'warning';
+      return 'critical';
+    }
+    if (['good', 'abundant', 'full'].includes(v)) return 'positive';
+    if (['fair', 'moderate', 'limited'].includes(v)) return 'neutral';
+    if (['poor'].includes(v)) return 'warning';
+    return 'critical';
   }
 
   goBack() {

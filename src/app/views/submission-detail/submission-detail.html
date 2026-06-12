@@ -81,6 +81,22 @@
         No AI analysis available for this submission.
       </div>
     }
+
+    <!-- Field notes -->
+    @if (submission.ai_analysis?.field_notes?.length) {
+      <div class="sd-notes-section">
+        <div class="sd-notes-label">
+          <mat-icon>edit_note</mat-icon>
+          Field Notes
+        </div>
+        @for (note of submission.ai_analysis!.field_notes!; track note.label) {
+          <div class="sd-note-item">
+            <div class="sd-note-q">{{ note.label }}</div>
+            <div class="sd-note-text">{{ note.note }}</div>
+          </div>
+        }
+      </div>
+    }
   }
 
 </div>

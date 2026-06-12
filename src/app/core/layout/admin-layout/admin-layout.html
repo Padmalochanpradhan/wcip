@@ -2,10 +2,14 @@
 
   <header class="al-header">
     <div class="al-brand" (click)="goHome()">
-      <mat-icon>admin_panel_settings</mat-icon>
-      <span>WCIP Admin</span>
+      <div class="al-mark">W</div>
+      <span class="al-org">WellCentric Health Group DC</span>
+      <span class="al-sep">|</span>
+      <span class="al-subtitle">Admin Portal</span>
     </div>
     <div class="al-header-right">
+      <span class="al-live"><span class="al-dot"></span> Live</span>
+      <span class="al-date">{{ todayStr }}</span>
       <span class="al-username">{{ userName }}</span>
       <button class="al-signout" (click)="signOut()">Sign out</button>
     </div>

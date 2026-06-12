@@ -87,12 +87,12 @@ export class AdduserDialog implements OnInit {
     passwordControl?.updateValueAndValidity();
 
     this.addUserFormGroup.patchValue({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      password: '',
-      role: user.roleId,
-      status: Number(user.member_status)
+      firstName: user.FistName,
+      lastName:  user.LastName,
+      email:     user.email || user.EmailID,
+      password:  '',
+      role:      user.roleId ?? user.role_id,
+      status:    Number(user.member_status)
     });
 
     this.addUserFormGroup.get('email')?.disable();

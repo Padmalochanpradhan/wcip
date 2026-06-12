@@ -137,7 +137,7 @@ async insertUsers<TResponse, TRequest>(request: TRequest): Promise<TResponse> {
   return commonPostApi<TResponse>(
     this.httpClient,
     this.environmentService,
-    'prismCreateUser',
+    'WCCreateUser',
     request
   );
 }
@@ -155,7 +155,7 @@ async updateUser<TResponse, TRequest>(request: TRequest): Promise<TResponse> {
   return commonPostApi<TResponse>(
     this.httpClient,
     this.environmentService,
-    'prismUpdateUser',
+    'WCUpdateUser',
     request
   );
 }
@@ -573,7 +573,7 @@ async createCognitoUser(request: any): Promise<string> {
   const res: any = await commonPostApi(
     this.httpClient,
     this.environmentService,
-    'prismCreateCognitoUser',
+    'WCCreateCognitoUser',
     request
   );
 

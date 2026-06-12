@@ -1,0 +1,214 @@
+.aov-page {
+  padding: 28px 32px 40px;
+}
+
+.aov-loader { display: flex; justify-content: center; padding: 80px; }
+.aov-error  { display: flex; align-items: center; gap: 8px; color: #b00; padding: 32px; font-size: 14px; }
+
+.aov-page-head { margin-bottom: 24px; }
+.aov-page-title { font-size: 24px; font-weight: 700; color: #1a3a32; margin: 0 0 4px; }
+.aov-page-sub   { font-size: 13px; color: #888; margin: 0; }
+
+/* ── Stats row ── */
+.aov-stats-row {
+  display: flex;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e8ecef;
+  overflow: hidden;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.aov-stat {
+  flex: 1;
+  padding: 18px 14px 14px;
+  border-right: 1px solid #f0f2f4;
+  min-width: 90px;
+}
+.aov-stat:last-child { border-right: none; }
+
+.aov-stat-num  { font-size: 28px; font-weight: 700; color: #1a3a32; line-height: 1.1; }
+.aov-stat-lbl  { font-size: 10px; font-weight: 700; color: #999; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; }
+.aov-stat-note { font-size: 11px; color: #bbb; margin-top: 2px; }
+
+.aov-stat-flag { border: 2px solid #fdd; background: #fff9f9; border-radius: 10px; }
+.aov-stat-flag .aov-stat-num { color: #c62828; }
+.aov-stat-warn .aov-stat-num { color: #7B3F00; }
+
+/* ── Charts grid ── */
+.aov-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.aov-chart-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e8ecef;
+  padding: 20px;
+}
+
+.aov-chart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.aov-chart-title { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+.aov-chart-note  { font-size: 12px; color: #bbb; }
+
+/* ── Vertical bar chart ── */
+.aov-vchart {
+  display: flex;
+  align-items: flex-end;
+  height: 140px;
+  gap: 5px;
+  padding: 0 2px;
+}
+
+.aov-vbar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.aov-vbar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+  min-height: 2px;
+}
+
+.aov-vseg           { width: 100%; min-height: 0; }
+.aov-vseg-scan      { background: #a8d5cf; }
+.aov-vseg-narrative { background: #f9c0b9; }
+
+.aov-vbar-lbl {
+  font-size: 9px;
+  color: #bbb;
+  margin-top: 5px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.aov-chart-legend {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: #888;
+}
+
+.aov-leg-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* ── Horizontal bars ── */
+.aov-hbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.aov-hbar-row:last-child { margin-bottom: 0; }
+
+.aov-hbar-lbl   { width: 68px; font-size: 12px; font-weight: 500; color: #444; flex-shrink: 0; }
+
+.aov-hbar-track {
+  flex: 1;
+  height: 8px;
+  background: #f0f2f4;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.aov-hbar-fill {
+  height: 100%;
+  background: #2B7A6F;
+  border-radius: 4px;
+  transition: width 0.4s;
+}
+
+.aov-hbar-num   { width: 26px; text-align: right; font-size: 12px; font-weight: 600; color: #555; flex-shrink: 0; }
+.aov-hbar-share { width: 32px; text-align: right; font-size: 11px; color: #aaa; flex-shrink: 0; }
+
+.aov-ward-urg {
+  font-size: 10px;
+  font-weight: 700;
+  color: #c62828;
+  background: #fdecea;
+  border-radius: 10px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+
+/* ── Urgent section ── */
+.aov-urg-section {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e8ecef;
+  padding: 20px;
+  margin-top: 4px;
+}
+
+.aov-urg-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.aov-urg-icon  { font-size: 16px; }
+.aov-urg-title { font-size: 14px; font-weight: 600; color: #1a1a1a; flex: 1; }
+.aov-urg-badge { font-size: 12px; color: #888; }
+
+.aov-urg-card {
+  border: 1px solid #e8ecef;
+  border-left: 3px solid #c62828;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+.aov-urg-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+.aov-urg-card:last-child { margin-bottom: 0; }
+
+.aov-uc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.aov-uc-meta  { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 12px; }
+.aov-uc-ward  { font-weight: 600; color: #1a3a32; }
+.aov-uc-dim   { color: #888; }
+.aov-uc-date  { font-size: 12px; color: #bbb; flex-shrink: 0; }
+
+.aov-uc-ai {
+  font-size: 12.5px;
+  color: #2B7A6F;
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.aov-uc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.aov-tag { font-size: 10px; font-weight: 600; border-radius: 12px; padding: 3px 9px; display: inline-block; }
+.aov-tag-ut { background: #fdecea; color: #c62828; }
+.aov-tag-tl { background: #fff3e0; color: #e65100; }
+.aov-tag-th { background: #e8f5f3; color: #2B7A6F; }

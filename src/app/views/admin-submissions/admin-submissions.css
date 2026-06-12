@@ -1,4 +1,50 @@
-.as-page { padding: 8px 0 32px; }
+.as-page { padding: 8px 20px 32px; max-width: 1100px; margin: 0 auto; }
+
+/* ── Quick filter chips ── */
+.as-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.as-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.as-chip:hover { border-color: #2B7A6F; color: #2B7A6F; background: #f0faf9; }
+
+.as-chip-active {
+  background: #1a3a32 !important;
+  border-color: #1a3a32 !important;
+  color: #fff !important;
+}
+
+.as-chip-urgent.as-chip-active {
+  background: #c62828 !important;
+  border-color: #c62828 !important;
+}
+
+.as-chip-count {
+  background: rgba(255,255,255,0.25);
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
 
 .as-header {
   display: flex; align-items: flex-start; justify-content: space-between;

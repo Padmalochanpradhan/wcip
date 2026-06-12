@@ -115,15 +115,21 @@ export class SurveyService {
     return res;
   }
 
+  async flagSubmission(id: number): Promise<void> {
+    await firstValueFrom(
+      this.http.post<any>(this.url('WCupdateSubmissionStatus'), JSON.stringify({ id, status: 'flagged' }), { headers: this.headers }).pipe(timeout(15000))
+    );
+  }
+
   async analyzeEnvScan(
     envData: string,
     ward: string,
     location: string,
     staffName: string
-  ): Promise<{ summary: string; scores: string[]; themes: string[] }> {
+  ): Promise<{ summary: string; scores: { label: string; value: string }[]; themes: string[]; sentiment?: string; trust_signal?: string }> {
     const payload = {
       action: 'analyze',
-      system: `You are the WellCentric Community Intelligence Platform environmental AI for Washington DC. Respond ONLY with valid JSON, no markdown: {"summary":"3-4 sentence plain-language intelligence summary. Be specific and actionable.","scores":["Built environment: Good/Fair/Poor/Critical","Environmental burden: Low/Moderate/High/Critical","Food access: Good/Limited/Poor/Desert","Safety: High/Moderate/Low/Critical"],"themes":["theme1","theme2","theme3"]}`,
+      system: `You are the WellCentric Community Intelligence Platform environmental AI for Washington DC. Respond ONLY with valid JSON, no markdown: {"summary":"3-4 sentence plain-language intelligence summary. Be specific and actionable.","scores":[{"label":"Built environment","value":"Good|Fair|Poor|Critical"},{"label":"Environmental burden","value":"Low|Moderate|High|Critical"},{"label":"Food access","value":"Good|Limited|Poor|Desert"},{"label":"Safety","value":"High|Moderate|Low|Critical"}],"themes":["theme1","theme2","theme3"],"sentiment":"Positive|Mixed|Negative|Urgent","trust_signal":"High|Moderate|Low|Erosion"}`,
       messages: [{
         role: 'user',
         content: `Ward: ${ward}\nLocation: ${location}\nStaff: ${staffName}\nDate: ${new Date().toLocaleDateString()}\n\n${envData}`

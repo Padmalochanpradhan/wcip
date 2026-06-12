@@ -200,7 +200,7 @@
         <!-- Score chips -->
         <div class="sf-ai-scores">
           @for (score of aiScores; track score.label) {
-            <span class="sf-ai-score-chip sf-ai-chip-{{ score.cls }}">{{ score.label }}</span>
+            <span class="sf-ai-score-chip sf-ai-chip-{{ score.cls }}">{{ score.label }}{{ score.value ? ': ' + score.value : '' }}</span>
           }
         </div>
 

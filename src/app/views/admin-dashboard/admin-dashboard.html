@@ -1,41 +1,63 @@
-<div class="ad-page">
-  <h1 class="ad-title">Admin Dashboard</h1>
-  <p class="ad-sub">Manage field submissions and user accounts.</p>
+<div class="aid-shell">
 
-  <div class="ad-grid">
+  <!-- ── Left sidebar ── -->
+  <aside class="aid-sidebar">
 
-    <div class="ad-card" (click)="go('/admin/submissions')">
-      <div class="ad-card-icon ad-icon-teal">
-        <mat-icon>assignment</mat-icon>
-      </div>
-      <div class="ad-card-body">
-        <div class="ad-card-title">Field Submissions</div>
-        <div class="ad-card-desc">View and review all field scan submissions from all staff.</div>
-      </div>
-      <mat-icon class="ad-chevron">chevron_right</mat-icon>
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">VIEWS</div>
+
+      <button class="aid-nav-item" routerLink="/admin/overview" routerLinkActive="aid-nav-active">
+        <mat-icon>dashboard</mat-icon><span>Overview</span>
+      </button>
+
+      <button class="aid-nav-item" routerLink="/admin/submissions" routerLinkActive="aid-nav-active">
+        <mat-icon>assignment</mat-icon><span>All submissions</span>
+        @if (state.urgentFlags > 0) {
+          <span class="aid-badge-urg">{{ state.urgentFlags }} urgent</span>
+        }
+      </button>
+
+      <button class="aid-nav-item" routerLink="/admin/staff" routerLinkActive="aid-nav-active">
+        <mat-icon>people</mat-icon><span>Staff activity</span>
+      </button>
+
+      <button class="aid-nav-item" routerLink="/admin/wards" routerLinkActive="aid-nav-active">
+        <mat-icon>map</mat-icon><span>Ward breakdown</span>
+      </button>
     </div>
 
-    <div class="ad-card" (click)="go('/admin/users')">
-      <div class="ad-card-icon ad-icon-blue">
-        <mat-icon>manage_accounts</mat-icon>
-      </div>
-      <div class="ad-card-body">
-        <div class="ad-card-title">Manage Users</div>
-        <div class="ad-card-desc">Add, edit, and unlock user accounts across the platform.</div>
-      </div>
-      <mat-icon class="ad-chevron">chevron_right</mat-icon>
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">FILTER BY WARD</div>
+      <select class="aid-select" [value]="state.filterWard" (change)="onFilterChange($event)">
+        <option value="">All data</option>
+        @for (w of state.allWards; track w) {
+          <option [value]="w">{{ w }} focus</option>
+        }
+      </select>
     </div>
 
-    <div class="ad-card" (click)="go('/admin/surveys')">
-      <div class="ad-card-icon ad-icon-purple">
-        <mat-icon>dynamic_form</mat-icon>
-      </div>
-      <div class="ad-card-body">
-        <div class="ad-card-title">Manage Surveys</div>
-        <div class="ad-card-desc">Create surveys, configure sections and questions for field staff.</div>
-      </div>
-      <mat-icon class="ad-chevron">chevron_right</mat-icon>
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">ACTIONS</div>
+      <button class="aid-action-item"><mat-icon>open_in_new</mat-icon> Open client brief</button>
+      <button class="aid-action-item" onclick="window.print()"><mat-icon>print</mat-icon> Print view</button>
+      <button class="aid-action-item" (click)="refresh()"><mat-icon>refresh</mat-icon> Refresh data</button>
     </div>
 
-  </div>
+    <div class="aid-nav-section aid-sidebar-manage">
+      <div class="aid-nav-label">MANAGE</div>
+      <button class="aid-action-item" routerLink="/admin/users" routerLinkActive="aid-act-active">
+        <mat-icon>manage_accounts</mat-icon> Manage users
+      </button>
+      <button class="aid-action-item" routerLink="/admin/surveys" routerLinkActive="aid-act-active">
+        <mat-icon>dynamic_form</mat-icon> Manage surveys
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ── Page content ── -->
+  <main class="aid-main">
+    <router-outlet></router-outlet>
+  </main>
+
 </div>

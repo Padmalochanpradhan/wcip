@@ -6,7 +6,7 @@
       <button class="as-back" (click)="goBack()">← Back</button>
       <h1 class="as-title">All Submissions</h1>
       <p class="as-sub">
-        {{ filteredSubmissions.length }} of {{ submissions.length }} submission{{ submissions.length !== 1 ? 's' : '' }}
+        {{ filteredSubmissions.length }} of {{ state.submissions.length }} submission{{ state.submissions.length !== 1 ? 's' : '' }}
         @if (hasActiveFilters) { <span class="as-filter-badge">filtered</span> }
       </p>
     </div>
@@ -15,6 +15,16 @@
       Advanced Search
       @if (hasActiveFilters) { <span class="as-active-dot"></span> }
     </button>
+  </div>
+
+  <!-- Quick filter chips -->
+  <div class="as-chips">
+    <button class="as-chip" [class.as-chip-active]="quickFilter === 'all'"       (click)="quickFilter = 'all'">All</button>
+    <button class="as-chip as-chip-urgent" [class.as-chip-active]="quickFilter === 'urgent'"    (click)="quickFilter = 'urgent'">
+      🚩 Urgent only @if (urgentCount > 0) { <span class="as-chip-count">{{ urgentCount }}</span> }
+    </button>
+    <button class="as-chip" [class.as-chip-active]="quickFilter === 'narrative'" (click)="quickFilter = 'narrative'">Narratives</button>
+    <button class="as-chip" [class.as-chip-active]="quickFilter === 'scan'"      (click)="quickFilter = 'scan'">Env. scans</button>
   </div>
 
   <!-- Advanced search panel -->

@@ -1,4 +1,4 @@
-.asv-page { padding: 8px 0 32px; }
+.asv-page { padding: 8px 20px 32px; max-width: 1100px; margin: 0 auto; }
 .asv-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 .asv-back { background: none; border: none; color: #2B7A6F; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
 .asv-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }

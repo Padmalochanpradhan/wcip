@@ -18,6 +18,7 @@ export class SubmissionsList implements OnInit {
   submissions: SurveySubmission[] = [];
   isLoading = true;
   loadError = '';
+  flagging = new Set<number>();
 
   constructor(
     private readonly router: Router,
@@ -33,6 +34,20 @@ export class SubmissionsList implements OnInit {
       this.loadError = err?.message || 'Failed to load submissions.';
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  async markFlagged(event: Event, sub: SurveySubmission) {
+    event.stopPropagation();
+    if (this.flagging.has(sub.id)) return;
+    this.flagging.add(sub.id);
+    try {
+      await this.surveyService.flagSubmission(sub.id);
+      sub.status = 'flagged';
+    } catch {
+      // leave status unchanged on error
+    } finally {
+      this.flagging.delete(sub.id);
     }
   }
 

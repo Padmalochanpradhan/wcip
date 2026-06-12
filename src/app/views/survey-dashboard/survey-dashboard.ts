@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -49,11 +50,13 @@ export class SurveyDashboard implements OnInit {
 
   constructor(
     private readonly router: Router,
+    private readonly titleService: Title,
     private readonly surveyService: SurveyService,
     private readonly userData: UserDataService
   ) {}
 
   async ngOnInit() {
+    this.titleService.setTitle('WCIP :: FIELD HOME');
     try {
       this.surveys = await this.surveyService.getSurveys();
       if (this.surveys.length) {

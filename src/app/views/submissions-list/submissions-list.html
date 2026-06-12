@@ -36,7 +36,18 @@
       <div class="sl-card" (click)="openDetail(sub.id)">
         <div class="sl-card-top">
           <div class="sl-survey-name">{{ sub.survey_title || 'Environmental Scan' }}</div>
-          <span class="sl-status {{ statusClass(sub.status) }}">{{ sub.status }}</span>
+          <div class="sl-status-group">
+            <span class="sl-status {{ statusClass(sub.status) }}">{{ sub.status }}</span>
+            @if (sub.status !== 'flagged') {
+              <button class="sl-flag-btn" [class.sl-flag-loading]="flagging.has(sub.id)" (click)="markFlagged($event, sub)" title="Mark as flagged">
+                @if (flagging.has(sub.id)) {
+                  <mat-icon class="sl-flag-spin">autorenew</mat-icon>
+                } @else {
+                  <mat-icon>flag</mat-icon>
+                }
+              </button>
+            }
+          </div>
         </div>
         <div class="sl-card-meta">
           @if (sub.ward_name) {

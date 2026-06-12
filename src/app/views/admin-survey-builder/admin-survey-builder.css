@@ -1,4 +1,4 @@
-.ab-page { padding: 8px 0 40px; }
+.ab-page { padding: 8px 20px 40px; max-width: 1100px; margin: 0 auto; }
 .ab-loader { display: flex; justify-content: center; padding: 48px; }
 .ab-error { display: flex; align-items: center; gap: 8px; color: #b00; padding: 24px 0; }
 .ab-back { background: none; border: none; color: #2B7A6F; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 16px; display: block; }

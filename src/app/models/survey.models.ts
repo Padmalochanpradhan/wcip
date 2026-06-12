@@ -73,8 +73,11 @@ export interface SubmissionPayload {
 
 export interface AiAnalysis {
   summary: string;
-  scores: { label: string; cls: string }[];
+  scores: { label: string; value?: string; cls: string }[];
   themes: string[];
+  sentiment?: string;     // 'Positive' | 'Negative' | 'Mixed' | 'Urgent'
+  trust_signal?: string;  // 'High' | 'Moderate' | 'Low' | 'Erosion'
+  field_notes?: { label: string; note: string }[];
 }
 
 export interface SurveySubmission {

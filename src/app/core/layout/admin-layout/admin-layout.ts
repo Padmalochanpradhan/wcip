@@ -23,9 +23,10 @@ export class AdminLayout {
     return [u?.FistName, u?.LastName].filter(Boolean).join(' ') || 'Admin';
   }
 
-  goHome() { this.router.navigate(['/admin']); }
-
-  signOut() {
-    this.idleService.logout();
+  get todayStr(): string {
+    return new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   }
+
+  goHome()  { this.router.navigate(['/admin']); }
+  signOut() { this.idleService.logout(); }
 }

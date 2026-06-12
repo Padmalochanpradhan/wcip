@@ -1,0 +1,173 @@
+<div class="aov-page">
+
+  @if (state.isLoading) {
+    <div class="aov-loader"><mat-progress-spinner diameter="44" mode="indeterminate"></mat-progress-spinner></div>
+  }
+
+  @if (state.loadError) {
+    <div class="aov-error"><span>{{ state.loadError }}</span></div>
+  }
+
+  @if (!state.isLoading && !state.loadError) {
+
+  <div class="aov-page-head">
+    <h1 class="aov-page-title">Intelligence Overview</h1>
+    <p class="aov-page-sub">{{ state.total }} total submissions across {{ state.wardsActive }} ward{{ state.wardsActive !== 1 ? 's' : '' }} · {{ state.staffReporting }} staff member{{ state.staffReporting !== 1 ? 's' : '' }} reporting</p>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="aov-stats-row">
+    <div class="aov-stat">
+      <div class="aov-stat-num">{{ state.total }}</div>
+      <div class="aov-stat-lbl">TOTAL SUBMISSIONS</div>
+    </div>
+    <div class="aov-stat">
+      <div class="aov-stat-num">{{ state.totalNarratives }}</div>
+      <div class="aov-stat-lbl">NARRATIVES</div>
+      <div class="aov-stat-note">Field interviews & observations</div>
+    </div>
+    <div class="aov-stat">
+      <div class="aov-stat-num">{{ state.totalScans }}</div>
+      <div class="aov-stat-lbl">ENV. SCANS</div>
+    </div>
+    <div class="aov-stat">
+      <div class="aov-stat-num">{{ state.wardsActive }}</div>
+      <div class="aov-stat-lbl">WARDS ACTIVE</div>
+    </div>
+    <div class="aov-stat">
+      <div class="aov-stat-num">{{ state.staffReporting }}</div>
+      <div class="aov-stat-lbl">STAFF REPORTING</div>
+    </div>
+    <div class="aov-stat aov-stat-flag">
+      <div class="aov-stat-num">{{ state.urgentFlags }}</div>
+      <div class="aov-stat-lbl">URGENT FLAGS</div>
+    </div>
+    <div class="aov-stat aov-stat-warn">
+      <div class="aov-stat-num">{{ state.lowTrustCount }}</div>
+      <div class="aov-stat-lbl">LOW TRUST SIGNALS</div>
+      <div class="aov-stat-note">Needs attention</div>
+    </div>
+  </div>
+
+  <!-- Charts row 1 -->
+  <div class="aov-charts-row">
+
+    <!-- Weekly volume -->
+    <div class="aov-chart-card">
+      <div class="aov-chart-head">
+        <span class="aov-chart-title">Submission volume by week</span>
+        <span class="aov-chart-note">8 weeks shown</span>
+      </div>
+      <div class="aov-vchart">
+        @for (b of state.weekBuckets; track b.label) {
+          <div class="aov-vbar-col">
+            <div class="aov-vbar" [style.height.%]="((b.narratives + b.scans) / state.maxWeek()) * 100">
+              <div class="aov-vseg aov-vseg-scan"      [style.flex]="b.scans"></div>
+              <div class="aov-vseg aov-vseg-narrative" [style.flex]="b.narratives"></div>
+            </div>
+            <div class="aov-vbar-lbl">{{ b.label }}</div>
+          </div>
+        }
+      </div>
+      <div class="aov-chart-legend">
+        <span class="aov-leg-dot" style="background:#f9c0b9"></span> Narratives
+        <span class="aov-leg-dot" style="background:#a8d5cf; margin-left:12px"></span> Env. Scans
+      </div>
+    </div>
+
+    <!-- Ward activity -->
+    <div class="aov-chart-card">
+      <div class="aov-chart-head">
+        <span class="aov-chart-title">Ward activity</span>
+      </div>
+      @for (w of state.wardStats; track w.name) {
+        <div class="aov-hbar-row">
+          <div class="aov-hbar-lbl">{{ w.name }}</div>
+          <div class="aov-hbar-track">
+            <div class="aov-hbar-fill" [style.width.%]="(w.count / state.maxWard()) * 100"></div>
+          </div>
+          <div class="aov-hbar-num">{{ w.count }}</div>
+          @if (w.urgent > 0) {
+            <span class="aov-ward-urg">{{ w.urgent }} urgent</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Charts row 2 -->
+  <div class="aov-charts-row">
+
+    <!-- Trust signal distribution -->
+    <div class="aov-chart-card">
+      <div class="aov-chart-head">
+        <span class="aov-chart-title">Trust signal distribution</span>
+      </div>
+      @for (t of state.trustBars; track t.label) {
+        <div class="aov-hbar-row">
+          <div class="aov-hbar-lbl">{{ t.label }}</div>
+          <div class="aov-hbar-track">
+            <div class="aov-hbar-fill" [style.width.%]="t.pct" [style.background]="t.color"></div>
+          </div>
+          <div class="aov-hbar-num">{{ t.count }}</div>
+          <div class="aov-hbar-share">{{ t.share }}</div>
+        </div>
+      }
+    </div>
+
+    <!-- Sentiment breakdown -->
+    <div class="aov-chart-card">
+      <div class="aov-chart-head">
+        <span class="aov-chart-title">Sentiment breakdown</span>
+      </div>
+      @for (sb of state.sentimentBars; track sb.label) {
+        <div class="aov-hbar-row">
+          <div class="aov-hbar-lbl">{{ sb.label }}</div>
+          <div class="aov-hbar-track">
+            <div class="aov-hbar-fill" [style.width.%]="sb.pct" [style.background]="sb.color"></div>
+          </div>
+          <div class="aov-hbar-num">{{ sb.count }}</div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Urgent flags -->
+  @if (state.urgentSubs.length > 0) {
+    <div class="aov-urg-section">
+      <div class="aov-urg-head">
+        <span class="aov-urg-icon">🚩</span>
+        <span class="aov-urg-title">Urgent flags — needs follow-up</span>
+        <span class="aov-urg-badge">{{ state.urgentSubs.length }} submissions flagged</span>
+      </div>
+
+      @for (sub of state.urgentSubs; track sub.id) {
+        <div class="aov-urg-card" (click)="openSub(sub.id)">
+          <div class="aov-uc-top">
+            <div class="aov-uc-meta">
+              @if (sub.ward_name) { <span class="aov-uc-ward">{{ sub.ward_name }}</span> }
+              @if (sub.location_text) { <span class="aov-uc-dim">· {{ sub.location_text }}</span> }
+              <span class="aov-uc-dim">· {{ sub.survey_title || 'Field Scan' }}</span>
+              @if (sub.staff_name) { <span class="aov-uc-dim">· {{ sub.staff_name }}</span> }
+              <span class="aov-tag aov-tag-ut">URGENT</span>
+            </div>
+            <div class="aov-uc-date">{{ state.fmt(sub.submitted_at || sub.created_at) }}</div>
+          </div>
+
+          @if (sub.ai_analysis?.summary) {
+            <div class="aov-uc-ai">{{ sub.ai_analysis!.summary.slice(0, 160) }}{{ sub.ai_analysis!.summary.length > 160 ? '…' : '' }}</div>
+          }
+
+          <div class="aov-uc-tags">
+            @for (tag of state.urgentTags(sub); track tag.text) {
+              <span class="aov-tag aov-tag-{{ tag.cls }}">{{ tag.text }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  } <!-- end @if !isLoading -->
+
+</div>

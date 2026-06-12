@@ -94,6 +94,51 @@
   color: #1a1a1a;
 }
 
+.sl-status-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sl-flag-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 2px 5px;
+  cursor: pointer;
+  color: #bbb;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.sl-flag-btn mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.sl-flag-btn:hover {
+  color: #e65100;
+  border-color: #e65100;
+  background: #fff3e0;
+}
+
+.sl-flag-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes sl-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.sl-flag-spin {
+  animation: sl-spin 0.8s linear infinite;
+}
+
 .sl-status {
   font-size: 11px;
   font-weight: 600;
