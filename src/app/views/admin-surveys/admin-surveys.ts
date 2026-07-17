@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SurveyService } from '../../services/survey.service';
 import { Survey } from '../../models/survey.models';
 import { SurveyFormDialog } from '../dialogs/survey-form-dialog/survey-form-dialog';
+import { HeaderService } from '../../services/header.service';
 
 @Component({
   selector: 'app-admin-surveys',
@@ -23,10 +24,12 @@ export class AdminSurveys implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly surveyService: SurveyService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly headerService: HeaderService
   ) {}
 
   async ngOnInit() {
+    this.headerService.setTitle('MANAGE SURVEYS');
     await this.load();
   }
 
@@ -59,6 +62,10 @@ export class AdminSurveys implements OnInit {
 
   openBuilder(id: number) {
     this.router.navigate(['/admin/surveys', id]);
+  }
+
+  goToImport() {
+    this.router.navigate(['/admin/import']);
   }
 
   goBack() { this.router.navigate(['/admin']); }

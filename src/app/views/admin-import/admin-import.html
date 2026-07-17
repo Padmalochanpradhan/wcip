@@ -1,0 +1,94 @@
+<div class="aim-page">
+
+  <div class="aim-header">
+    <div>
+      <button class="aim-back" (click)="goBack()">← Back</button>
+      <h1 class="aim-title">Import Data</h1>
+      <p class="aim-sub">Import Environmental Scans or Narrative Inputs from an Airtable CSV export</p>
+    </div>
+  </div>
+
+  @if (!parsed && !isImporting && !result) {
+    <div class="aim-dropzone">
+      <mat-icon>upload_file</mat-icon>
+      <div class="aim-dropzone-text">Select a CSV file exported from Airtable</div>
+      <label class="aim-select-btn">
+        Choose File
+        <input type="file" accept=".csv" (change)="onFileSelected($event)" hidden>
+      </label>
+      <div class="aim-hint">
+        Environmental Scans and Narrative Inputs are both supported — the file type is detected
+        automatically from its columns.
+      </div>
+    </div>
+  }
+
+  @if (parseError) {
+    <div class="aim-error"><mat-icon>error_outline</mat-icon> {{ parseError }}</div>
+  }
+
+  @if (parsed) {
+    <div class="aim-preview">
+      <div class="aim-preview-file">
+        <mat-icon>description</mat-icon>
+        <span>{{ parsed.fileName }}</span>
+      </div>
+
+      <div class="aim-stats">
+        <div class="aim-stat">
+          <span class="aim-stat-value">{{ parsed.rows.length }}</span>
+          <span class="aim-stat-label">Total rows</span>
+        </div>
+        <div class="aim-stat">
+          <span class="aim-stat-value">{{ parsed.scanCount }}</span>
+          <span class="aim-stat-label">Environmental Scans</span>
+        </div>
+        <div class="aim-stat">
+          <span class="aim-stat-value">{{ parsed.narrativeCount }}</span>
+          <span class="aim-stat-label">Narrative Inputs</span>
+        </div>
+      </div>
+
+      @if (parsed.missingIdCount > 0) {
+        <div class="aim-warning">
+          <mat-icon>warning</mat-icon>
+          {{ parsed.missingIdCount }} row(s) have no Staff Name and no Ward — the import will skip these.
+        </div>
+      }
+
+      <div class="aim-actions">
+        <button class="aim-cancel-btn" (click)="cancelPreview()">Cancel</button>
+        <button class="aim-import-btn" (click)="confirmImport()">
+          <mat-icon>publish</mat-icon> Import {{ parsed.rows.length }} row{{ parsed.rows.length !== 1 ? 's' : '' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (isImporting) {
+    <div class="aim-progress">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+      <div>Importing batch {{ importProgress.current }} / {{ importProgress.total }}…</div>
+    </div>
+  }
+
+  @if (result) {
+    <div class="aim-result">
+      <mat-icon>{{ resultError ? 'error_outline' : 'check_circle' }}</mat-icon>
+      <div>
+        <div class="aim-result-title">{{ resultError ? 'Import finished with errors' : 'Import complete' }}</div>
+        <div class="aim-result-detail">
+          Inserted {{ result.inserted }}, skipped {{ result.skipped }}, errors {{ result.errors }}
+        </div>
+        @if (resultError) {
+          <div class="aim-result-detail aim-result-error">{{ resultError }}</div>
+        }
+      </div>
+    </div>
+
+    <div class="aim-actions">
+      <button class="aim-cancel-btn" (click)="startOver()">Import another file</button>
+    </div>
+  }
+
+</div>

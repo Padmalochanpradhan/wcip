@@ -6,9 +6,16 @@
       <h1 class="asv-title">Manage Surveys</h1>
       <p class="asv-sub">{{ surveys.length }} survey{{ surveys.length !== 1 ? 's' : '' }}</p>
     </div>
-    <button class="asv-create-btn" (click)="createSurvey()">
-      <mat-icon>add</mat-icon> Create Survey
-    </button>
+    <div class="asv-header-actions">
+      <!-- Import Data — commented out for now. Uncomment to re-enable.
+      <button class="asv-import-btn" (click)="goToImport()">
+        <mat-icon>upload_file</mat-icon> Import Data
+      </button>
+      -->
+      <button class="asv-create-btn" (click)="createSurvey()">
+        <mat-icon>add</mat-icon> Create Survey
+      </button>
+    </div>
   </div>
 
   @if (isLoading) {
@@ -38,7 +45,14 @@
             <span class="asv-status {{ statusClass(survey.status) }}">{{ survey.status }}</span>
           </div>
           <div class="asv-desc">{{ survey.description }}</div>
-          <div class="asv-type">Type: {{ survey.survey_type }}</div>
+          <div class="asv-type">
+            Type: {{ survey.survey_type }}
+            @if (survey.location_name) {
+              <span class="asv-loc-tag">
+                {{ survey.location_name }}@if (survey.location_ward_name) { · {{ survey.location_ward_name }} }
+              </span>
+            }
+          </div>
         </div>
         <div class="asv-actions">
           <button class="asv-edit-btn" (click)="editSurvey(survey, $event)">

@@ -1,13 +1,21 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { IStorageService, StorageService } from './storage.service';
+import { IdleTimeoutService } from './idle-timeout';
 
-import { IdleTimeout } from './idle-timeout';
-
-describe('IdleTimeout', () => {
-  let service: IdleTimeout;
+describe('IdleTimeoutService', () => {
+  let service: IdleTimeoutService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(IdleTimeout);
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        { provide: IStorageService, useClass: StorageService },
+      ],
+    });
+    service = TestBed.inject(IdleTimeoutService);
   });
 
   it('should be created', () => {

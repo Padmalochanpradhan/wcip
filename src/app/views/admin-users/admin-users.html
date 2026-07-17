@@ -4,12 +4,25 @@
     <div>
       <button class="au-back" (click)="goBack()">← Back</button>
       <h1 class="au-title">Manage Users</h1>
-      <p class="au-sub">{{ users.length }} user{{ users.length !== 1 ? 's' : '' }} registered</p>
+      <p class="au-sub">
+        {{ filteredUsers.length }} of {{ users.length }} user{{ users.length !== 1 ? 's' : '' }}
+      </p>
     </div>
-    <button class="au-add-btn" (click)="addUser()">
-      <mat-icon>person_add</mat-icon>
-      Add User
-    </button>
+    <div class="au-header-right">
+      <div class="au-search-wrap">
+        <mat-icon class="au-search-icon">search</mat-icon>
+        <input
+          class="au-search"
+          type="text"
+          placeholder="Search by name, email or role…"
+          (input)="onSearch($event)"
+        />
+      </div>
+      <button class="au-add-btn" (click)="addUser()">
+        <mat-icon>person_add</mat-icon>
+        Add User
+      </button>
+    </div>
   </div>
 
   @if (isLoading) {
@@ -35,25 +48,36 @@
           </tr>
         </thead>
         <tbody>
-          @if (users.length === 0) {
-            <tr><td colspan="5" class="au-empty">No users found.</td></tr>
+          @if (filteredUsers.length === 0) {
+            <tr><td colspan="5" class="au-empty">No users match your search.</td></tr>
           }
-          @for (user of users; track user.ID) {
-            <tr>
+          @for (user of filteredUsers; track user.ID) {
+            <tr [class.au-locked-row]="user.is_locked">
               <td class="au-name">{{ user.name }}</td>
               <td class="au-email">{{ user.email }}</td>
               <td>{{ user.ROLE_NAME || '—' }}</td>
               <td>
-                <span class="au-status {{ statusClass(user.member_status) }}">
-                  {{ statusLabel(user.member_status) }}
-                </span>
+                @if (user.is_locked) {
+                  <span class="au-status au-locked">
+                    <mat-icon class="au-lock-icon">lock</mat-icon> Locked
+                  </span>
+                } @else {
+                  <span class="au-status {{ statusClass(user.member_status) }}">
+                    {{ statusLabel(user.member_status) }}
+                  </span>
+                }
               </td>
               <td class="au-actions">
-                <button class="au-btn au-btn-edit" (click)="editUser(user)">
+                <button class="au-btn au-btn-edit" (click)="editUser(user)" title="Edit user">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button class="au-btn au-btn-unlock" (click)="unlockUser(user)" title="Unlock user">
-                  <mat-icon>lock_open</mat-icon>
+                @if (user.is_locked) {
+                  <button class="au-btn au-btn-unlock" (click)="unlockUser(user)" title="Unlock user">
+                    <mat-icon>lock_open</mat-icon>
+                  </button>
+                }
+                <button class="au-btn au-btn-mfa" (click)="resetMfa(user)" title="Reset authenticator app">
+                  <mat-icon>phonelink_erase</mat-icon>
                 </button>
               </td>
             </tr>

@@ -48,7 +48,7 @@
   white-space: nowrap;
 }
 
-.sl-signout {
+.sl-signout, .sl-changepw {
   background: transparent;
   border: none;
   color: #fff;
@@ -58,7 +58,7 @@
   opacity: 0.9;
 }
 
-.sl-signout:hover { opacity: 1; text-decoration: underline; }
+.sl-signout:hover, .sl-changepw:hover { opacity: 1; text-decoration: underline; }
 
 /* ── Content ── */
 .sl-content {
@@ -106,3 +106,10 @@
 }
 
 .sl-nav-item:hover { color: #2B7A6F; }
+
+/* ── Mobile tweaks ── */
+@media (max-width: 480px) {
+  .sl-username { font-size: 15px; }
+  .sl-badge    { font-size: 12px; padding: 3px 9px; }
+  .sl-nav-item { padding: 6px 10px; min-width: 52px; font-size: 10px; }
+}

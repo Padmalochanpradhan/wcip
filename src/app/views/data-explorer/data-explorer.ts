@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DataSourceService } from '../../services/data-source.service';
 import { DataSourcePlugin, DataResult, DataSourceParam } from '../../models/data-source.models';
+import { HeaderService } from '../../services/header.service';
 
 @Component({
   selector: 'app-data-explorer',
@@ -30,10 +31,12 @@ export class DataExplorer implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly dataSourceService: DataSourceService
+    private readonly dataSourceService: DataSourceService,
+    private readonly headerService: HeaderService
   ) {}
 
   ngOnInit() {
+    this.headerService.setTitle('DATA EXPLORER');
     this.sources = this.dataSourceService.sources;
     if (this.sources.length) this.selectSource(this.sources[0].id);
   }

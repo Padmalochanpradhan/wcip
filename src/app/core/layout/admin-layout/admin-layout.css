@@ -8,7 +8,7 @@
 
 /* ── Header ── */
 .al-header {
-  background: #1a3a32;
+  background: #085041;
   color: #fff;
   display: flex;
   align-items: center;
@@ -16,7 +16,33 @@
   padding: 0 24px;
   height: 52px;
   flex-shrink: 0;
+  gap: 12px;
 }
+
+.al-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Hamburger: hidden on desktop/tablet; shown on mobile via media query */
+.al-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.al-hamburger:hover { background: rgba(255,255,255,0.22); }
+.al-hamburger mat-icon { font-size: 22px; width: 22px; height: 22px; }
 
 .al-brand {
   display: flex;
@@ -25,6 +51,7 @@
   cursor: pointer;
   color: #fff;
   text-decoration: none;
+  min-width: 0;
 }
 
 .al-mark {
@@ -46,16 +73,19 @@
   font-weight: 600;
   letter-spacing: 0.01em;
   opacity: 0.95;
+  white-space: nowrap;
 }
 
 .al-sep {
   opacity: 0.35;
   font-size: 16px;
+  flex-shrink: 0;
 }
 
 .al-subtitle {
   font-size: 13px;
   opacity: 0.65;
+  white-space: nowrap;
 }
 
 /* ── Right side ── */
@@ -63,6 +93,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
 }
 
 .al-live {
@@ -88,17 +119,10 @@
   50%       { opacity: 0.5; }
 }
 
-.al-date {
-  font-size: 12px;
-  opacity: 0.65;
-}
+.al-date     { font-size: 12px; opacity: 0.65; }
+.al-username { font-size: 13px; opacity: 0.8; }
 
-.al-username {
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-.al-signout {
+.al-signout, .al-changepw {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.25);
   color: #fff;
@@ -107,13 +131,29 @@
   font-size: 13px;
   cursor: pointer;
   transition: background 0.15s;
+  white-space: nowrap;
 }
-.al-signout:hover { background: rgba(255,255,255,0.22); }
+.al-signout:hover, .al-changepw:hover { background: rgba(255,255,255,0.22); }
 
-/* ── Content area — no padding; each child owns its own layout ── */
+/* ── Content area ── */
 .al-content {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* ── Tablet (768–1023px) ── */
+@media (max-width: 1023px) {
+  .al-date { display: none; }
+}
+
+/* ── Mobile (≤767px) ── */
+@media (max-width: 767px) {
+  .al-header    { padding: 0 12px; gap: 8px; }
+  .al-hamburger { display: flex; }
+  .al-org, .al-sep, .al-subtitle { display: none; }
+  .al-live, .al-date, .al-username { display: none; }
+  .al-header-right { gap: 8px; }
 }

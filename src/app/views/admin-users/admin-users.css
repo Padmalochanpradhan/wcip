@@ -13,12 +13,36 @@
 .au-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
 .au-sub { font-size: 13px; color: #888; margin: 0; }
 
+.au-header-right {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+
+.au-search-wrap {
+  position: relative; display: flex; align-items: center;
+}
+
+.au-search-icon {
+  position: absolute; left: 10px;
+  font-size: 18px; width: 18px; height: 18px;
+  color: #aaa; pointer-events: none;
+}
+
+.au-search {
+  height: 40px; padding: 0 12px 0 36px;
+  border: 1px solid #d0d0d0; border-radius: 8px;
+  font-size: 14px; color: #333; background: #fff;
+  outline: none; transition: border-color 0.15s;
+  min-width: 240px;
+}
+.au-search:focus { border-color: #2B7A6F; }
+.au-search::placeholder { color: #bbb; }
+
 .au-add-btn {
   display: flex; align-items: center; gap: 6px;
   background: #2B7A6F; color: #fff; border: none;
   border-radius: 8px; padding: 10px 18px; font-size: 14px;
   font-weight: 600; cursor: pointer; transition: background 0.15s;
-  align-self: center;
+  align-self: center; white-space: nowrap;
 }
 .au-add-btn:hover { background: #245f56; }
 .au-add-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
@@ -42,7 +66,7 @@
   background: #f8f8f8; padding: 12px 16px;
   text-align: left; font-size: 12px; font-weight: 600;
   color: #666; text-transform: uppercase; letter-spacing: 0.04em;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb; white-space: nowrap;
 }
 
 .au-table tbody tr {
@@ -66,6 +90,18 @@
 }
 .au-active   { background: #e8f5e9; color: #2e7d32; }
 .au-inactive { background: #fce4ec; color: #c62828; }
+.au-locked   {
+  background: #fce4ec; color: #b71c1c;
+  display: inline-flex; align-items: center; gap: 3px;
+}
+
+.au-lock-icon { font-size: 12px; width: 12px; height: 12px; }
+
+/* Locked row — entire row dimmed */
+.au-locked-row { background-color: #f5f5f5 !important; }
+.au-locked-row td { color: #9e9e9e; }
+.au-locked-row .au-btn-edit { color: #bdbdbd; border-color: #e0e0e0; pointer-events: none; }
+.au-locked-row:hover { background-color: #f0f0f0 !important; }
 
 .au-actions { display: flex; gap: 6px; }
 
@@ -83,3 +119,37 @@
 
 .au-btn-unlock { color: #e65100; }
 .au-btn-unlock:hover { background: #fff3e0; border-color: #ffcc02; }
+
+.au-btn-mfa { color: #6a1b9a; }
+.au-btn-mfa:hover { background: #f3e5f5; border-color: #ce93d8; }
+
+/* ── Tablet ── */
+@media (max-width: 1023px) {
+  .au-page   { padding: 8px 16px 28px; }
+  .au-search { min-width: 180px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .au-page { padding: 8px 12px 24px; }
+
+  .au-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .au-header-right {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .au-search-wrap { width: 100%; }
+  .au-search { min-width: 0; width: 100%; box-sizing: border-box; }
+
+  .au-add-btn { justify-content: center; }
+
+  /* Table scrolls horizontally on small screens */
+  .au-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .au-table      { min-width: 560px; }
+}

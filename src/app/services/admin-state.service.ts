@@ -8,17 +8,20 @@ export class AdminStateService {
   submissions: SurveySubmission[] = [];
   isLoading = false;
   loadError = '';
-  filterWard = '';
+  filterWard     = '';
+  filterDateFrom = '';
+  filterDateTo   = '';
 
   totalNarratives = 0;
   totalScans      = 0;
+  surveyTotals: { title: string; count: number }[] = [];
   wardsActive     = 0;
   staffReporting  = 0;
   urgentFlags     = 0;
   lowTrustCount   = 0;
 
   weekBuckets:   { label: string; narratives: number; scans: number }[] = [];
-  wardStats:     { name: string; count: number; urgent: number; narratives: number; scans: number; lowTrust: number; staff: number; themes: string[] }[] = [];
+  wardStats:     { name: string; count: number; urgent: number; narratives: number; scans: number; lowTrust: number; staff: number; themes: string[]; surveys: { title: string; count: number }[] }[] = [];
   staffStats:    { name: string; count: number; narratives: number; scans: number; urgent: number; lastDate: string; pct: number }[] = [];
   trustBars:     { label: string; count: number; pct: number; color: string; share: string }[] = [];
   sentimentBars: { label: string; count: number; pct: number; color: string }[] = [];
@@ -33,14 +36,40 @@ export class AdminStateService {
   }
 
   private get filtered(): SurveySubmission[] {
-    if (!this.filterWard) return this.submissions;
-    return this.submissions.filter(s =>
-      (s.ward_name || (s.ward_id ? `Ward ${s.ward_id}` : '')) === this.filterWard
-    );
+    let result = this.submissions;
+    if (this.filterWard) {
+      result = result.filter(s =>
+        (s.ward_name || (s.ward_id ? `Ward ${s.ward_id}` : '')) === this.filterWard
+      );
+    }
+    if (this.filterDateFrom) {
+      const from = this.parseLocalDate(this.filterDateFrom); // local midnight of the selected day
+      result = result.filter(s => new Date(s.submitted_at || s.created_at) >= from);
+    }
+    if (this.filterDateTo) {
+      const to = this.parseLocalDate(this.filterDateTo);
+      to.setHours(23, 59, 59, 999); // local end-of-day of the selected day
+      result = result.filter(s => new Date(s.submitted_at || s.created_at) <= to);
+    }
+    return result;
+  }
+
+  // <input type="date"> gives "YYYY-MM-DD". new Date("YYYY-MM-DD") parses that as UTC
+  // midnight, which then shifts to the previous local day in any timezone west of UTC.
+  // Parsing the components explicitly constructs local midnight instead.
+  private parseLocalDate(dateStr: string): Date {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
   }
 
   setFilter(ward: string): void {
     this.filterWard = ward;
+    this.compute();
+  }
+
+  setDateFilter(from: string, to: string): void {
+    this.filterDateFrom = from;
+    this.filterDateTo   = to;
     this.compute();
   }
 
@@ -64,6 +93,16 @@ export class AdminStateService {
 
     this.totalNarratives = s.filter(x => x.survey_title?.toLowerCase().includes('narrative')).length;
     this.totalScans      = s.length - this.totalNarratives;
+
+    const surveyCountMap = new Map<string, number>();
+    for (const x of s) {
+      const t = x.survey_title || 'Field Scan';
+      surveyCountMap.set(t, (surveyCountMap.get(t) ?? 0) + 1);
+    }
+    this.surveyTotals = [...surveyCountMap.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([title, count]) => ({ title, count }));
+
     this.wardsActive     = new Set(s.map(x => x.ward_id).filter(Boolean)).size;
     this.staffReporting  = new Set(s.map(x => x.user_id)).size;
     this.urgentFlags     = s.filter(x => this.isUrgent(x)).length;
@@ -87,10 +126,10 @@ export class AdminStateService {
     });
 
     // Ward stats
-    const wm = new Map<string, { name: string; count: number; urgent: number; narratives: number; scans: number; lowTrust: number; staffIds: Set<number>; themes: Map<string, number> }>();
+    const wm = new Map<string, { name: string; count: number; urgent: number; narratives: number; scans: number; lowTrust: number; staffIds: Set<number>; themes: Map<string, number>; surveyMap: Map<string, number> }>();
     for (const x of s) {
       const n = x.ward_name || (x.ward_id ? `Ward ${x.ward_id}` : 'Unknown');
-      if (!wm.has(n)) wm.set(n, { name: n, count: 0, urgent: 0, narratives: 0, scans: 0, lowTrust: 0, staffIds: new Set(), themes: new Map() });
+      if (!wm.has(n)) wm.set(n, { name: n, count: 0, urgent: 0, narratives: 0, scans: 0, lowTrust: 0, staffIds: new Set(), themes: new Map<string, number>(), surveyMap: new Map<string, number>() });
       const w = wm.get(n)!;
       w.count++;
       if (this.isUrgent(x)) w.urgent++;
@@ -98,9 +137,19 @@ export class AdminStateService {
       else w.scans++;
       if (this.trust(x) === 'low') w.lowTrust++;
       if (x.user_id) w.staffIds.add(x.user_id);
-      for (const theme of (x.ai_analysis?.themes ?? [])) {
-        w.themes.set(theme, (w.themes.get(theme) || 0) + 1);
+      // Prefer the broad content category (Airtable "Topic") for the ward chips;
+      // fall back to granular AI themes for rows imported before category capture
+      // existed, or scan rows, which have no Topic column.
+      const category = x.ai_analysis?.category;
+      if (category) {
+        w.themes.set(category, (w.themes.get(category) || 0) + 1);
+      } else {
+        for (const theme of (x.ai_analysis?.themes ?? [])) {
+          w.themes.set(theme, (w.themes.get(theme) || 0) + 1);
+        }
       }
+      const title = x.survey_title || 'Field Scan';
+      w.surveyMap.set(title, (w.surveyMap.get(title) ?? 0) + 1);
     }
     this.wardStats = [...wm.values()]
       .sort((a, b) => b.count - a.count)
@@ -109,6 +158,7 @@ export class AdminStateService {
         narratives: w.narratives, scans: w.scans,
         lowTrust: w.lowTrust, staff: w.staffIds.size,
         themes: [...w.themes.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([t]) => t),
+        surveys: [...w.surveyMap.entries()].sort((a, b) => b[1] - a[1]).map(([title, count]) => ({ title, count })),
       }));
 
     // Staff stats
@@ -207,6 +257,12 @@ export class AdminStateService {
     if (sc.some(c => c.cls === 'warning') && sc.some(c => c.cls === 'positive' || c.cls === 'pos')) return 'mixed';
     if (sc.some(c => c.cls === 'warning')) return 'negative';
     return 'positive';
+  }
+
+  // Short headline for a submission card — the staff-entered "Field Notes"
+  // value when present (narrative imports/submissions carry one), else blank.
+  headline(sub: SurveySubmission): string {
+    return sub.ai_analysis?.field_notes?.find(fn => fn.label === 'Field Notes')?.note || '';
   }
 
   urgentTags(sub: SurveySubmission): { text: string; cls: string }[] {

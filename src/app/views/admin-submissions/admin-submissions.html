@@ -10,21 +10,38 @@
         @if (hasActiveFilters) { <span class="as-filter-badge">filtered</span> }
       </p>
     </div>
-    <button class="as-search-toggle" [class.as-search-active]="showSearch || hasActiveFilters" (click)="toggleSearch()">
-      <mat-icon>{{ showSearch ? 'search_off' : 'manage_search' }}</mat-icon>
-      Advanced Search
-      @if (hasActiveFilters) { <span class="as-active-dot"></span> }
-    </button>
+    <div class="as-header-right">
+      <div class="as-quicksearch-wrap">
+        <mat-icon class="as-quicksearch-icon">search</mat-icon>
+        <input
+          class="as-quicksearch"
+          type="text"
+          placeholder="Search by staff, ward, location or survey…"
+          [value]="searchQuery"
+          (input)="onSearch($event)"
+        />
+      </div>
+      <button class="as-search-toggle" [class.as-search-active]="showSearch || hasActiveFilters" (click)="toggleSearch()">
+        <mat-icon>{{ showSearch ? 'search_off' : 'manage_search' }}</mat-icon>
+        Advanced Search
+        @if (hasActiveFilters) { <span class="as-active-dot"></span> }
+      </button>
+    </div>
   </div>
 
   <!-- Quick filter chips -->
   <div class="as-chips">
-    <button class="as-chip" [class.as-chip-active]="quickFilter === 'all'"       (click)="quickFilter = 'all'">All</button>
-    <button class="as-chip as-chip-urgent" [class.as-chip-active]="quickFilter === 'urgent'"    (click)="quickFilter = 'urgent'">
-      🚩 Urgent only @if (urgentCount > 0) { <span class="as-chip-count">{{ urgentCount }}</span> }
+    <button class="as-chip" [class.as-chip-active]="quickFilter === 'all'" (click)="selectQuickFilter('all')">
+      All <span class="as-chip-count">{{ state.submissions.length }}</span>
     </button>
-    <button class="as-chip" [class.as-chip-active]="quickFilter === 'narrative'" (click)="quickFilter = 'narrative'">Narratives</button>
-    <button class="as-chip" [class.as-chip-active]="quickFilter === 'scan'"      (click)="quickFilter = 'scan'">Env. scans</button>
+    <button class="as-chip as-chip-urgent" [class.as-chip-active]="quickFilter === 'urgent'" (click)="selectQuickFilter('urgent')">
+      🚩 Urgent @if (urgentCount > 0) { <span class="as-chip-count">{{ urgentCount }}</span> }
+    </button>
+    @for (chip of surveyChips; track chip.title) {
+      <button class="as-chip" [class.as-chip-active]="quickFilter === chip.title" (click)="selectQuickFilter(chip.title)">
+        {{ chip.title }} <span class="as-chip-count">{{ chip.count }}</span>
+      </button>
+    }
   </div>
 
   <!-- Advanced search panel -->
@@ -47,7 +64,7 @@
         <!-- Survey -->
         <div class="as-field">
           <label class="as-field-label">Survey</label>
-          <select class="as-select" [(ngModel)]="filterSurvey">
+          <select class="as-select" [(ngModel)]="filterSurvey" (ngModelChange)="onSurveyOrUserFilterChange()">
             <option value="">All surveys</option>
             @for (s of surveyOptions; track s) {
               <option [value]="s">{{ s }}</option>
@@ -58,7 +75,7 @@
         <!-- User -->
         <div class="as-field">
           <label class="as-field-label">Staff / User</label>
-          <select class="as-select" [(ngModel)]="filterUser">
+          <select class="as-select" [(ngModel)]="filterUser" (ngModelChange)="onSurveyOrUserFilterChange()">
             <option value="">All users</option>
             @for (u of userOptions; track u) {
               <option [value]="u">{{ u }}</option>
@@ -108,28 +125,42 @@
     </div>
   }
 
-  @for (sub of filteredSubmissions; track sub.id) {
-    <div class="as-card" (click)="openDetail(sub.id)">
-      <div class="as-card-top">
-        <div class="as-survey-name">{{ sub.survey_title || 'Field Scan' }}</div>
-        <span class="as-status {{ statusClass(sub.status) }}">{{ sub.status }}</span>
+  @for (sub of visibleSubmissions; track sub.id) {
+    <div class="as-card" [class.as-card-urgent]="state.isUrgent(sub)" (click)="openDetail(sub.id)">
+      <div class="as-uc-top">
+        <div class="as-uc-meta">
+          @if (sub.ward_name) { <span class="as-uc-ward">{{ sub.ward_name }}</span> }
+          @if (sub.location_text) { <span class="as-uc-dim">· {{ sub.location_text }}</span> }
+          <span class="as-uc-dim">· {{ sub.survey_title || 'Field Scan' }}</span>
+          @if (sub.staff_name) { <span class="as-uc-dim">· {{ sub.staff_name }}</span> }
+          @if (state.isUrgent(sub)) { <span class="as-tag as-tag-ut">URGENT</span> }
+        </div>
+        <div class="as-uc-date">{{ formatDate(sub.submitted_at || sub.created_at) }}</div>
       </div>
-      <div class="as-meta">
-        @if (sub.staff_name) {
-          <span class="as-staff"><mat-icon class="as-icon">person</mat-icon>{{ sub.staff_name }}</span>
-        }
-        @if (sub.ward_name) {
-          <span><mat-icon class="as-icon">place</mat-icon>{{ sub.ward_name }}</span>
-        }
-        @if (sub.location_text) {
-          <span class="as-loc">{{ sub.location_text }}</span>
-        }
-        <span class="as-date">{{ formatDate(sub.submitted_at || sub.created_at) }}</span>
-      </div>
-      @if (sub.ai_analysis?.summary) {
-        <div class="as-snippet">{{ sub.ai_analysis!.summary.slice(0, 100) }}{{ sub.ai_analysis!.summary.length > 100 ? '…' : '' }}</div>
+
+      @if (state.headline(sub)) {
+        <div class="as-uc-headline">{{ state.headline(sub) }}</div>
       }
-      <mat-icon class="as-chevron">chevron_right</mat-icon>
+
+      @if (sub.ai_analysis?.summary) {
+        <div class="as-uc-ai">{{ sub.ai_analysis!.summary.slice(0, 160) }}{{ sub.ai_analysis!.summary.length > 160 ? '…' : '' }}</div>
+      }
+
+      <div class="as-uc-tags">
+        @for (tag of state.urgentTags(sub); track tag.text) {
+          <span class="as-tag as-tag-{{ tag.cls }}">{{ tag.text }}</span>
+        }
+      </div>
+    </div>
+  }
+
+  @if (hasMore) {
+    <div class="as-loadmore">
+      <span class="as-loadmore-info">Showing {{ visibleSubmissions.length }} of {{ filteredSubmissions.length }}</span>
+      <div class="as-loadmore-actions">
+        <button class="as-loadmore-btn" (click)="loadMore()">Load {{ nextBatchSize }} more</button>
+        <button class="as-showall-btn" (click)="showAll()">Show all ({{ remainingCount }})</button>
+      </div>
     </div>
   }
 

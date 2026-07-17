@@ -5,43 +5,53 @@
     <p class="ast-page-sub">Submission counts and activity by team member</p>
   </div>
 
-  <div class="ast-card">
-    <table class="ast-table">
-      <thead>
-        <tr>
-          <th class="ast-th ast-th-name">STAFF MEMBER</th>
-          <th class="ast-th ast-th-num">SUBMISSIONS</th>
-          <th class="ast-th ast-th-act">ACTIVITY</th>
-          <th class="ast-th ast-th-num">NARRATIVES</th>
-          <th class="ast-th ast-th-num">SCANS</th>
-          <th class="ast-th ast-th-num">URGENT</th>
-          <th class="ast-th ast-th-date">LAST SUBMISSION</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (st of state.staffStats; track st.name) {
-          <tr class="ast-row">
-            <td class="ast-td-name">{{ st.name }}</td>
-            <td class="ast-td-num">{{ st.count }}</td>
-            <td class="ast-td-act">
-              <div class="ast-bar-wrap">
-                <div class="ast-bar-track">
-                  <div class="ast-bar-fill" [style.width.%]="st.pct"></div>
-                </div>
-                <span class="ast-pct">{{ st.pct }}%</span>
-              </div>
-            </td>
-            <td class="ast-td-num">{{ st.narratives }}</td>
-            <td class="ast-td-num">{{ st.scans }}</td>
-            <td class="ast-td-num">
-              @if (st.urgent > 0) { <span class="ast-urg-val">{{ st.urgent }}</span> }
-              @else { <span class="ast-dash">—</span> }
-            </td>
-            <td class="ast-td-date">{{ state.fmtShort(st.lastDate) }}</td>
+  @if (state.isLoading) {
+    <div class="ast-loader"><mat-progress-spinner diameter="44" mode="indeterminate"></mat-progress-spinner></div>
+  }
+
+  @if (state.loadError) {
+    <div class="ast-error"><span>{{ state.loadError }}</span></div>
+  }
+
+  @if (!state.isLoading && !state.loadError) {
+    <div class="ast-card">
+      <table class="ast-table">
+        <thead>
+          <tr>
+            <th class="ast-th ast-th-name">STAFF MEMBER</th>
+            <th class="ast-th ast-th-num">SUBMISSIONS</th>
+            <th class="ast-th ast-th-act">ACTIVITY</th>
+            <th class="ast-th ast-th-num">NARRATIVES</th>
+            <th class="ast-th ast-th-num">SCANS</th>
+            <th class="ast-th ast-th-num">URGENT</th>
+            <th class="ast-th ast-th-date">LAST SUBMISSION</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          @for (st of state.staffStats; track st.name) {
+            <tr class="ast-row">
+              <td class="ast-td-name">{{ st.name }}</td>
+              <td class="ast-td-num">{{ st.count }}</td>
+              <td class="ast-td-act">
+                <div class="ast-bar-wrap">
+                  <div class="ast-bar-track">
+                    <div class="ast-bar-fill" [style.width.%]="st.pct"></div>
+                  </div>
+                  <span class="ast-pct">{{ st.pct }}%</span>
+                </div>
+              </td>
+              <td class="ast-td-num">{{ st.narratives }}</td>
+              <td class="ast-td-num">{{ st.scans }}</td>
+              <td class="ast-td-num">
+                @if (st.urgent > 0) { <span class="ast-urg-val">{{ st.urgent }}</span> }
+                @else { <span class="ast-dash">—</span> }
+              </td>
+              <td class="ast-td-date">{{ state.fmtShort(st.lastDate) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
 </div>

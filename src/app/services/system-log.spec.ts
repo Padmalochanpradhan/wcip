@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { SystemLogService } from './system-log';
 
-import { SystemLog } from './system-log';
-
-describe('SystemLog', () => {
-  let service: SystemLog;
+describe('SystemLogService', () => {
+  let service: SystemLogService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(SystemLog);
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient()],
+    });
+    service = TestBed.inject(SystemLogService);
   });
 
   it('should be created', () => {

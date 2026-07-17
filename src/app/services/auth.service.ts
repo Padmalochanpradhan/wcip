@@ -7,10 +7,11 @@ import {
   InitiateAuthCommand,
   RespondToAuthChallengeCommand,
   AssociateSoftwareTokenCommand,
-  VerifySoftwareTokenCommand
+  VerifySoftwareTokenCommand,
+  ChangePasswordCommand
 } from "@aws-sdk/client-cognito-identity-provider";
 const USER_KEY = 'app_user';
-const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutes in milliseconds
+const INACTIVITY_LIMIT = 60 * 60 * 1000; // 10 minutes in milliseconds
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private inactivityTimer: any;
@@ -299,5 +300,24 @@ export class AuthService {
       UserCode: otp
     });
     return await this.client.send(command);
+  }
+
+  // ------------------------
+  // CHANGE OWN PASSWORD (requires the current password — Cognito
+  // rejects the request with NotAuthorizedException if it's wrong)
+  // ------------------------
+  async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+    const accessToken = this.getAccessToken();
+    if (!accessToken) {
+      throw new Error('Session expired. Please login again.');
+    }
+
+    const command = new ChangePasswordCommand({
+      AccessToken: accessToken,
+      PreviousPassword: oldPassword,
+      ProposedPassword: newPassword
+    });
+
+    await this.client.send(command);
   }
 }

@@ -39,7 +39,7 @@ export class AppEnvService {
     }
     async load(): Promise<void> {
         try {
-            const env: any = await firstValueFrom(this.http.get('/assets/environment.json'));
+            const env: any = await firstValueFrom(this.http.get('assets/environment.json'));
             if (env.encrypted !== undefined) {
                 const bytes = CryptoJS.AES.decrypt(env.encrypted, '0123456789');
                 const original = bytes.toString(CryptoJS.enc.Utf8);

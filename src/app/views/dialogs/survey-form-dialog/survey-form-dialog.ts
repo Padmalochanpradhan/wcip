@@ -8,18 +8,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SurveyService } from '../../../services/survey.service';
+import { Location } from '../../../models/survey.models';
 
 @Component({
   selector: 'app-survey-form-dialog',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatProgressSpinnerModule],
-  templateUrl: './survey-form-dialog.html'
+  templateUrl: './survey-form-dialog.html',
+  styleUrl: './survey-form-dialog.css'
 })
 export class SurveyFormDialog implements OnInit {
   form!: FormGroup;
   isLoading = false;
   errorMsg = '';
   isEdit = false;
+
+  locations: Location[] = [];
+  locationsLoading = false;
 
   readonly surveyTypes = ['narrative', 'environmental', 'general'];
   readonly icons = ['pencil', 'scan', 'leaf', 'building', 'map', 'camera', 'heart', 'target'];
@@ -31,9 +36,12 @@ export class SurveyFormDialog implements OnInit {
     private readonly surveyService: SurveyService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isEdit = !!this.data?.survey;
     const s = this.data?.survey;
+    // Coerce to number — MySQL returns integers as strings via JSON
+    const locationId = s?.location_id ? Number(s.location_id) : null;
+
     this.form = this.fb.group({
       title:        [s?.title        || '', Validators.required],
       description:  [s?.description  || ''],
@@ -41,7 +49,19 @@ export class SurveyFormDialog implements OnInit {
       icon:         [s?.icon         || 'pencil'],
       daily_prompt: [s?.daily_prompt || ''],
       status:       [s?.status       || 'draft', Validators.required],
+      location_id:  [locationId],
     });
+
+    this.locationsLoading = true;
+    try {
+      this.locations = await this.surveyService.getLocations();
+      // Re-patch after options load so mat-select can match the value
+      if (locationId) {
+        this.form.patchValue({ location_id: locationId });
+      }
+    } finally {
+      this.locationsLoading = false;
+    }
   }
 
   async submit() {

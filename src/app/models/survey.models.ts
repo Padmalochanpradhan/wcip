@@ -4,6 +4,18 @@ export interface Ward {
   code: string;
 }
 
+export interface Location {
+  id: number;
+  name: string;
+  address: string;
+  ward_id: number | null;
+  ward_name?: string;
+  location_type: string;
+  latitude: number | null;
+  longitude: number | null;
+  client_id: number | null;
+}
+
 export interface Survey {
   id: number;
   title: string;
@@ -13,6 +25,12 @@ export interface Survey {
   survey_type: string;
   daily_prompt: string;
   status: string;
+  location_id: number | null;
+  location_name?: string;
+  location_address?: string;
+  location_type?: string;
+  location_ward_id?: number | null;
+  location_ward_name?: string;
 }
 
 export interface QuestionOption {
@@ -78,6 +96,20 @@ export interface AiAnalysis {
   sentiment?: string;     // 'Positive' | 'Negative' | 'Mixed' | 'Urgent'
   trust_signal?: string;  // 'High' | 'Moderate' | 'Low' | 'Erosion'
   field_notes?: { label: string; note: string }[];
+  category?: string;      // broad content bucket from Airtable's "Topic" column (Environmental, Housing, Transportation, ...)
+}
+
+export type AirtableRow = Record<string, string>;
+
+export interface AirtableImportResult {
+  inserted: number;
+  skipped: number;
+  errors: number;
+  details?: {
+    inserted: any[];
+    skipped: any[];
+    errors: any[];
+  };
 }
 
 export interface SurveySubmission {

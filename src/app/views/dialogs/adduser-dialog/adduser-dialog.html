@@ -2,145 +2,106 @@
   {{ data.title }}
 </h2>
 
-<mat-dialog-content style="max-height: 350px;">
-  <mat-card>
-    <mat-card-content>
+<mat-dialog-content class="ud-content">
+  <form [formGroup]="addUserFormGroup" (ngSubmit)="submitUser()">
 
-      <form [formGroup]="addUserFormGroup" (ngSubmit)="submitUser()">
+    <div class="ud-grid">
 
-        <!-- FIRST NAME -->
-        <mat-form-field appearance="outline" class="mr common-field">
-          <mat-label>FIRST NAME</mat-label>
-          <input matInput formControlName="firstName">
+      <!-- FIRST NAME -->
+      <mat-form-field appearance="outline" class="ud-field">
+        <mat-label>FIRST NAME</mat-label>
+        <input matInput formControlName="firstName">
+        <mat-error *ngIf="addUserFormGroup.get('firstName')?.touched && addUserFormGroup.get('firstName')?.invalid">
+          First name is required
+        </mat-error>
+      </mat-form-field>
 
-          <mat-error *ngIf="
-            addUserFormGroup.get('firstName')?.touched &&
-            addUserFormGroup.get('firstName')?.invalid">
-            First name is required
-          </mat-error>
-        </mat-form-field>
+      <!-- LAST NAME -->
+      <mat-form-field appearance="outline" class="ud-field">
+        <mat-label>LAST NAME</mat-label>
+        <input matInput formControlName="lastName">
+        <mat-error *ngIf="addUserFormGroup.get('lastName')?.touched && addUserFormGroup.get('lastName')?.invalid">
+          Last name is required
+        </mat-error>
+      </mat-form-field>
 
-        <!-- LAST NAME -->
-        <mat-form-field appearance="outline" class="mr common-field">
-          <mat-label>LAST NAME</mat-label>
-          <input matInput formControlName="lastName">
+      <!-- ROLE -->
+      <mat-form-field appearance="outline" class="ud-field">
+        <mat-label>ROLE</mat-label>
+        <mat-select formControlName="role" class="txupper">
+          <mat-option class="txupper" *ngFor="let r of data.roles" [value]="r.ID">
+            {{ r.ROLE_NAME }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="addUserFormGroup.get('role')?.touched && addUserFormGroup.get('role')?.invalid">
+          Role is required
+        </mat-error>
+      </mat-form-field>
 
-          <mat-error *ngIf="
-            addUserFormGroup.get('lastName')?.touched &&
-            addUserFormGroup.get('lastName')?.invalid">
-            Last name is required
-          </mat-error>
-        </mat-form-field>
-
-        <!-- ROLE -->
-        <mat-form-field appearance="outline" class="mr common-field">
-          <mat-label>ROLE</mat-label>
-          <mat-select formControlName="role" class="txupper">
-            <mat-option class="txupper" *ngFor="let r of data.roles" [value]="r.ID">
-              {{ r.ROLE_NAME }}
-            </mat-option>
-          </mat-select>
-
-          <mat-error *ngIf="
-            addUserFormGroup.get('role')?.touched &&
-            addUserFormGroup.get('role')?.invalid">
-            Role is required
-          </mat-error>
-        </mat-form-field> 
-        <!-- EMAIL -->
-        <mat-form-field appearance="outline" class="mr email-field mt-5">
-          <mat-label>EMAIL</mat-label>
-          <input matInput type="email" formControlName="email" [readonly]="isEditMode" autocomplete="email">
-          <mat-hint *ngIf="isEditMode">Email cannot be changed</mat-hint>
-          <mat-error *ngIf="
-            addUserFormGroup.get('email')?.touched &&
-            addUserFormGroup.get('email')?.hasError('exists')">
-            Email already exists
-            </mat-error>
-
-          <mat-error *ngIf="
-            addUserFormGroup.get('email')?.touched &&
-            addUserFormGroup.get('email')?.hasError('required')">
-            Email is required
-          </mat-error>
-
-          <mat-error *ngIf="
-            addUserFormGroup.get('email')?.touched &&
-            addUserFormGroup.get('email')?.hasError('email')">
-            Enter a valid email address
-          </mat-error>
-        </mat-form-field>
-
-        
-<mat-form-field appearance="outline" class="mr common-field">
-  <mat-label>PASSWORD</mat-label>
-
-  <input
-    matInput
-    type="password"
-    formControlName="password"
-    autocomplete="new-password"
-  >
-
-  <!-- ✅ Password policy hint -->
-  <mat-hint class="password-hint">
-    Password must be at least 15 characters long and include uppercase, lowercase, number, and special character (e.g., ! @ # $ % ^ & *).
-  </mat-hint>
-
-  <!-- Required error -->
-  <mat-error *ngIf="
-    addUserFormGroup.get('password')?.touched &&
-    addUserFormGroup.get('password')?.hasError('required')">
-    Password is required
-  </mat-error>
-
-  <!-- Length error -->
-  <mat-error *ngIf="
-    addUserFormGroup.get('password')?.touched &&
-    addUserFormGroup.get('password')?.hasError('minlength')">
-    Password must be at least 15 characters long
-  </mat-error>
-
-</mat-form-field>
-        <!-- STATUS -->
-        <mat-form-field appearance="outline" class="common-field">
+      <!-- STATUS -->
+      <mat-form-field appearance="outline" class="ud-field">
         <mat-label>STATUS</mat-label>
         <mat-select formControlName="status">
-            <mat-option [value]="0">ACTIVE</mat-option>
-            <mat-option [value]="1">IN-ACTIVE</mat-option>
+          <mat-option [value]="0">ACTIVE</mat-option>
+          <mat-option [value]="1">IN-ACTIVE</mat-option>
         </mat-select>
-        </mat-form-field>
+      </mat-form-field>
 
-        <!-- ACTION BUTTONS -->
-        <div class="mt-3" style="display:flex;justify-content:space-between">
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="addUserFormGroup.invalid || isLoading">
-            {{ isEditMode ? 'UPDATE' : 'SUBMIT' }}
-          </button>
-  <!-- ERROR MESSAGE (CENTER) -->
-  <div *ngIf="errorMessage" class="error-message-center">
-    <mat-icon color="warn">error</mat-icon>
-    <span>{{ errorMessage }}</span>
+      <!-- EMAIL -->
+      <mat-form-field appearance="outline" class="ud-field ud-full">
+        <mat-label>EMAIL</mat-label>
+        <input matInput type="email" formControlName="email" [readonly]="isEditMode" autocomplete="email">
+        <mat-hint *ngIf="isEditMode">Email cannot be changed</mat-hint>
+        <mat-error *ngIf="addUserFormGroup.get('email')?.touched && addUserFormGroup.get('email')?.hasError('exists')">
+          Email already exists
+        </mat-error>
+        <mat-error *ngIf="addUserFormGroup.get('email')?.touched && addUserFormGroup.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="addUserFormGroup.get('email')?.touched && addUserFormGroup.get('email')?.hasError('email')">
+          Enter a valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <!-- PASSWORD -->
+      <mat-form-field appearance="outline" class="ud-field ud-full">
+        <mat-label>PASSWORD</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" autocomplete="new-password">
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hidePassword" tabindex="-1">
+          <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="addUserFormGroup.get('password')?.touched && addUserFormGroup.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="addUserFormGroup.get('password')?.touched && addUserFormGroup.get('password')?.hasError('minlength')">
+          Password must be at least 8 characters long
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <!-- Password policy hint -->
+    <p class="ud-pw-hint">
+      Password must be at least 8 characters and include uppercase, lowercase, number, and special character (e.g., ! @ # $ % ^ &amp; *).
+    </p>
+
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="ud-error">
+      <mat-icon color="warn">error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="ud-actions">
+      <button mat-raised-button color="warn" type="button" (click)="close()">CANCEL</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="addUserFormGroup.invalid || isLoading">
+        {{ isEditMode ? 'UPDATE' : 'SUBMIT' }}
+      </button>
+    </div>
+
+  </form>
+
+  <div class="loader-backdrop" *ngIf="isLoading">
+    <mat-spinner diameter="60"></mat-spinner>
   </div>
-          <button
-            mat-raised-button
-            color="warn"
-            type="button"
-            (click)="close()">
-            CANCEL
-          </button>
-        </div>
-
-      </form>
-      <div class="loader-backdrop" *ngIf="isLoading">
-        <mat-spinner diameter="60"></mat-spinner>
-      </div>
-
-    </mat-card-content>
-  </mat-card>
 </mat-dialog-content>
-
-

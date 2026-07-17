@@ -1,8 +1,9 @@
 /* ── Shell ── */
 .aid-shell {
   display: flex;
-  min-height: 100%;
+  height: 100%;
   background: #f4f6f8;
+  position: relative;
 }
 
 /* ── Sidebar ── */
@@ -89,6 +90,54 @@
   cursor: pointer;
 }
 
+.aid-date-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.aid-date-label {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 3px;
+  padding-left: 2px;
+}
+
+.aid-date-input {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  padding: 6px 8px;
+  font-size: 12.5px;
+  color: #444;
+  background: #fafafa;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.aid-date-input:focus {
+  outline: none;
+  border-color: #2B7A6F;
+}
+
+.aid-date-clear {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 5px 4px;
+  font-size: 12px;
+  color: #E53935;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 2px;
+}
+
+.aid-date-clear mat-icon { font-size: 14px; width: 14px; height: 14px; }
+.aid-date-clear:hover { background: #fdecea; }
+
 .aid-action-item {
   display: flex;
   align-items: center;
@@ -123,17 +172,59 @@
   height: calc(100vh - 52px);
 }
 
-.aid-loader {
-  display: flex;
-  justify-content: center;
-  padding: 80px;
+/* ── Backdrop (mobile only) ── */
+.aid-backdrop {
+  display: none;
 }
 
-.aid-error {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #b00;
-  padding: 32px;
-  font-size: 14px;
+/* ── Tablet (768–1023px) — narrower sidebar ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .aid-sidebar {
+    width: 180px;
+    min-width: 180px;
+  }
+  .aid-nav-item { font-size: 13px; }
+}
+
+/* ── Mobile (≤767px) — overlay sidebar ── */
+@media (max-width: 767px) {
+  .aid-shell {
+    flex-direction: column;
+  }
+
+  /* Sidebar becomes a fixed overlay that slides in from the left */
+  .aid-sidebar {
+    position: fixed;
+    top: 52px; /* below the admin-layout header */
+    left: 0;
+    bottom: 0;
+    height: calc(100vh - 52px);
+    z-index: 200;
+    width: 260px;
+    min-width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: none;
+  }
+
+  /* Shown state — applied via [class.aid-sidebar-show]="sidebarOpen" */
+  .aid-sidebar-show {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+  }
+
+  /* Backdrop appears behind the open sidebar */
+  .aid-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 52px;
+    background: rgba(0,0,0,0.4);
+    z-index: 150;
+  }
+
+  .aid-main {
+    height: auto;
+    overflow-y: visible;
+  }
 }

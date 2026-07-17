@@ -1,3 +1,19 @@
+/**
+ * SystemLogService — writes audit entries to the SYSTEM_LOG table.
+ *
+ * Wraps ConfigService.insert() with a typed payload so callers don't
+ * need to know the table name or construct the insertDataArray shape.
+ *
+ * Usage:
+ *   this.systemLog.addSystemLog({
+ *     log_name:    'USER_UNLOCK',
+ *     log_details: 'Admin unlocked user john@example.com',
+ *     log_status:  'SUCCESS',
+ *     log_by:      adminUserId,
+ *     action_type: 'UPDATE'
+ *   });
+ */
+
 import { Injectable } from '@angular/core';
 import { ConfigService } from './api.service';
 import { SystemLogRequest } from '../models/requests/systemLogRequest';
@@ -19,9 +35,8 @@ export class SystemLogService {
   constructor(private readonly apiService: ConfigService) {}
 
   addSystemLog(payload: SystemLogPayload) {
-
     const logRequest: SystemLogRequest = {
-      table_name: 'MEM_SYSTEM_LOG',
+      table_name: 'SYSTEM_LOG',
       insertDataArray: [{
         medicaid_id: payload.medicaid_id ?? '0',
         log_name: payload.log_name,

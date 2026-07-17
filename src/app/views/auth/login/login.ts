@@ -43,6 +43,7 @@ import { ChangeDetectorRef } from '@angular/core';
 export class Login implements OnInit, OnDestroy {
   username = '';
   password = '';
+  showPassword = false;
   userId: number = 0;
   isLoading = false;
   errorMessage = '';
@@ -68,7 +69,7 @@ export class Login implements OnInit, OnDestroy {
     private readonly dialog: MatDialog) { }
 
   ngOnInit() {
-    this.titleService.setTitle('WCIP :: LOGIN');
+    this.titleService.setTitle('WellCentricPulse : LOGIN');
     this.errorMessage = window.history.state?.message || '';
     this.successMessage = window.history.state?.successMessage || '';
   }
@@ -151,7 +152,7 @@ export class Login implements OnInit, OnDestroy {
   }
 private logAction(log_name: string, note: string): Promise<any> {
   const logPayload = {
-    table_name: 'MEM_SYSTEM_LOG',
+    table_name: 'SYSTEM_LOG',
     insertDataArray: [{
      
       log_name: log_name,
@@ -256,7 +257,8 @@ async setupQrCode() {
     finally {
       this.isLoading = false;
     }
-  }  
+  }
+
   onOtpInput(value: string) {
     this.errorMessage = '';
     if (value.length === 6) {
@@ -286,34 +288,43 @@ async setupQrCode() {
     });
 
     dialogRef.afterClosed().subscribe((action: 'change' | 'skip') => {
-      // 🔒 Expired → must reset
+      // 🔒 Expired → must reset. No session is established here (no
+      // completeLogin call), so change-password's Cancel has no returnTo
+      // and correctly logs out rather than letting an expired password in.
       if (isExpired) {
         if (action === 'change') {
-          this.router.navigate(['/change-password']);
+          this.router.navigate(['/change-password'], { state: { fromLogin: true } });
         }
         return; // ⛔ never allow login
       }
 
-      // ⚠️ Warning → optional
+      // ⚠️ Warning → optional. The password isn't actually expired, so
+      // complete the login for real (session, idle watch, history) and only
+      // then send them to change it — Cancel there just returns them home.
       if (action === 'change') {
-        this.router.navigate(['/change-password']);
+        this.completeLogin(user, { thenChangePassword: true });
       } else {
         this.completeLogin(user);
       }
     });
   }
 
-  private completeLogin(user: any): void {
+  private completeLogin(user: any, opts?: { thenChangePassword?: boolean }): void {
     this.userData.setUser(user);
     this.userId = user.ID;
     this.idleService.startWatching();
     this.addloginHistory();
-    this.router.navigate(user.role_id === 2 ? ['/admin'] : ['/field-home']);
+    const homeRoute = user.role_id === 2 ? '/admin' : '/field-home';
+    if (opts?.thenChangePassword) {
+      this.router.navigate(['/change-password'], { state: { fromLogin: true, returnTo: homeRoute } });
+    } else {
+      this.router.navigate([homeRoute]);
+    }
   }
 
   addloginHistory() {
     const logpayload = {
-      table_name: 'MEM_SYSTEM_LOG',
+      table_name: 'SYSTEM_LOG',
       insertDataArray: [{
         medicaid_id: 0,
         log_name: 'LOGIN',

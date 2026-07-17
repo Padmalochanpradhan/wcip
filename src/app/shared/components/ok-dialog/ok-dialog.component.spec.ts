@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { OkDialogComponent } from './ok-dialog.component';
 
@@ -8,7 +9,11 @@ describe('OkDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [OkDialogComponent]
+      imports: [OkDialogComponent],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: MatDialogRef, useValue: { close: () => {} } },
+      ],
     });
     fixture = TestBed.createComponent(OkDialogComponent);
     component = fixture.componentInstance;

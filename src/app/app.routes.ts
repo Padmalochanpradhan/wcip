@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthLayout } from './core/layout/auth-layout/auth-layout';
 import { Login } from './views/auth/login/login';
-import { MainLayout } from './core/layout/main-layout/main-layout';
-import { Dashboard } from './views/dashboard/dashboard';
 import { SurveyLayout } from './core/layout/survey-layout/survey-layout';
 import { SurveyDashboard } from './views/survey-dashboard/survey-dashboard';
 import { SurveyForm } from './views/survey-form/survey-form';
@@ -17,24 +15,22 @@ import { AdminSubmissions } from './views/admin-submissions/admin-submissions';
 import { AdminUsers } from './views/admin-users/admin-users';
 import { AdminSurveys } from './views/admin-surveys/admin-surveys';
 import { AdminSurveyBuilder } from './views/admin-survey-builder/admin-survey-builder';
+import { AdminImport } from './views/admin-import/admin-import';
+import { AdminPageAccess } from './views/admin-page-access/admin-page-access';
 import { DataExplorer } from './views/data-explorer/data-explorer';
 import { authGuard } from './shared/guards/auth.guard';
+import { guestGuard } from './shared/guards/guest.guard';
+import { ChangePassword } from './views/change-password/change-password';
+import { AccessDenied } from './views/access-denied/access-denied';
 
 export const routes: Routes = [
   {
     path: '',
     component: AuthLayout,
     children: [
-      { path: '', redirectTo: 'login', pathMatch: 'full' },
-      { path: 'login', component: Login },
-    ]
-  },
-  {
-    path: '',
-    component: MainLayout,
-    canActivate: [authGuard],
-    children: [
-      { path: 'dashboard', component: Dashboard },
+      { path: '', component: Login, pathMatch: 'full', canActivate: [guestGuard] },
+      { path: 'login', component: Login, canActivate: [guestGuard] },
+      { path: 'change-password', component: ChangePassword },
     ]
   },
   {
@@ -47,6 +43,7 @@ export const routes: Routes = [
       { path: 'submissions', component: SubmissionsList },
       { path: 'submissions/:id', component: SubmissionDetail },
       { path: 'data-explorer', component: DataExplorer },
+      { path: 'access-denied', component: AccessDenied },
     ]
   },
   {
@@ -65,8 +62,11 @@ export const routes: Routes = [
           { path: 'submissions', component: AdminSubmissions },
           { path: 'submissions/:id', component: SubmissionDetail },
           { path: 'users', component: AdminUsers },
+          { path: 'page-access', component: AdminPageAccess },
           { path: 'surveys', component: AdminSurveys },
           { path: 'surveys/:id', component: AdminSurveyBuilder },
+          { path: 'import', component: AdminImport },
+          { path: 'access-denied', component: AccessDenied },
         ]
       },
     ]

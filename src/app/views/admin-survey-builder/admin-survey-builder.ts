@@ -84,6 +84,17 @@ export class AdminSurveyBuilder implements OnInit {
     ref.afterClosed().subscribe((r: any) => { if (r?.refresh) this.load(this.survey!.id); });
   }
 
+  async deleteQuestion(question: SurveyQuestion, event: Event) {
+    event.stopPropagation();
+    if (!confirm(`Delete question "${question.label}"? This cannot be undone.`)) return;
+    try {
+      await this.surveyService.manageSurvey({ action: 'delete_question', id: question.id });
+      await this.load(this.survey!.id);
+    } catch (err: any) {
+      alert(err?.message || 'Failed to delete question.');
+    }
+  }
+
   goBack() { this.router.navigate(['/admin/surveys']); }
 
   typeLabel(t: string): string {

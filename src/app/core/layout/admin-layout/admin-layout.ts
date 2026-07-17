@@ -3,6 +3,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { UserDataService } from '../../../services/user-data-service';
 import { IdleTimeoutService } from '../../../services/idle-timeout';
+import { SidebarService } from '../../../services/sidebar.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -15,7 +16,8 @@ export class AdminLayout {
   constructor(
     private readonly router: Router,
     private readonly userData: UserDataService,
-    private readonly idleService: IdleTimeoutService
+    private readonly idleService: IdleTimeoutService,
+    private readonly sidebar: SidebarService
   ) {}
 
   get userName(): string {
@@ -27,6 +29,8 @@ export class AdminLayout {
     return new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   }
 
-  goHome()  { this.router.navigate(['/admin']); }
-  signOut() { this.idleService.logout(); }
+  toggleSidebar()   { this.sidebar.toggle(); }
+  goHome()          { this.router.navigate(['/admin']); }
+  changePassword()  { this.router.navigate(['/change-password'], { state: { returnTo: '/admin' } }); }
+  signOut()         { this.idleService.logout(); }
 }

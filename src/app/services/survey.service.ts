@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom, timeout, BehaviorSubject } from 'rxjs';
 import { AppEnvService } from './app-env.service';
-import { Survey, SurveyDetail, Ward, SubmissionPayload, SurveySubmission } from '../models/survey.models';
+import { Survey, SurveyDetail, Ward, Location, SubmissionPayload, SurveySubmission, AirtableRow, AirtableImportResult } from '../models/survey.models';
 
 @Injectable({ providedIn: 'root' })
 export class SurveyService {
@@ -41,6 +41,15 @@ export class SurveyService {
       this.http.post<any>(this.url('WCgetWards'), '{}', { headers: this.headers }).pipe(timeout(30000))
     );
     const data = typeof res?.data === 'string' ? JSON.parse(res.data) : res?.data;
+    return data ?? [];
+  }
+
+  async getLocations(): Promise<Location[]> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCgetLocations'), '{}', { headers: this.headers }).pipe(timeout(30000))
+    );
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
     return data ?? [];
   }
 
@@ -129,7 +138,7 @@ export class SurveyService {
   ): Promise<{ summary: string; scores: { label: string; value: string }[]; themes: string[]; sentiment?: string; trust_signal?: string }> {
     const payload = {
       action: 'analyze',
-      system: `You are the WellCentric Community Intelligence Platform environmental AI for Washington DC. Respond ONLY with valid JSON, no markdown: {"summary":"3-4 sentence plain-language intelligence summary. Be specific and actionable.","scores":[{"label":"Built environment","value":"Good|Fair|Poor|Critical"},{"label":"Environmental burden","value":"Low|Moderate|High|Critical"},{"label":"Food access","value":"Good|Limited|Poor|Desert"},{"label":"Safety","value":"High|Moderate|Low|Critical"}],"themes":["theme1","theme2","theme3"],"sentiment":"Positive|Mixed|Negative|Urgent","trust_signal":"High|Moderate|Low|Erosion"}`,
+      system: `You are the WellCentricPulse environmental AI for Washington DC. Respond ONLY with valid JSON, no markdown: {"summary":"3-4 sentence plain-language intelligence summary. Be specific and actionable.","scores":[{"label":"Built environment","value":"Good|Fair|Poor|Critical"},{"label":"Environmental burden","value":"Low|Moderate|High|Critical"},{"label":"Food access","value":"Good|Limited|Poor|Desert"},{"label":"Safety","value":"High|Moderate|Low|Critical"}],"themes":["theme1","theme2","theme3"],"sentiment":"Positive|Mixed|Negative|Urgent","trust_signal":"High|Moderate|Low|Erosion"}`,
       messages: [{
         role: 'user',
         content: `Ward: ${ward}\nLocation: ${location}\nStaff: ${staffName}\nDate: ${new Date().toLocaleDateString()}\n\n${envData}`
@@ -145,6 +154,38 @@ export class SurveyService {
         ? JSON.parse(res.body)
         : res?.body;
     return JSON.parse(message.content[0].text);
+  }
+
+  async analyzeNarrative(
+    narrativeData: string,
+    ward: string,
+    location: string,
+    staffName: string
+  ): Promise<{ summary: string; themes: string[]; urgency: string; urgency_label: string; trust_signal: string; trust_label: string }> {
+    const payload = {
+      action: 'analyze',
+      system: `You are the WellCentricPulse narrative AI for Washington DC. Analyze community field notes and respond ONLY with valid JSON, no markdown: {"summary":"3-4 sentence plain-language intelligence summary focused on community concerns and recommended action.","themes":["theme1","theme2","theme3"],"urgency":"Urgent|High|Moderate|Low","urgency_label":"one sentence describing the urgency level observed","trust_signal":"Erosion|Low|Moderate|High","trust_label":"one sentence describing the institutional trust level observed"}`,
+      messages: [{
+        role: 'user',
+        content: `Ward: ${ward}\nLocation: ${location}\nStaff: ${staffName}\nDate: ${new Date().toLocaleDateString()}\n\n${narrativeData}`
+      }]
+    };
+    const res = await firstValueFrom(
+      this.http.post<any>(this.env.fieldApiUrl(), JSON.stringify(payload), { headers: this.headers }).pipe(timeout(60000))
+    );
+    const message = res?.content
+      ? res
+      : typeof res?.body === 'string'
+        ? JSON.parse(res.body)
+        : res?.body;
+    return JSON.parse(message.content[0].text);
+  }
+
+  async importAirtableData(rows: AirtableRow[]): Promise<AirtableImportResult> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCimportSurveyData'), JSON.stringify({ rows }), { headers: this.headers }).pipe(timeout(60000))
+    );
+    return this.unwrapLambda(res);
   }
 
   async saveEnvScanToAirtable(fields: Record<string, string>): Promise<void> {

@@ -290,3 +290,11 @@
 ::ng-deep .btn-spinner circle {
   stroke: #fff !important;
 }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .page-wrapper  { padding: 24px 12px; }
+  .login-card    { padding: 24px 18px 20px !important; border-radius: 12px !important; }
+  .brand-name    { font-size: 20px; }
+  .signin-heading { font-size: 19px; }
+}

@@ -49,7 +49,9 @@ export class SurveyLayout implements OnInit, OnDestroy {
     this.countSub = this.surveyService.todayCount$.subscribe(n => this.submittedCount = n);
 
     try {
-      this.surveys = await this.surveyService.getSurveys();
+      const allSurveys = await this.surveyService.getSurveys();
+      // Bottom nav only lists surveys field users can actually take.
+      this.surveys = allSurveys.filter(s => s.status === 'active');
       const userId = user?.id || user?.ID || 0;
       await this.surveyService.getTodayCount(userId);
     } catch { /* surveys/count are non-blocking */ }
@@ -61,6 +63,10 @@ export class SurveyLayout implements OnInit, OnDestroy {
 
   getIcon(icon: string): string {
     return this.iconMap[icon] || 'assignment';
+  }
+
+  changePassword() {
+    this.router.navigate(['/change-password'], { state: { returnTo: '/field-home' } });
   }
 
   signOut() {

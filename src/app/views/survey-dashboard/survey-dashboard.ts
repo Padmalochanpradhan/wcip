@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SurveyService } from '../../services/survey.service';
 import { UserDataService } from '../../services/user-data-service';
 import { Survey } from '../../models/survey.models';
+import { HeaderService } from '../../services/header.service';
 
 @Component({
   selector: 'app-survey-dashboard',
@@ -52,13 +53,19 @@ export class SurveyDashboard implements OnInit {
     private readonly router: Router,
     private readonly titleService: Title,
     private readonly surveyService: SurveyService,
-    private readonly userData: UserDataService
+    private readonly userData: UserDataService,
+    private readonly headerService: HeaderService
   ) {}
 
   async ngOnInit() {
-    this.titleService.setTitle('WCIP :: FIELD HOME');
+    this.titleService.setTitle('WellCentricPulse : FIELD HOME');
+    this.headerService.setTitle('FIELD HOME');
     try {
-      this.surveys = await this.surveyService.getSurveys();
+      const allSurveys = await this.surveyService.getSurveys();
+      // Field users can only take active surveys — draft/archived ones never
+      // render as an option here, even if the API still returns them (it's
+      // also used by Manage Surveys, which needs the full list).
+      this.surveys = allSurveys.filter(s => s.status === 'active');
       if (this.surveys.length) {
         this.todayPrompt = this.surveys[0].daily_prompt || '';
       }

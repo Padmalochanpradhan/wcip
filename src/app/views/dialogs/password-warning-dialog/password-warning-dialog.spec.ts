@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { PasswordWarningDialog } from './password-warning-dialog';
 
@@ -8,7 +9,11 @@ describe('PasswordWarningDialog', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PasswordWarningDialog]
+      imports: [PasswordWarningDialog],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: { message: '', is_password_expired: false } },
+        { provide: MatDialogRef, useValue: { close: () => {} } },
+      ],
     })
     .compileComponents();
 

@@ -9,6 +9,7 @@ import { SurveyService } from '../../services/survey.service';
 import { UserDataService } from '../../services/user-data-service';
 import { ConfigService } from '../../services/api.service';
 import { SurveyDetail, Ward } from '../../models/survey.models';
+import { FLAGGING_ENABLED } from '../../config/feature-flags';
 
 @Component({
   selector: 'app-survey-form',
@@ -41,6 +42,10 @@ export class SurveyForm implements OnInit, OnDestroy {
   aiThemes: string[] = [];
   aiSentiment    = '';
   aiTrustSignal  = '';
+  /* narrative-specific */
+  aiUrgency      = '';
+  aiUrgencyLabel = '';
+  aiTrustLabel   = '';
 
   /* ── Submit state ── */
   isSubmitting  = false;
@@ -102,6 +107,16 @@ export class SurveyForm implements OnInit, OnDestroy {
         this.surveyService.getSurveyDetail(id),
         this.surveyService.getWards()
       ]);
+
+      // Field users can only take active surveys. A draft/archived survey
+      // reached via direct URL is never shown — bounce back to field-home.
+      if (this.survey?.status !== 'active') {
+        this.survey = null;
+        this.isLoading = false;
+        this.router.navigate(['/field-home']);
+        return;
+      }
+
       const first = this.survey?.sections?.find(s => s.is_collapsible);
       if (first) this.expanded[first.id] = true;
     } catch (err: any) {
@@ -131,10 +146,19 @@ export class SurveyForm implements OnInit, OnDestroy {
   }
 
   toggleMulti(questionId: number, optionId: number) {
-    if (!this.optionAnswers[questionId]) this.optionAnswers[questionId] = [];
-    const idx = this.optionAnswers[questionId].indexOf(optionId);
-    if (idx > -1) this.optionAnswers[questionId].splice(idx, 1);
-    else           this.optionAnswers[questionId].push(optionId);
+    const cur = this.optionAnswers[questionId] || [];
+    const idx = cur.indexOf(optionId);
+    this.optionAnswers[questionId] = idx > -1
+      ? cur.filter((_, i) => i !== idx)
+      : [...cur, optionId];
+  }
+
+  setBool(questionId: number, value: 'YES' | 'NO') {
+    this.textAnswers[questionId] = this.textAnswers[questionId] === value ? '' : value;
+  }
+
+  setRating(questionId: number, star: number) {
+    this.textAnswers[questionId] = this.textAnswers[questionId] === star.toString() ? '' : star.toString();
   }
 
   /* ── Icon helper ── */
@@ -151,7 +175,7 @@ export class SurveyForm implements OnInit, OnDestroy {
     for (const section of this.survey.sections) {
       let sectionData = '';
       for (const q of section.questions) {
-        if (q.question_type === 'textarea' || q.question_type === 'text') {
+        if (['textarea', 'text', 'number', 'date', 'datetime', 'boolean', 'rating'].includes(q.question_type)) {
           const val = this.textAnswers[q.id];
           if (val?.trim()) sectionData += `  ${q.label}: ${val.trim()}\n`;
         } else if (q.question_type === 'single_chip' || q.question_type === 'multi_chip') {
@@ -196,19 +220,28 @@ export class SurveyForm implements OnInit, OnDestroy {
     this.submitSuccess = false;
 
     try {
-      const result = await this.surveyService.analyzeEnvScan(envData, ward, location, staffName);
-
-      this.aiSummary = result.summary;
-      this.aiScores  = (result.scores || []).map((s: any) => {
-        const isStr  = typeof s === 'string';
-        const label: string = isStr ? String(s).split(':')[0].trim() : String(s?.label ?? '');
-        const value: string = isStr ? (String(s).split(':')[1] ?? '').trim() : String(s?.value ?? '');
-        return { label, value, cls: this.scoreToCls(label, value) };
-      });
-      this.aiThemes      = result.themes       || [];
-      this.aiSentiment   = result.sentiment    || '';
-      this.aiTrustSignal = result.trust_signal || '';
-      this.showAiResult  = true;
+      if (this.survey.survey_type === 'narrative') {
+        const result = await this.surveyService.analyzeNarrative(envData, ward, location, staffName);
+        this.aiSummary      = result.summary       || '';
+        this.aiThemes       = result.themes        || [];
+        this.aiUrgency      = result.urgency       || '';
+        this.aiUrgencyLabel = result.urgency_label || '';
+        this.aiTrustSignal  = result.trust_signal  || '';
+        this.aiTrustLabel   = result.trust_label   || '';
+      } else {
+        const result = await this.surveyService.analyzeEnvScan(envData, ward, location, staffName);
+        this.aiSummary     = result.summary       || '';
+        this.aiScores      = (result.scores || []).map((s: any) => {
+          const isStr  = typeof s === 'string';
+          const label: string = isStr ? String(s).split(':')[0].trim() : String(s?.label ?? '');
+          const value: string = isStr ? (String(s).split(':')[1] ?? '').trim() : String(s?.value ?? '');
+          return { label, value, cls: this.scoreToCls(label, value) };
+        });
+        this.aiThemes      = result.themes       || [];
+        this.aiSentiment   = result.sentiment    || '';
+        this.aiTrustSignal = result.trust_signal || '';
+      }
+      this.showAiResult = true;
     } catch (err: any) {
       this.analyzeError = err?.message || 'Analysis failed. Please try again.';
     } finally {
@@ -247,6 +280,7 @@ export class SurveyForm implements OnInit, OnDestroy {
       const trustLabel = trustLabels[0] ?? '';
 
       // Flag if engagement tone is Urgent, OR AI says Urgent, OR Safety/Env burden is critical
+      // FLAGGING_ENABLED gates whether this actually sets status to 'flagged' below.
       const isUrgent =
         urgentByTone ||
         this.aiSentiment === 'Urgent' ||
@@ -255,12 +289,25 @@ export class SurveyForm implements OnInit, OnDestroy {
           (sc.label === 'Safety' || sc.label === 'Environmental burden')
         );
 
-      // Collect all text/textarea answers as field notes
+      // Collect all answered questions as field notes
+      const TEXT_TYPES = ['textarea', 'text', 'number', 'date', 'datetime', 'boolean', 'rating'];
       const fieldNotes: { label: string; note: string }[] = [];
       for (const section of this.survey.sections) {
         for (const q of section.questions) {
-          if ((q.question_type === 'textarea' || q.question_type === 'text') && this.textAnswers[q.id]?.trim()) {
+          if (TEXT_TYPES.includes(q.question_type) && this.textAnswers[q.id]?.trim()) {
             fieldNotes.push({ label: q.label, note: this.textAnswers[q.id].trim() });
+          } else if (q.question_type === 'single_chip' || q.question_type === 'multi_chip') {
+            const ids = this.optionAnswers[q.id] || [];
+            if (ids.length) {
+              const labels = ids.map(id => q.options.find(o => o.id === id)?.label ?? '').filter(Boolean);
+              if (labels.length) fieldNotes.push({ label: q.label, note: labels.join(', ') });
+            }
+          } else if (q.question_type === 'dropdown') {
+            const val = this.dropdownAnswers[q.id];
+            if (val != null) {
+              const label = q.options.find(o => o.id === val)?.label;
+              if (label) fieldNotes.push({ label: q.label, note: label });
+            }
           }
         }
       }
@@ -292,7 +339,7 @@ export class SurveyForm implements OnInit, OnDestroy {
           user_id:       userId,
           ward_id:       this.selectedWardId,
           location_text: this.locationText,
-          status:        isUrgent ? 'flagged' : 'submitted',
+          status:        (FLAGGING_ENABLED && isUrgent) ? 'flagged' : 'submitted',
           ai_analysis:   JSON.stringify(aiAnalysis),
           submitted_at:  new Date().toISOString()
         }]
@@ -311,13 +358,16 @@ export class SurveyForm implements OnInit, OnDestroy {
 
   /* ── Reset AI panel (edit scan) ── */
   resetAi() {
-    this.showAiResult  = false;
-    this.aiSummary     = '';
-    this.aiScores      = [];
-    this.aiThemes      = [];
-    this.aiSentiment   = '';
-    this.aiTrustSignal = '';
-    this.submitError   = '';
+    this.showAiResult   = false;
+    this.aiSummary      = '';
+    this.aiScores       = [];
+    this.aiThemes       = [];
+    this.aiSentiment    = '';
+    this.aiTrustSignal  = '';
+    this.aiUrgency      = '';
+    this.aiUrgencyLabel = '';
+    this.aiTrustLabel   = '';
+    this.submitError    = '';
   }
 
   private scoreToCls(label: string, value: string): string {

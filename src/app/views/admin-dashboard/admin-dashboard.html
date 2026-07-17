@@ -1,7 +1,12 @@
 <div class="aid-shell">
 
+  <!-- Backdrop: shown on mobile when sidebar is open -->
+  @if (sidebarOpen) {
+    <div class="aid-backdrop" (click)="closeSidebar()"></div>
+  }
+
   <!-- ── Left sidebar ── -->
-  <aside class="aid-sidebar">
+  <aside class="aid-sidebar" [class.aid-sidebar-show]="sidebarOpen">
 
     <div class="aid-nav-section">
       <div class="aid-nav-label">VIEWS</div>
@@ -37,6 +42,27 @@
     </div>
 
     <div class="aid-nav-section">
+      <div class="aid-nav-label">FILTER BY DATE</div>
+      <div class="aid-date-row">
+        <label class="aid-date-label">From</label>
+        <input type="date" class="aid-date-input"
+               [value]="state.filterDateFrom"
+               (change)="onDateFromChange($event)" />
+      </div>
+      <div class="aid-date-row">
+        <label class="aid-date-label">To</label>
+        <input type="date" class="aid-date-input"
+               [value]="state.filterDateTo"
+               (change)="onDateToChange($event)" />
+      </div>
+      @if (state.filterDateFrom || state.filterDateTo) {
+        <button class="aid-date-clear" (click)="clearDateFilter()">
+          <mat-icon>close</mat-icon> Clear dates
+        </button>
+      }
+    </div>
+
+    <div class="aid-nav-section">
       <div class="aid-nav-label">ACTIONS</div>
       <button class="aid-action-item"><mat-icon>open_in_new</mat-icon> Open client brief</button>
       <button class="aid-action-item" onclick="window.print()"><mat-icon>print</mat-icon> Print view</button>
@@ -48,9 +74,17 @@
       <button class="aid-action-item" routerLink="/admin/users" routerLinkActive="aid-act-active">
         <mat-icon>manage_accounts</mat-icon> Manage users
       </button>
+      <button class="aid-action-item" routerLink="/admin/page-access" routerLinkActive="aid-act-active">
+        <mat-icon>security</mat-icon> Page access
+      </button>
       <button class="aid-action-item" routerLink="/admin/surveys" routerLinkActive="aid-act-active">
         <mat-icon>dynamic_form</mat-icon> Manage surveys
       </button>
+      <!-- Import data — commented out for now. Uncomment to re-enable.
+      <button class="aid-action-item" routerLink="/admin/import" routerLinkActive="aid-act-active">
+        <mat-icon>upload_file</mat-icon> Import data
+      </button>
+      -->
     </div>
 
   </aside>

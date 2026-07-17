@@ -35,8 +35,21 @@
     </div>
 
     <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <mat-select formControlName="location_id">
+        <mat-option [value]="null">— No location —</mat-option>
+        @if (locationsLoading) {
+          <mat-option disabled>Loading locations…</mat-option>
+        }
+        @for (loc of locations; track loc.id) {
+          <mat-option [value]="loc.id">{{ loc.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="sfd-prompt-field">
       <mat-label>Daily Prompt</mat-label>
-      <textarea matInput formControlName="daily_prompt" rows="2"></textarea>
+      <textarea matInput formControlName="daily_prompt" rows="4"></textarea>
     </mat-form-field>
 
     <mat-form-field appearance="outline">

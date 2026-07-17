@@ -1,0 +1,74 @@
+<div class="pa-page">
+
+  <div class="pa-header">
+    <div>
+      <button class="pa-back" (click)="goBack()">← Back</button>
+      <h1 class="pa-title">Page Access</h1>
+      <p class="pa-sub">{{ filteredList.length }} rule{{ filteredList.length !== 1 ? 's' : '' }} configured</p>
+    </div>
+    <div class="pa-header-right">
+      <div class="pa-search-wrap">
+        <mat-icon class="pa-search-icon">search</mat-icon>
+        <input
+          class="pa-search"
+          type="text"
+          placeholder="Search by role or page…"
+          (input)="onSearch($event)"
+        />
+      </div>
+      <button class="pa-add-btn" (click)="addAccess()">
+        <mat-icon>add</mat-icon>
+        Add Access
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="pa-loader">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  @if (loadError) {
+    <div class="pa-error"><mat-icon>error_outline</mat-icon> {{ loadError }}</div>
+  }
+
+  @if (!isLoading && !loadError) {
+    <div class="pa-table-wrap">
+      <table class="pa-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Role</th>
+            <th>Page</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (filteredList.length === 0) {
+            <tr><td colspan="5" class="pa-empty">No page access rules found.</td></tr>
+          }
+          @for (item of filteredList; track item.id; let i = $index) {
+            <tr>
+              <td class="pa-idx">{{ i + 1 }}</td>
+              <td class="pa-role">{{ item.role_name }}</td>
+              <td class="pa-page">{{ item.page_name }}</td>
+              <td>
+                <span class="pa-status {{ statusClass(item.status) }}">
+                  {{ statusLabel(item.status) }}
+                </span>
+              </td>
+              <td class="pa-actions">
+                <button class="pa-btn pa-btn-edit" (click)="editAccess(item)" title="Edit">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

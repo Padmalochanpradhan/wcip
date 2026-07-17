@@ -6,35 +6,43 @@
 .aov-error  { display: flex; align-items: center; gap: 8px; color: #b00; padding: 32px; font-size: 14px; }
 
 .aov-page-head { margin-bottom: 24px; }
-.aov-page-title { font-size: 24px; font-weight: 700; color: #1a3a32; margin: 0 0 4px; }
-.aov-page-sub   { font-size: 13px; color: #888; margin: 0; }
+.aov-page-title {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 24px; font-weight: 700; color: #085041; margin: 0 0 4px;
+}
+.aov-page-sub   { font-size: 13px; color: #888; margin: 0; font-family: inherit; }
 
 /* ── Stats row ── */
 .aov-stats-row {
   display: flex;
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e8ecef;
-  overflow: hidden;
+  gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .aov-stat {
   flex: 1;
+  background: #fff;
+  border: 1px solid #e8ecef;
+  border-radius: 12px;
   padding: 18px 14px 14px;
-  border-right: 1px solid #f0f2f4;
   min-width: 90px;
 }
-.aov-stat:last-child { border-right: none; }
 
-.aov-stat-num  { font-size: 28px; font-weight: 700; color: #1a3a32; line-height: 1.1; }
-.aov-stat-lbl  { font-size: 10px; font-weight: 700; color: #999; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; }
-.aov-stat-note { font-size: 11px; color: #bbb; margin-top: 2px; }
+.aov-stat-num  { font-size: 28px; font-weight: 700; color: #085041; line-height: 1.1; font-family: inherit; }
+.aov-stat-lbl  { font-size: 10px; font-weight: 700; color: #999; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; font-family: inherit; }
+.aov-stat-note { font-size: 11px; color: #bbb; margin-top: 2px; font-family: inherit; }
 
-.aov-stat-flag { border: 2px solid #fdd; background: #fff9f9; border-radius: 10px; }
+.aov-stat-total { border-top: 3px solid #2B7A6F; }
+
+.aov-stat-flag { border-top: 3px solid #c62828; }
 .aov-stat-flag .aov-stat-num { color: #c62828; }
+
+.aov-stat-warn { border-color: #f0d4a8; background: #fffaf3; }
 .aov-stat-warn .aov-stat-num { color: #7B3F00; }
+
+.aov-stat-clickable { cursor: pointer; transition: box-shadow 0.15s, transform 0.1s; }
+.aov-stat-clickable:hover { box-shadow: 0 2px 10px rgba(198,40,40,0.18); transform: translateY(-1px); }
 
 /* ── Charts grid ── */
 .aov-charts-row {
@@ -49,6 +57,7 @@
   border-radius: 14px;
   border: 1px solid #e8ecef;
   padding: 20px;
+  min-width: 0;
 }
 
 .aov-chart-head {
@@ -56,9 +65,11 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 18px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 .aov-chart-title { font-size: 14px; font-weight: 600; color: #1a1a1a; }
-.aov-chart-note  { font-size: 12px; color: #bbb; }
+.aov-chart-note  { font-size: 12px; color: #bbb; white-space: nowrap; }
 
 /* ── Vertical bar chart ── */
 .aov-vchart {
@@ -76,6 +87,7 @@
   align-items: center;
   height: 100%;
   justify-content: flex-end;
+  min-width: 0;
 }
 
 .aov-vbar {
@@ -105,6 +117,8 @@
   margin-top: 12px;
   font-size: 11.5px;
   color: #888;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .aov-leg-dot {
@@ -120,15 +134,29 @@
 .aov-hbar-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #f0f2f4;
+  flex-wrap: wrap;
 }
-.aov-hbar-row:last-child { margin-bottom: 0; }
+.aov-hbar-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 
 .aov-hbar-lbl   { width: 68px; font-size: 12px; font-weight: 500; color: #444; flex-shrink: 0; }
 
+.aov-ward-chip {
+  box-sizing: border-box;
+  text-align: center;
+  font-weight: 600;
+  color: #1f8060;
+  background: #ddf1e7;
+  border-radius: 12px;
+  padding: 3px 0;
+}
+
 .aov-hbar-track {
   flex: 1;
+  min-width: 60px;
   height: 8px;
   background: #f0f2f4;
   border-radius: 4px;
@@ -169,6 +197,7 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 .aov-urg-icon  { font-size: 16px; }
 .aov-urg-title { font-size: 14px; font-weight: 600; color: #1a1a1a; flex: 1; }
@@ -194,7 +223,7 @@
   margin-bottom: 8px;
 }
 .aov-uc-meta  { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 12px; }
-.aov-uc-ward  { font-weight: 600; color: #1a3a32; }
+.aov-uc-ward  { font-weight: 600; color: #085041; }
 .aov-uc-dim   { color: #888; }
 .aov-uc-date  { font-size: 12px; color: #bbb; flex-shrink: 0; }
 
@@ -212,3 +241,54 @@
 .aov-tag-ut { background: #fdecea; color: #c62828; }
 .aov-tag-tl { background: #fff3e0; color: #e65100; }
 .aov-tag-th { background: #e8f5f3; color: #2B7A6F; }
+
+/* ── Tablet (768–1023px) ── */
+@media (max-width: 1023px) {
+  .aov-page { padding: 20px 20px 32px; }
+}
+
+/* ── Mobile (≤767px) ── */
+@media (max-width: 767px) {
+  .aov-page { padding: 16px 12px 28px; }
+
+  /* Stats: 2-per-row grid */
+  .aov-stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex-wrap: unset;
+  }
+  .aov-stat { min-width: 0; }
+  .aov-stat-num { font-size: 24px; }
+
+  /* Charts: single column, less padding */
+  .aov-charts-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .aov-chart-card {
+    padding: 16px 14px;
+  }
+  .aov-chart-head {
+    margin-bottom: 14px;
+  }
+
+  /* Bar chart: slightly shorter */
+  .aov-vchart { height: 120px; gap: 4px; }
+  .aov-vbar-lbl { font-size: 8px; }
+
+  /* Horizontal bars: tighter label */
+  .aov-hbar-lbl  { width: 58px; font-size: 11px; }
+  .aov-hbar-num  { width: 22px; font-size: 11px; }
+  .aov-hbar-share { width: 28px; font-size: 10px; }
+
+  /* Ward urgent badge: own line */
+  .aov-ward-urg { margin-left: 66px; }
+
+  /* Urgent card: stack date under meta */
+  .aov-uc-top { flex-direction: column; gap: 2px; }
+  .aov-uc-date { font-size: 11px; }
+
+  /* Urgent section: tighter */
+  .aov-urg-section { padding: 16px 14px; }
+  .aov-urg-card    { padding: 12px 12px; }
+}

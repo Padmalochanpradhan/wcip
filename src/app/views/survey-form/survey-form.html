@@ -161,6 +161,53 @@
                          [placeholder]="question.placeholder || ''" />
                 }
 
+                <!-- Date -->
+                @if (question.question_type === 'date') {
+                  <input [(ngModel)]="textAnswers[question.id]"
+                         class="sf-input"
+                         type="date" />
+                }
+
+                <!-- Datetime -->
+                @if (question.question_type === 'datetime') {
+                  <input [(ngModel)]="textAnswers[question.id]"
+                         class="sf-input"
+                         type="datetime-local" />
+                }
+
+                <!-- Boolean -->
+                @if (question.question_type === 'boolean') {
+                  <div class="sf-bool-row">
+                    <button type="button"
+                            class="sf-bool-btn sf-bool-btn-yes"
+                            [class.sf-bool-active-yes]="textAnswers[question.id] === 'YES'"
+                            (click)="setBool(question.id, 'YES')">
+                      YES
+                    </button>
+                    <button type="button"
+                            class="sf-bool-btn sf-bool-btn-no"
+                            [class.sf-bool-active-no]="textAnswers[question.id] === 'NO'"
+                            (click)="setBool(question.id, 'NO')">
+                      NO
+                    </button>
+                  </div>
+                }
+
+                <!-- Rating (1–5 stars) -->
+                @if (question.question_type === 'rating') {
+                  <div class="sf-rating">
+                    @for (star of [1,2,3,4,5]; track star) {
+                      <button type="button"
+                              class="sf-star"
+                              [class.sf-star-active]="(+textAnswers[question.id] || 0) >= star"
+                              (click)="setRating(question.id, star)">★</button>
+                    }
+                    @if (textAnswers[question.id]) {
+                      <span class="sf-rating-val">{{ textAnswers[question.id] }} / 5</span>
+                    }
+                  </div>
+                }
+
               </div>
             }
           </div>
@@ -197,23 +244,45 @@
           AI analysis complete
         </div>
 
-        <!-- Score chips -->
-        <div class="sf-ai-scores">
-          @for (score of aiScores; track score.label) {
-            <span class="sf-ai-score-chip sf-ai-chip-{{ score.cls }}">{{ score.label }}{{ score.value ? ': ' + score.value : '' }}</span>
+        <!-- NARRATIVE layout -->
+        @if (survey.survey_type === 'narrative') {
+          @if (aiThemes.length) {
+            <div class="sf-ai-themes sf-ai-themes--top">
+              @for (theme of aiThemes; track theme) {
+                <span class="sf-ai-theme-chip">{{ theme }}</span>
+              }
+            </div>
           }
-        </div>
+          @if (aiUrgency) {
+            <div class="sf-ai-signal-row">
+              <span class="sf-ai-signal-badge sf-ai-signal-urgency">{{ aiUrgency }}</span>
+              <span class="sf-ai-signal-text">{{ aiUrgencyLabel }}</span>
+            </div>
+          }
+          @if (aiTrustSignal) {
+            <div class="sf-ai-signal-row">
+              <span class="sf-ai-signal-badge sf-ai-signal-trust">{{ aiTrustSignal === 'Erosion' ? 'Trust erosion' : 'Trust: ' + aiTrustSignal }}</span>
+              <span class="sf-ai-signal-text">{{ aiTrustLabel }}</span>
+            </div>
+          }
+          <div class="sf-ai-summary">{{ aiSummary }}</div>
+        }
 
-        <!-- Summary -->
-        <div class="sf-ai-summary">{{ aiSummary }}</div>
-
-        <!-- Theme chips -->
-        @if (aiThemes.length) {
-          <div class="sf-ai-themes">
-            @for (theme of aiThemes; track theme) {
-              <span class="sf-ai-theme-chip">{{ theme }}</span>
+        <!-- ENVIRONMENTAL / GENERAL layout -->
+        @if (survey.survey_type !== 'narrative') {
+          <div class="sf-ai-scores">
+            @for (score of aiScores; track score.label) {
+              <span class="sf-ai-score-chip sf-ai-chip-{{ score.cls }}">{{ score.label }}{{ score.value ? ': ' + score.value : '' }}</span>
             }
           </div>
+          <div class="sf-ai-summary">{{ aiSummary }}</div>
+          @if (aiThemes.length) {
+            <div class="sf-ai-themes">
+              @for (theme of aiThemes; track theme) {
+                <span class="sf-ai-theme-chip">{{ theme }}</span>
+              }
+            </div>
+          }
         }
 
         <!-- Submit error -->

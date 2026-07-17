@@ -10,11 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ConfigService } from '../../../services/api.service';
-import {
-  UserRequest,
-  UpdateUserRequest,
-  UsernameRequest
-} from '../../../models/requests/userRequest';
+import { UsernameRequest } from '../../../models/requests/userRequest';
 
 @Component({
   selector: 'app-adduser-dialog',
@@ -69,7 +65,7 @@ export class AdduserDialog implements OnInit {
       lastName: ['', Validators.required],
       role: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       status: ['', Validators.required]
     });
   }
@@ -83,7 +79,7 @@ export class AdduserDialog implements OnInit {
     // 🔥 Make password optional in edit mode
     const passwordControl = this.addUserFormGroup.get('password');
     passwordControl?.clearValidators(); // remove required & minlength
-    passwordControl?.setValidators([Validators.minLength(6)]); // optional but validate if typed
+    passwordControl?.setValidators([Validators.minLength(8)]); // optional but validate if typed
     passwordControl?.updateValueAndValidity();
 
     this.addUserFormGroup.patchValue({
@@ -111,7 +107,7 @@ export class AdduserDialog implements OnInit {
 
     try {
       await this.processUser(formValue);
-      this.dialogRef.close({ refresh: true });
+      this.dialogRef.close({ refresh: true, action: this.isEditMode ? 'update' : 'add' });
 
     } catch (error: any) {
       this.handleError(error);
@@ -176,51 +172,29 @@ export class AdduserDialog implements OnInit {
 
 
 private async updateUser(formValue: any): Promise<void> {
-
   if (!this.currentUserId) {
-    throw { code: 'USER_ID_MISSING' };
+    throw new Error('User ID is missing');
   }
 
-  try {
-
-    // Update Cognito first
-    if (formValue.password) {
-      if (!this.cognitoUsername) {
-        throw { code: 'COGNITO_USERNAME_MISSING' };
-      }
-      await this.apiService.updateCognitoUser(
-        this.cognitoUsername,
-        {},
-        formValue.password
-      );
-
+  // Update Cognito password — use stored cognitoUsername or fall back to email
+  if (formValue.password) {
+    const cognitoId = this.cognitoUsername || formValue.email;
+    if (cognitoId) {
+      await this.apiService.updateCognitoUser(cognitoId, {}, formValue.password);
     }
-
-    // Update DB only if Cognito success
-    const payload = {
-      ID: this.currentUserId,
-      FistName: formValue.firstName.trim(),
-      LastName: formValue.lastName.trim(),
-      ...(formValue.password && { Password: formValue.password }),
-      role_id: formValue.role,
-      member_status: Number(formValue.status)
-    };
-
-    await this.apiService.updateUser(payload);
-
   }
-  catch (error: any) {
 
-    this.errorMessage =
-      error?.message ||
-      'Password does not meet Cognito password policy';
+  // Always update DB (WCUpdateUser hashes the password with scrypt)
+  const payload = {
+    ID: this.currentUserId,
+    FistName: formValue.firstName.trim(),
+    LastName: formValue.lastName.trim(),
+    ...(formValue.password && { Password: formValue.password }),
+    role_id: formValue.role,
+    member_status: Number(formValue.status)
+  };
 
-    this.addUserFormGroup.get('password')?.setErrors({
-      invalidPassword: true
-    });
-
-    throw error;
-  }
+  await this.apiService.updateUser(payload);
 }
 
 
@@ -237,7 +211,7 @@ private async updateUser(formValue: any): Promise<void> {
   this.errorMessage =
     error?.message ||
     error?.error?.message ||
-    'Failed to create user. Please ensure the password meets the required policy.';
+    (this.isEditMode ? 'Failed to update user.' : 'Failed to create user. Please ensure the password meets the required policy.');
 }
 
   // 🔹 CLOSE DIALOG

@@ -25,9 +25,21 @@ export async function commonPostApi<T>(
     'Content-Type': 'application/json'
   });
 
-  return await firstValueFrom(
-    http.post<T>(url, JSON.stringify(body), { headers }).pipe(timeout(90000))
-  );
+  try {
+    return await firstValueFrom(
+      http.post<T>(url, JSON.stringify(body), { headers }).pipe(timeout(90000))
+    );
+  } catch (err: any) {
+    // Status 0 = browser blocked the response (CORS missing or network error).
+    // Surface a readable message instead of "0 Unknown Error".
+    if (err?.status === 0) {
+      throw new Error(
+        'Unable to reach the server. This is usually a network or CORS configuration issue. ' +
+        `(${apiName})`
+      );
+    }
+    throw err;
+  }
 }
 
 

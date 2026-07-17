@@ -17,19 +17,16 @@
 
   <!-- Stat cards -->
   <div class="aov-stats-row">
-    <div class="aov-stat">
+    <div class="aov-stat aov-stat-total">
       <div class="aov-stat-num">{{ state.total }}</div>
       <div class="aov-stat-lbl">TOTAL SUBMISSIONS</div>
     </div>
-    <div class="aov-stat">
-      <div class="aov-stat-num">{{ state.totalNarratives }}</div>
-      <div class="aov-stat-lbl">NARRATIVES</div>
-      <div class="aov-stat-note">Field interviews & observations</div>
-    </div>
-    <div class="aov-stat">
-      <div class="aov-stat-num">{{ state.totalScans }}</div>
-      <div class="aov-stat-lbl">ENV. SCANS</div>
-    </div>
+    @for (sv of state.surveyTotals; track sv.title) {
+      <div class="aov-stat">
+        <div class="aov-stat-num">{{ sv.count }}</div>
+        <div class="aov-stat-lbl" [title]="sv.title">{{ sv.title }}</div>
+      </div>
+    }
     <div class="aov-stat">
       <div class="aov-stat-num">{{ state.wardsActive }}</div>
       <div class="aov-stat-lbl">WARDS ACTIVE</div>
@@ -38,7 +35,7 @@
       <div class="aov-stat-num">{{ state.staffReporting }}</div>
       <div class="aov-stat-lbl">STAFF REPORTING</div>
     </div>
-    <div class="aov-stat aov-stat-flag">
+    <div class="aov-stat aov-stat-flag aov-stat-clickable" (click)="openUrgentFlags()" title="View all urgent submissions">
       <div class="aov-stat-num">{{ state.urgentFlags }}</div>
       <div class="aov-stat-lbl">URGENT FLAGS</div>
     </div>
@@ -82,7 +79,7 @@
       </div>
       @for (w of state.wardStats; track w.name) {
         <div class="aov-hbar-row">
-          <div class="aov-hbar-lbl">{{ w.name }}</div>
+          <div class="aov-hbar-lbl aov-ward-chip">{{ w.name }}</div>
           <div class="aov-hbar-track">
             <div class="aov-hbar-fill" [style.width.%]="(w.count / state.maxWard()) * 100"></div>
           </div>
