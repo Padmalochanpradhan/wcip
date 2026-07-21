@@ -1,0 +1,36 @@
+<h2 mat-dialog-title class="text-center">{{ data.title }}</h2>
+
+<mat-dialog-content class="text-center">
+
+  <!-- User Info -->
+  <div style="font-weight:bold; font-size:16px;">
+    {{ data.name }}<br>
+    <span class="material-icons" style="font-size:18px;">email</span>
+    {{ data.email }}
+     <span class="material-icons" style="font-size:18px;">badge</span>
+    {{ data.role }} 
+  </div>
+
+  <p style="margin-top:15px; font-size:16px;">
+    {{ data.messaage }}
+  </p>
+
+  
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-raised-button color="primary"
+          (click)="confirm(true)">
+    Yes
+  </button>
+
+  <button mat-raised-button color="warn"
+          (click)="confirm(false)">
+    No
+  </button>
+</mat-dialog-actions>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <mat-spinner diameter="60"></mat-spinner>
+</div>

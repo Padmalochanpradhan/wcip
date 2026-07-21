@@ -1,0 +1,45 @@
+.email-field {
+  width: 64.5%;
+}
+
+
+.common-field {
+  width: 100%;
+}
+
+.loader-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;     /* vertical center */
+  justify-content: center; /* horizontal center */
+
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+}
+
+.mt-5{
+  margin-top: 5px;
+}
+.password-hint {
+  font-size: 12px;
+  color: #666;
+}
+.action-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.error-message-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d32f2f;
+  font-size: 14px;
+  font-weight: 500;
+}

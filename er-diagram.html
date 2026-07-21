@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WCIP — Database ER Diagram</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; color: #1a1a1a; }
+
+  .header {
+    background: #085041;
+    color: #fff;
+    padding: 28px 48px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.01em; }
+  .header-left p  { font-size: 13px; opacity: 0.6; margin-top: 4px; }
+  .header-badge   { font-size: 11px; background: #2B7A6F; border-radius: 20px; padding: 4px 14px; opacity: 0.9; }
+
+  .content { padding: 28px 48px 48px; }
+
+  /* ── Category legend ── */
+  .cat-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .cat-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff;
+    border: 1px solid #e0e4e8;
+  }
+  .cat-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── Changes callout ── */
+  .callout {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-left: 4px solid #f9a825;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .callout h3 { font-size: 13px; font-weight: 700; color: #e65100; margin-bottom: 10px; }
+  .callout ul { font-size: 12.5px; color: #555; padding-left: 18px; line-height: 1.9; }
+  .callout code { background: #fff3e0; padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; margin-left: 4px; vertical-align: middle; }
+  .tag-rm  { background: #fdecea; color: #c62828; }
+  .tag-fix { background: #fff3e0; color: #e65100; }
+  .tag-add { background: #e8f5e9; color: #2e7d32; }
+
+  /* ── Diagram card ── */
+  .diagram-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e4e8;
+    padding: 32px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  .diagram-card .mermaid { min-width: 900px; }
+
+  /* ── JSON schema ── */
+  .schema-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 900px) { .schema-grid { grid-template-columns: 1fr; } }
+
+  .schema-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e0e4e8;
+    overflow: hidden;
+  }
+  .schema-card-head {
+    background: #085041;
+    color: #fff;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .schema-card-head span { font-size: 11px; opacity: 0.65; font-weight: 400; }
+  .schema-card pre {
+    padding: 16px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #333;
+    overflow-x: auto;
+  }
+  .kw  { color: #7b1fa2; font-weight: 600; }
+  .str { color: #1565c0; }
+  .cmt { color: #888; font-style: italic; }
+
+  /* ── Future table ── */
+  .future-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e0e4e8;
+    overflow: hidden;
+  }
+  .future-head { background: #546e7a; color: #fff; padding: 10px 18px; font-size: 13px; font-weight: 600; }
+  .future-body { padding: 14px 18px; font-size: 12.5px; color: #555; line-height: 1.8; }
+  .future-body strong { color: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>WCIP Survey Management System — Database ER Diagram</h1>
+    <p>Corrected schema · reflects actual Lambda + Angular implementation · June 2026</p>
+  </div>
+  <div class="header-badge">WellCentric Health Group DC</div>
+</div>
+
+<div class="content">
+
+  <!-- Category legend -->
+  <div class="cat-row">
+    <div class="cat-pill"><div class="cat-dot" style="background:#4a90d9"></div> Survey Definition</div>
+    <div class="cat-pill"><div class="cat-dot" style="background:#f0a500"></div> Submission & Collection</div>
+    <div class="cat-pill"><div class="cat-dot" style="background:#2B7A6F"></div> User & Location</div>
+    <div class="cat-pill"><div class="cat-dot" style="background:#e53935"></div> Security & Audit</div>
+    <div class="cat-pill"><div class="cat-dot" style="background:#546e7a"></div> Assignment & Collection</div>
+    <div class="cat-pill"><div class="cat-dot" style="background:#6a1b9a"></div> Clients & Locations</div>
+  </div>
+
+  <!-- Changes callout -->
+  <div class="callout">
+    <h3>Changes from original diagram</h3>
+    <ul>
+      <li>
+        <code>users</code> table <span class="tag tag-rm">REMOVED</span>
+        — system uses <code>staff_roster</code> as the sole user table; all Lambdas (WCUserslist, WCCreateUser, WCUpdateUser, WCLogin) read/write <code>staff_roster</code>
+      </li>
+      <li>
+        <code>submission_answers</code> table <span class="tag tag-rm">REMOVED</span>
+        — individual question answers are not stored; only the AI analysis JSON is saved in <code>survey_submissions.ai_analysis</code>
+      </li>
+      <li>
+        <code>survey_assignment</code> table <span class="tag tag-add">KEPT</span>
+        — table exists in DB; not yet used by Angular app (future: control which staff cover which survey+ward)
+      </li>
+      <li>
+        <code>staff_roster.name</code> → <code>first_name</code> + <code>last_name</code> <span class="tag tag-fix">FIXED</span>
+        — corrects the <code>FistName</code> typo and normalises split names (matches WCCreateUser / WCUpdateUser Lambda contracts)
+      </li>
+      <li>
+        <code>survey_submissions.ai_analysis</code> JSON schema <span class="tag tag-add">UPDATED</span>
+        — now includes <code>sentiment</code> (from Engagement tone chip) and <code>trust_signal</code> (from Institutional trust chip) fields
+      </li>
+      <li>
+        <code>survey_submissions.reviewed_by</code> FK <span class="tag tag-fix">FIXED</span>
+        — now correctly references <code>staff_roster.id</code> instead of the removed <code>users</code> table
+      </li>
+    </ul>
+  </div>
+
+  <!-- ER Diagram -->
+  <div class="diagram-card">
+    <div class="mermaid">
+erDiagram
+    SURVEYS {
+        bigint id PK
+        varchar title
+        varchar slug
+        text description
+        varchar survey_type
+        text daily_prompt_text
+        varchar status
+        int version
+        int display_order
+        bigint created_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SURVEY_SECTIONS {
+        bigint id PK
+        bigint survey_id FK
+        bigint parent_section_id FK
+        varchar title
+        varchar subtitle
+        varchar icon
+        tinyint is_collapsible
+        tinyint is_required
+        varchar badge_label
+        int display_order
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SURVEY_QUESTION_MAP {
+        bigint id PK
+        bigint survey_id FK
+        bigint section_id FK
+        bigint question_id FK
+        int display_order
+        tinyint is_required_override
+        varchar label_override
+        varchar helper_override
+        json conditional_on
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    QUESTIONS_BANK {
+        bigint id PK
+        varchar code
+        varchar label
+        varchar helper_text
+        varchar placeholder
+        varchar question_type
+        json validation
+        tinyint default_required
+        varchar category
+        tinyint is_active
+        int version
+        bigint created_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    QUESTION_OPTIONS {
+        bigint id PK
+        bigint question_id FK
+        varchar label
+        varchar value
+        varchar color_variant
+        varchar icon
+        int display_order
+        tinyint is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SURVEY_SUBMISSIONS {
+        bigint id PK
+        bigint survey_id FK
+        bigint user_id FK
+        bigint ward_id FK
+        varchar location_text
+        enum status
+        json ai_analysis
+        timestamp submitted_at
+        timestamp reviewed_at
+        bigint reviewed_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    STAFF_ROSTER {
+        int id PK
+        int role_id FK
+        varchar cognito_username
+        varchar first_name
+        varchar last_name
+        varchar email
+        varchar password_hash
+        tinyint member_status
+        datetime added_on
+        datetime password_updated_on
+    }
+
+    ROLES {
+        int id PK
+        varchar name
+    }
+
+    WARDS {
+        bigint id PK
+        varchar name
+        varchar code
+        text description
+        tinyint is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_LOGIN_ATTEMPTS {
+        bigint id PK
+        varchar username
+        int failed_attempts
+        datetime last_failed
+        datetime locked
+        datetime created_at
+        datetime updated_at
+        datetime window_start
+    }
+
+    AUDIT_LOG {
+        bigint id PK
+        bigint user_id FK
+        varchar entity_type
+        bigint entity_id
+        varchar action
+        json changes
+        varchar ip_address
+        timestamp created_at
+    }
+
+    CLIENTS {
+        bigint id PK
+        varchar name
+        varchar short_name
+        varchar contact_name
+        varchar contact_email
+        varchar contact_phone
+        text address
+        varchar logo_url
+        enum status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    LOCATIONS {
+        bigint id PK
+        varchar name
+        varchar address
+        bigint ward_id FK
+        decimal latitude
+        decimal longitude
+        enum location_type
+        tinyint is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SURVEY_ASSIGNMENT {
+        bigint id PK
+        bigint survey_id FK
+        bigint user_id FK
+        bigint ward_id FK
+        enum role
+        bigint assigned_by FK
+        timestamp created_at
+    }
+
+    SURVEYS ||--o{ SURVEY_SECTIONS         : "has sections"
+    SURVEYS ||--o{ SURVEY_QUESTION_MAP     : "maps questions"
+    SURVEY_SECTIONS ||--o{ SURVEY_QUESTION_MAP  : "contains"
+    SURVEY_SECTIONS ||--o{ SURVEY_SECTIONS      : "parent of"
+    QUESTIONS_BANK ||--o{ SURVEY_QUESTION_MAP   : "reused in"
+    QUESTIONS_BANK ||--o{ QUESTION_OPTIONS      : "has options"
+    SURVEYS        ||--o{ SURVEY_SUBMISSIONS    : "receives"
+    STAFF_ROSTER   ||--o{ SURVEY_SUBMISSIONS    : "submits"
+    WARDS          ||--o{ SURVEY_SUBMISSIONS    : "ward location"
+    ROLES          ||--o{ STAFF_ROSTER          : "role assigned"
+    STAFF_ROSTER   ||--o{ AUDIT_LOG             : "generates log"
+    SURVEYS        ||--o{ SURVEY_ASSIGNMENT     : "assigned via"
+    STAFF_ROSTER   ||--o{ SURVEY_ASSIGNMENT     : "assigned to"
+    WARDS          ||--o{ SURVEY_ASSIGNMENT     : "covers ward"
+    CLIENTS        ||--o{ SURVEYS               : "commissions"
+    LOCATIONS      ||--o{ SURVEYS               : "targets"
+    LOCATIONS      ||--o{ SURVEY_SUBMISSIONS    : "pinned to"
+    WARDS          ||--o{ LOCATIONS             : "in ward"
+    </div>
+  </div>
+
+  <!-- ai_analysis schema + status enum -->
+  <div class="schema-grid">
+
+    <div class="schema-card">
+      <div class="schema-card-head">
+        ai_analysis JSON — survey_submissions
+        <span>stored as JSON column</span>
+      </div>
+      <pre>{
+  <span class="kw">"summary"</span>:      <span class="str">"3-4 sentence AI summary"</span>,
+
+  <span class="kw">"scores"</span>: [
+    {
+      <span class="kw">"label"</span>: <span class="str">"Built environment"</span>,
+      <span class="kw">"value"</span>: <span class="str">"Good | Fair | Poor | Critical"</span>,
+      <span class="kw">"cls"</span>:   <span class="str">"positive | neutral | warning | critical"</span>
+    },
+    { <span class="kw">"label"</span>: <span class="str">"Environmental burden"</span>, <span class="kw">"value"</span>: <span class="str">"Low | Moderate | High | Critical"</span>, ... },
+    { <span class="kw">"label"</span>: <span class="str">"Food access"</span>,          <span class="kw">"value"</span>: <span class="str">"Good | Limited | Poor | Desert"</span>, ... },
+    { <span class="kw">"label"</span>: <span class="str">"Safety"</span>,               <span class="kw">"value"</span>: <span class="str">"High | Moderate | Low | Critical"</span>, ... }
+  ],
+
+  <span class="kw">"themes"</span>: [<span class="str">"theme1"</span>, <span class="str">"theme2"</span>, <span class="str">"theme3"</span>],
+
+  <span class="cmt">// Narrative surveys only (from chips)</span>
+  <span class="kw">"sentiment"</span>:    <span class="str">"Positive | Negative | Mixed | Urgent"</span>,
+  <span class="kw">"trust_signal"</span>: <span class="str">"High | Moderate | Low | Erosion"</span>
+}</pre>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-card-head">
+        status ENUM — survey_submissions
+        <span>auto-flagged by submit logic</span>
+      </div>
+      <pre><span class="cmt">-- Possible values</span>
+<span class="str">'draft'</span>     <span class="cmt">-- saved but not submitted</span>
+<span class="str">'submitted'</span> <span class="cmt">-- normal submission</span>
+<span class="str">'reviewed'</span>  <span class="cmt">-- admin has reviewed</span>
+<span class="str">'flagged'</span>   <span class="cmt">-- URGENT: auto-set when:</span>
+
+<span class="cmt">-- NARRATIVE surveys:</span>
+<span class="cmt">--   Engagement tone chip = "Urgent"</span>
+
+<span class="cmt">-- ENVIRONMENTAL scans:</span>
+<span class="cmt">--   Safety score    = Low | Critical</span>
+<span class="cmt">--   Env burden      = High | Critical</span>
+
+
+<span class="cmt">-- Low Trust Signal derived when:</span>
+<span class="cmt">-- NARRATIVE: trust_signal = "Low" | "Erosion"</span>
+<span class="cmt">-- ENV SCAN:  Safety cls   = "critical"</span></pre>
+    </div>
+
+  </div>
+
+  <!-- Future scope -->
+  <div class="future-card">
+    <div class="future-head">Future Scope — Tables defined but not yet implemented</div>
+    <div class="future-body">
+      <strong>survey_assignment</strong> — Table exists in DB. Not yet read by the Angular app — all active surveys are currently visible to all field staff. Implementing it would enforce ward coverage (e.g. Briana covers Ward 1 narratives, Kenechi covers Ward 4 scans) and enable gap reporting.<br><br>
+      <strong>submission_answers</strong> — Table defined but not yet used. Survey form answers are currently summarised only via the AI analysis JSON in <code>survey_submissions.ai_analysis</code>. Implementing this would enable per-question analytics, raw data export, and audit trails.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    er: {
+      diagramPadding: 24,
+      layoutDirection: 'TB',
+      minEntityWidth: 120,
+      minEntityHeight: 75,
+      entityPadding: 15,
+      useMaxWidth: true
+    },
+    themeVariables: {
+      primaryColor:       '#e8f5f3',
+      primaryBorderColor: '#2B7A6F',
+      primaryTextColor:   '#085041',
+      lineColor:          '#888',
+      fontFamily:         'Segoe UI, Arial, sans-serif'
+    }
+  });
+</script>
+</body>
+</html>

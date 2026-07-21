@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Survey' : 'Create Survey' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" style="display:flex;flex-direction:column;gap:12px;padding-top:8px;">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title">
+      <mat-error>Title is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Short Title</mat-label>
+      <input matInput formControlName="short_title" maxlength="60">
+      <mat-error>Short title must be 60 characters or fewer</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="2"></textarea>
+    </mat-form-field>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <mat-form-field appearance="outline">
+        <mat-label>Survey Type</mat-label>
+        <mat-select formControlName="survey_type">
+          @for (t of surveyTypes; track t) {
+            <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Icon</mat-label>
+        <mat-select formControlName="icon">
+          @for (ic of icons; track ic) {
+            <mat-option [value]="ic">{{ ic }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <mat-select formControlName="location_id">
+        <mat-option [value]="null">— No location —</mat-option>
+        @if (locationsLoading) {
+          <mat-option disabled>Loading locations…</mat-option>
+        }
+        @for (loc of locations; track loc.id) {
+          <mat-option [value]="loc.id">{{ loc.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="sfd-prompt-field">
+      <mat-label>Daily Prompt</mat-label>
+      <textarea matInput formControlName="daily_prompt" rows="4"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="draft">Draft</mat-option>
+        <mat-option value="active">Active</mat-option>
+        <mat-option value="archived">Archived</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    @if (errorMsg) {
+      <div style="color:#b00;font-size:13px;">{{ errorMsg }}</div>
+    }
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="isLoading || form.invalid">
+    @if (isLoading) { <mat-progress-spinner diameter="16" mode="indeterminate" style="display:inline-block;margin-right:6px;"></mat-progress-spinner> }
+    {{ isEdit ? 'Update' : 'Create' }}
+  </button>
+</mat-dialog-actions>

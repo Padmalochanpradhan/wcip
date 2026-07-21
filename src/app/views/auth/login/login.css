@@ -1,0 +1,300 @@
+/* ── Page wrapper ── */
+:host {
+  display: block;
+  width: 100%;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #EDEBE5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* ── Brand header ── */
+.brand-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.brand-icon-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  border: 2px solid #3C9E90;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.brand-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3C9E90;
+  line-height: 1.25;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: #999;
+  margin-top: 5px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Card ── */
+.login-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 32px 32px 28px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.09) !important;
+  background: #fff !important;
+}
+
+/* ── Headings ── */
+.signin-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px;
+}
+
+.signin-sub {
+  font-size: 14px;
+  color: #999;
+  margin: 0 0 22px;
+  line-height: 1.5;
+}
+
+/* ── Field group ── */
+.field-group {
+  margin-bottom: 18px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 7px;
+}
+
+/* ── Name select ── */
+.select-wrap {
+  position: relative;
+}
+
+.name-select {
+  width: 100%;
+  padding: 13px 40px 13px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #555;
+  background: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.name-select:focus {
+  border-color: #3C9E90;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* ── PIN field ── */
+.pin-field {
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: text;
+  background: #fff;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.pin-field:focus-within {
+  border-color: #3C9E90;
+}
+
+.pin-hidden {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: text;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  z-index: 1;
+}
+
+.pin-dots {
+  display: flex;
+  gap: 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  transition: background 0.15s;
+}
+
+.dot.filled {
+  background: #1d9e75;
+}
+
+/* ── Sign in button ── */
+.signin-btn {
+  width: 100%;
+  height: 48px;
+  background: #1d9e75;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.signin-btn:hover:not(:disabled) {
+  background: #226059;
+}
+
+.signin-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── Admin link ── */
+.admin-row {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #999;
+}
+
+.admin-link {
+  color: #1d9e75;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.admin-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Material form fields (admin mode) ── */
+.full-width {
+  width: 100%;
+  display: block;
+}
+
+/* ── Alert boxes ── */
+.alert-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.error-box {
+  background: #f8d7da;
+  border-left: 4px solid #d32f2f;
+  color: #7a1f23;
+}
+
+.error-box mat-icon {
+  color: #d32f2f;
+}
+
+.success-box {
+  background: #e8f5e9;
+  border-left: 4px solid #2e7d32;
+  color: #2e7d32;
+}
+
+/* ── MFA screens ── */
+.mfa-section {
+  text-align: center;
+}
+
+.mfa-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mfa-section p {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.otp-field {
+  width: 260px;
+  display: block;
+  margin: 0 auto 16px;
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 28px;
+  letter-spacing: 12px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.btn-spinner {
+  margin: auto;
+}
+
+::ng-deep .btn-spinner circle {
+  stroke: #fff !important;
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .page-wrapper  { padding: 24px 12px; }
+  .login-card    { padding: 24px 18px 20px !important; border-radius: 12px !important; }
+  .brand-name    { font-size: 20px; }
+  .signin-heading { font-size: 19px; }
+}

@@ -1,0 +1,78 @@
+.ud-content {
+  max-height: 75vh;
+  padding: 20px 24px 16px;
+}
+
+/* ── Form grid: 2-column on desktop ── */
+.ud-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.ud-field {
+  width: 100%;
+}
+
+.ud-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Password hint ── */
+.ud-pw-hint {
+  font-size: 12px;
+  color: #777;
+  margin: 2px 0 12px;
+  line-height: 1.5;
+}
+
+/* ── Error message ── */
+.ud-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d32f2f;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+/* ── Action buttons ── */
+.ud-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ── Loader ── */
+.loader-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+}
+
+/* ── Mobile: single column ── */
+@media (max-width: 599px) {
+  .ud-content {
+    padding: 20px 16px 12px;
+    max-height: 80vh;
+  }
+
+  .ud-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ud-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .ud-actions button {
+    width: 100%;
+  }
+}

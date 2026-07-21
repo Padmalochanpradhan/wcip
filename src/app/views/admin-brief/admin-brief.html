@@ -1,0 +1,208 @@
+<div class="acb-shell">
+
+  <header class="acb-header">
+    <div class="acb-brand">
+      <div class="acb-mark">W</div>
+      <span class="acb-org">WellCentric Health Group DC</span>
+    </div>
+    <div class="acb-header-right">
+      <span class="acb-live">● Live data</span>
+      <span class="acb-date">{{ state.fmt(today.toISOString()) }}</span>
+    </div>
+  </header>
+
+  <main class="acb-page">
+
+    @if (state.isLoading) {
+      <div class="acb-loader"><mat-progress-spinner diameter="44" mode="indeterminate"></mat-progress-spinner></div>
+    }
+
+    @if (state.loadError) {
+      <div class="acb-error"><span>{{ state.loadError }}</span></div>
+    }
+
+    @if (!state.isLoading && !state.loadError) {
+
+      <!-- Title card -->
+      <div class="acb-card acb-title-card">
+        <div class="acb-title-row">
+          <div>
+            <h1 class="acb-title">Community Intelligence Brief</h1>
+            <p class="acb-sub">WellCentric Community Intelligence Platform (WCIP)</p>
+          </div>
+          <button class="acb-refresh-btn" (click)="refresh()">
+            <mat-icon>refresh</mat-icon> Refresh
+          </button>
+        </div>
+        <div class="acb-pill-row">
+          <span class="acb-pill acb-pill-plain">{{ state.fmt(today.toISOString()) }}</span>
+          <span class="acb-pill acb-pill-teal">{{ state.total }} submissions</span>
+          <span class="acb-pill acb-pill-amber">{{ state.wardsActive }} ward{{ state.wardsActive !== 1 ? 's' : '' }} active</span>
+          <span class="acb-pill acb-pill-plain">{{ state.staffReporting }} staff reporting</span>
+        </div>
+      </div>
+
+      <!-- Connected banner -->
+      <div class="acb-connected">
+        Connected — {{ state.totalNarratives }} narratives + {{ state.totalScans }} environmental scans loaded.
+      </div>
+
+      <!-- Stat cards -->
+      <div class="acb-stats-row">
+        <div class="acb-stat acb-stat-total">
+          <div class="acb-stat-num">{{ state.total }}</div>
+          <div class="acb-stat-lbl">Total submissions</div>
+        </div>
+        <div class="acb-stat">
+          <div class="acb-stat-num">{{ state.totalNarratives }}</div>
+          <div class="acb-stat-lbl">Narratives</div>
+          <div class="acb-stat-note">Field interviews &amp; observations</div>
+        </div>
+        <div class="acb-stat">
+          <div class="acb-stat-num">{{ state.totalScans }}</div>
+          <div class="acb-stat-lbl">Env. scans</div>
+          <div class="acb-stat-note">Community assessments</div>
+        </div>
+        <div class="acb-stat">
+          <div class="acb-stat-num">{{ state.wardsActive }}</div>
+          <div class="acb-stat-lbl">Wards active</div>
+        </div>
+        <div class="acb-stat">
+          <div class="acb-stat-num">{{ state.staffReporting }}</div>
+          <div class="acb-stat-lbl">Staff reporting</div>
+        </div>
+        @if (state.urgentFlags > 0) {
+          <div class="acb-stat acb-stat-urgent">
+            <div class="acb-stat-num">{{ state.urgentFlags }}</div>
+            <div class="acb-stat-lbl">Urgent flags</div>
+          </div>
+        }
+      </div>
+
+      <!-- Charts row -->
+      <div class="acb-charts-row">
+
+        <div class="acb-card">
+          <h2 class="acb-card-title">Submissions by ward</h2>
+          @for (w of state.wardStats; track w.name) {
+            <div class="acb-bar-row">
+              <span class="acb-bar-lbl">{{ w.name }}</span>
+              <div class="acb-bar-track">
+                <div class="acb-bar-fill" [style.width.%]="(w.count / state.maxWard()) * 100"></div>
+              </div>
+              <span class="acb-bar-num">{{ w.count }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="acb-card">
+          <h2 class="acb-card-title">Community trust signals</h2>
+          @for (t of state.trustBars; track t.label) {
+            <div class="acb-bar-row">
+              <span class="acb-bar-lbl">{{ t.label }}</span>
+              <div class="acb-bar-track">
+                <div class="acb-bar-fill" [style.width.%]="t.pct" [style.background]="t.color"></div>
+              </div>
+              <span class="acb-bar-num">{{ t.count }}</span>
+            </div>
+          }
+
+          <h2 class="acb-card-title acb-sentiment-title">Sentiment breakdown</h2>
+          <div class="acb-chip-row">
+            @for (sb of state.sentimentBars; track sb.label) {
+              <span class="acb-sentiment-chip" [style.background]="sb.color + '22'" [style.color]="sb.color">
+                {{ sb.label }} ({{ sb.count }})
+              </span>
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Top themes -->
+      @if (state.topThemes.length > 0) {
+        <div class="acb-card">
+          <h2 class="acb-card-title">Top themes across all submissions</h2>
+          @for (t of state.topThemes; track t.label) {
+            <div class="acb-theme-row">
+              <span class="acb-theme-label">{{ t.label }}</span>
+              <span class="acb-theme-pct">{{ t.pct }}%</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Community context — public data benchmarks -->
+      <div class="acb-card">
+        <h2 class="acb-card-title">Community context — public data benchmarks</h2>
+
+        @if (benchmarksLoading) {
+          <div class="acb-bench-loader"><mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner></div>
+        }
+
+        @if (!benchmarksLoading && benchmarksError) {
+          <div class="acb-bench-error">{{ benchmarksError }}</div>
+        }
+
+        @if (!benchmarksLoading && !benchmarksError && benchmarks) {
+          <div class="acb-bench-grid">
+            @for (b of [benchmarks.census, benchmarks.brfss, benchmarks.eji, benchmarks.ncqa, benchmarks.samhsa]; track b.source) {
+              <div class="acb-bench-card">
+                <div class="acb-bench-top">
+                  <span class="acb-bench-source">{{ b.source }}</span>
+                  @if (b.live) {
+                    <span class="acb-bench-badge acb-bench-live">Live</span>
+                  } @else {
+                    <span class="acb-bench-badge acb-bench-static">Reference</span>
+                  }
+                </div>
+                @if (b.error) {
+                  <div class="acb-bench-unavailable">Unavailable — {{ b.error }}</div>
+                } @else {
+                  @for (m of b.metrics; track m.label) {
+                    <div class="acb-bench-metric">
+                      <span class="acb-bench-value" [class.acb-bench-tbd]="b.placeholder">{{ m.value }}</span>
+                      <span class="acb-bench-label">{{ m.label }}</span>
+                    </div>
+                  }
+                }
+                <div class="acb-bench-citation">{{ b.citation }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Recent field signals -->
+      @if (state.urgentSubs.length > 0) {
+        <div class="acb-card">
+          <h2 class="acb-card-title">Recent field signals</h2>
+          @for (sub of state.urgentSubs; track sub.id) {
+            <div class="acb-signal-card">
+              <div class="acb-signal-top">
+                <span class="acb-signal-ward">{{ sub.ward_name || 'Ward —' }}</span>
+                @if (sub.location_text) { <span class="acb-signal-dim">· {{ sub.location_text }}</span> }
+                <span class="acb-signal-dim">· {{ sub.survey_title || 'Field Scan' }}</span>
+                <span class="acb-signal-tag">URGENT</span>
+                <span class="acb-signal-date">{{ state.fmtShort(sub.submitted_at || sub.created_at) }}</span>
+              </div>
+              @if (state.headline(sub)) {
+                <div class="acb-signal-headline">{{ state.headline(sub) }}</div>
+              }
+              @if (sub.ai_analysis?.summary) {
+                <div class="acb-signal-ai">{{ sub.ai_analysis!.summary.slice(0, 220) }}{{ sub.ai_analysis!.summary.length > 220 ? '…' : '' }}</div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+    }
+
+  </main>
+
+  <button class="acb-print-btn" (click)="print()">
+    <mat-icon>print</mat-icon> Print / Save PDF
+  </button>
+
+</div>

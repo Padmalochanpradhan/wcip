@@ -1,0 +1,58 @@
+<div class="awd-page">
+
+  <div class="awd-page-head">
+    <h1 class="awd-page-title">Ward Breakdown</h1>
+    <p class="awd-page-sub">Submission depth and signal quality by DC ward</p>
+  </div>
+
+  @if (state.isLoading) {
+    <div class="awd-loader"><mat-progress-spinner diameter="44" mode="indeterminate"></mat-progress-spinner></div>
+  }
+
+  @if (state.loadError) {
+    <div class="awd-error"><span>{{ state.loadError }}</span></div>
+  }
+
+  @if (!state.isLoading && !state.loadError) {
+    @for (w of state.wardStats; track w.name) {
+      <div class="awd-card">
+
+        <div class="awd-card-head">
+          <span class="awd-card-name">{{ w.name }}</span>
+          <span class="awd-card-meta">{{ w.count }} submission{{ w.count !== 1 ? 's' : '' }} · {{ w.staff }} staff</span>
+        </div>
+
+        <div class="awd-stats-row">
+          @for (sv of w.surveys; track sv.title) {
+            <div class="awd-stat awd-stat-neutral">
+              <div class="awd-stat-num">{{ sv.count }}</div>
+              <div class="awd-stat-label" [title]="sv.title">{{ sv.title }}</div>
+            </div>
+          }
+          @if (w.urgent > 0) {
+            <div class="awd-stat awd-stat-urgent">
+              <div class="awd-stat-num">{{ w.urgent }}</div>
+              <div class="awd-stat-label">URGENT</div>
+            </div>
+          }
+          @if (w.lowTrust > 0) {
+            <div class="awd-stat awd-stat-lowtrust">
+              <div class="awd-stat-num">{{ w.lowTrust }}</div>
+              <div class="awd-stat-label">LOW TRUST</div>
+            </div>
+          }
+        </div>
+
+        @if (w.themes.length > 0) {
+          <div class="awd-themes">
+            @for (t of w.themes; track t) {
+              <span class="awd-theme-chip">{{ t }}</span>
+            }
+          </div>
+        }
+
+      </div>
+    }
+  }
+
+</div>

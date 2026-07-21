@@ -1,0 +1,46 @@
+.asv-page { padding: 8px 20px 32px; max-width: 1100px; margin: 0 auto; }
+
+.asv-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.asv-back { background: none; border: none; color: #1d9e75; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
+.asv-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
+.asv-sub { font-size: 13px; color: #888; margin: 0; }
+.asv-header-actions { display: flex; align-items: center; gap: 10px; align-self: center; flex-wrap: wrap; }
+.asv-create-btn { display: flex; align-items: center; gap: 6px; background: #6a1b9a; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.asv-create-btn:hover { background: #4a148c; }
+.asv-create-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.asv-import-btn { display: flex; align-items: center; gap: 6px; background: none; border: 1px solid #1d9e75; color: #1d9e75; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.asv-import-btn:hover { background: #e0f2f1; }
+.asv-import-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.asv-loader { display: flex; justify-content: center; padding: 48px; }
+.asv-error { display: flex; align-items: center; gap: 8px; color: #b00; padding: 24px 0; font-size: 14px; }
+.asv-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 60px; color: #aaa; }
+.asv-empty mat-icon { font-size: 48px; width: 48px; height: 48px; }
+
+.asv-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 10px; border: 1px solid #ebebeb; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: box-shadow 0.15s; }
+.asv-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.asv-card-icon { width: 44px; height: 44px; border-radius: 10px; background: #f3e5f5; color: #6a1b9a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.asv-card-body { flex: 1; min-width: 0; }
+.asv-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.asv-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+.asv-status { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; text-transform: capitalize; }
+.asv-active   { background: #e8f5e9; color: #2e7d32; }
+.asv-draft    { background: #f5f5f5; color: #777; }
+.asv-archived { background: #fce4ec; color: #c62828; }
+.asv-desc { font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.asv-type { font-size: 12px; color: #bbb; margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.asv-loc-tag { font-size: 11px; font-weight: 500; color: #1d9e75; background: #e0f2f1; border-radius: 10px; padding: 1px 8px; }
+.asv-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.asv-edit-btn { background: none; border: 1px solid #e0e0e0; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6a1b9a; }
+.asv-edit-btn:hover { background: #f3e5f5; }
+.asv-edit-btn mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.asv-chevron { color: #ccc; }
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .asv-page   { padding: 8px 12px 24px; }
+  .asv-header { flex-direction: column; align-items: flex-start; }
+  .asv-card   { flex-wrap: wrap; }
+  .asv-card-body { flex-basis: calc(100% - 58px); }
+  .asv-actions { margin-left: auto; }
+  .asv-desc { white-space: normal; }
+}

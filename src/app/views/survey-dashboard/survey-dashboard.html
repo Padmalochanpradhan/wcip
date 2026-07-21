@@ -1,0 +1,77 @@
+<div class="sd-page">
+
+  @if (isLoading) {
+    <div class="sd-loader">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  @if (!isLoading) {
+    <h1 class="sd-title">Ready to capture?</h1>
+    <p class="sd-sub">Select a form to begin your field submission.</p>
+
+    <!-- Stats row -->
+    <div class="sd-stats-row">
+      <div class="sd-stat-card">
+        <div class="sd-stat-label">Your submissions today</div>
+        <div class="sd-stat-value">{{ submittedToday }}</div>
+        <div class="sd-stat-caption">signals captured</div>
+      </div>
+      <div class="sd-stat-card">
+        <div class="sd-stat-label">Platform status</div>
+        <div class="sd-stat-connected">Connected</div>
+        <div class="sd-stat-caption">AI + AWS ready</div>
+      </div>
+    </div>
+
+    <!-- Survey cards -->
+    @for (survey of surveys; track survey.id) {
+      <div class="sd-survey-card" (click)="openSurvey(survey.id)">
+        <div class="sd-survey-icon"
+             [style.background]="getIconBg(survey.icon)"
+             [style.color]="getIconColor(survey.icon)">
+          <mat-icon>{{ getIcon(survey.icon) }}</mat-icon>
+        </div>
+        <div class="sd-survey-info">
+          <div class="sd-survey-title">{{ survey.title }}</div>
+          <div class="sd-survey-desc">{{ survey.description }}</div>
+        </div>
+        <mat-icon class="sd-chevron">chevron_right</mat-icon>
+      </div>
+    }
+
+    <!-- Data Explorer link — disabled, re-enable when ready
+    <div class="sd-submissions-row sd-data-row" (click)="openDataExplorer()">
+      <div class="sd-submissions-icon sd-data-icon">
+        <mat-icon>science</mat-icon>
+      </div>
+      <div class="sd-submissions-info">
+        <div class="sd-submissions-title">Public Data Explorer</div>
+        <div class="sd-submissions-sub">Live Census ACS &amp; public API data</div>
+      </div>
+      <mat-icon class="sd-chevron">chevron_right</mat-icon>
+    </div>
+    -->
+
+    <!-- My Submissions link -->
+    <div class="sd-submissions-row" (click)="openSubmissions()">
+      <div class="sd-submissions-icon">
+        <mat-icon>history</mat-icon>
+      </div>
+      <div class="sd-submissions-info">
+        <div class="sd-submissions-title">My Submissions</div>
+        <div class="sd-submissions-sub">View past scans &amp; AI analysis</div>
+      </div>
+      <mat-icon class="sd-chevron">chevron_right</mat-icon>
+    </div>
+
+    <!-- Today's field prompt -->
+    @if (todayPrompt) {
+      <div class="sd-prompt-card">
+        <div class="sd-prompt-label">Today's field prompt</div>
+        <div class="sd-prompt-text">{{ todayPrompt }}</div>
+      </div>
+    }
+  }
+
+</div>

@@ -1,0 +1,116 @@
+.ast-page { padding: 28px 32px 40px; }
+
+.ast-page-head { margin-bottom: 24px; }
+.ast-page-title { font-size: 24px; font-weight: 700; color: #085041; margin: 0 0 4px; }
+.ast-page-sub   { font-size: 13px; color: #888; margin: 0; }
+
+.ast-loader { display: flex; justify-content: center; padding: 80px; }
+.ast-error  { display: flex; align-items: center; gap: 8px; color: #b00; padding: 32px; font-size: 14px; }
+
+.ast-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e8ecef;
+  overflow: hidden;
+}
+
+.ast-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ast-th {
+  font-size: 11px;
+  font-weight: 700;
+  color: #aaa;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 16px 12px;
+  text-align: left;
+  border-bottom: 1px solid #f0f2f4;
+  white-space: nowrap;
+}
+.ast-th-name { padding-left: 24px; width: 22%; }
+.ast-th-act  { width: 24%; }
+.ast-th-num  { text-align: center; width: 10.5%; }
+.ast-th-date { text-align: center; padding-right: 24px; width: 12%; }
+
+.ast-row { border-bottom: 1px solid #f4f6f8; }
+.ast-row:last-child { border-bottom: none; }
+.ast-row:hover { background: #fafcfb; }
+
+.ast-td-name {
+  padding: 14px 16px 14px 24px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.ast-td-num {
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #085041;
+  text-align: center;
+}
+
+.ast-td-act { padding: 14px 16px; }
+
+.ast-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ast-bar-track {
+  flex: 1;
+  height: 7px;
+  background: #f0f2f4;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ast-bar-fill {
+  height: 100%;
+  background: #1d9e75;
+  border-radius: 4px;
+  transition: width 0.4s;
+}
+
+.ast-pct {
+  font-size: 12px;
+  color: #888;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ast-urg-val {
+  font-size: 14px;
+  font-weight: 400;
+  color: #c62828;
+}
+
+.ast-dash { font-size: 14px; color: #bbb; }
+
+.ast-td-date {
+  padding: 14px 24px 14px 16px;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── Tablet ── */
+@media (max-width: 1023px) {
+  .ast-page { padding: 20px 20px 32px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .ast-page  { padding: 16px 12px 28px; }
+  .ast-card  { overflow-x: auto; }
+  .ast-table { min-width: 520px; }
+}

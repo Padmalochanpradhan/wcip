@@ -1,0 +1,176 @@
+<div class="de-page">
+
+  <!-- Header -->
+  <div class="de-header">
+    <button class="de-back" (click)="goBack()">← Back</button>
+    <div class="de-header-text">
+      <h1 class="de-title">
+        <mat-icon>science</mat-icon>
+        Public Data Explorer
+      </h1>
+      <p class="de-sub">Live API calls to public data sources. Select a source, configure parameters, and run.</p>
+    </div>
+  </div>
+
+  <div class="de-layout">
+
+    <!-- Left: source selector + params -->
+    <aside class="de-sidebar">
+
+      <!-- Source tabs -->
+      <div class="de-source-label">Data Sources</div>
+      <div class="de-sources">
+        @for (src of sources; track src.id) {
+          <button class="de-source-btn" [class.de-source-active]="src.id === selectedSourceId" (click)="selectSource(src.id)">
+            <div class="de-source-name">{{ src.name }}</div>
+            <div class="de-source-cat">{{ src.category }}</div>
+          </button>
+        }
+      </div>
+
+      <!-- Source info -->
+      @if (activeSource) {
+        <div class="de-source-desc">
+          {{ activeSource.description }}
+          @if (activeSource.docsUrl) {
+            <a [href]="activeSource.docsUrl" target="_blank" class="de-docs-link">Docs ↗</a>
+          }
+        </div>
+
+        <!-- Parameters -->
+        <div class="de-params-label">Parameters</div>
+
+        @for (param of activeSource.parameters; track param.key) {
+
+          <div class="de-param">
+            <label class="de-param-label">
+              {{ param.label }}
+              @if (param.required) { <span class="de-req">*</span> }
+            </label>
+
+            @if (param.type === 'text') {
+              <input class="de-input" [(ngModel)]="params[param.key]" [placeholder]="param.hint || ''">
+            }
+
+            @if (param.type === 'select') {
+              <select class="de-select" [(ngModel)]="params[param.key]">
+                @for (opt of param.options; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            }
+
+            @if (param.type === 'multiselect') {
+              <div class="de-multiselect">
+                @for (opt of param.options; track opt.value) {
+                  <button type="button"
+                    class="de-ms-chip"
+                    [class.de-ms-active]="isMultiSelected(param.key, opt.value)"
+                    (click)="toggleMulti(param.key, opt.value)">
+                    {{ opt.label }}
+                  </button>
+                }
+              </div>
+              @if (param.hint) { <div class="de-hint">{{ param.hint }}</div> }
+            }
+
+          </div>
+        }
+
+        <button class="de-run-btn" (click)="run()" [disabled]="isLoading">
+          @if (isLoading) {
+            <mat-progress-spinner diameter="16" mode="indeterminate" class="de-spinner"></mat-progress-spinner>
+            Fetching…
+          } @else {
+            <mat-icon>play_arrow</mat-icon> Run
+          }
+        </button>
+      }
+
+    </aside>
+
+    <!-- Right: results -->
+    <main class="de-results">
+
+      <!-- Idle state -->
+      @if (!result && !isLoading && !error) {
+        <div class="de-idle">
+          <mat-icon>api</mat-icon>
+          <div>Configure parameters and click <strong>Run</strong> to fetch live data.</div>
+        </div>
+      }
+
+      <!-- Loading -->
+      @if (isLoading) {
+        <div class="de-idle">
+          <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+          <div>Calling API…</div>
+        </div>
+      }
+
+      <!-- Error -->
+      @if (error) {
+        <div class="de-error-box">
+          <mat-icon>error_outline</mat-icon>
+          <div>
+            <strong>API Error</strong>
+            <div>{{ error }}</div>
+          </div>
+        </div>
+      }
+
+      <!-- Results -->
+      @if (result && !isLoading) {
+        <!-- Meta bar -->
+        <div class="de-meta-bar">
+          <div class="de-meta-left">
+            <span class="de-result-count">{{ filteredRows.length }} / {{ result.total }} rows</span>
+            <span class="de-vintage">Vintage: {{ result.vintage }}</span>
+            <span class="de-src-name">{{ result.source }}</span>
+            <span class="de-fetched">{{ result.fetchedAt | date:'HH:mm:ss' }}</span>
+          </div>
+          <div class="de-meta-right">
+            <input class="de-filter" [(ngModel)]="filterText" placeholder="Filter results…">
+            <button class="de-copy-btn" (click)="copyUrl()" title="Copy API URL">
+              <mat-icon>content_copy</mat-icon> Copy URL
+            </button>
+          </div>
+        </div>
+
+        <!-- API URL preview -->
+        <div class="de-url-bar">
+          <span class="de-url-label">URL</span>
+          <code class="de-url">{{ result.url }}</code>
+        </div>
+
+        <!-- Table -->
+        <div class="de-table-wrap">
+          <table class="de-table">
+            <thead>
+              <tr>
+                @for (h of result.headers; track h) {
+                  <th>{{ h }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of filteredRows; track $index) {
+                <tr>
+                  @for (cell of row; let ci = $index; track ci) {
+                    <td>{{ formatCell(cell, result.headers[ci]) }}</td>
+                  }
+                </tr>
+              }
+              @if (filteredRows.length === 0) {
+                <tr><td [attr.colspan]="result.headers.length" class="de-no-rows">No rows match filter.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </main>
+
+  </div>
+
+</div>

@@ -1,0 +1,59 @@
+.ad-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  min-height: 60vh;
+}
+
+.ad-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 40px 36px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.ad-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fce4ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.ad-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #c62828;
+}
+
+.ad-code {
+  font-size: 52px;
+  font-weight: 800;
+  color: #c62828;
+  margin: 0 0 4px;
+  line-height: 1;
+}
+
+.ad-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.ad-message {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.ad-message strong { color: #333; }

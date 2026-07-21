@@ -1,0 +1,88 @@
+<div class="ab-page">
+
+  @if (isLoading) {
+    <div class="ab-loader"><mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner></div>
+  }
+
+  @if (loadError) {
+    <div class="ab-error"><mat-icon>error_outline</mat-icon> {{ loadError }}</div>
+  }
+
+  @if (survey && !isLoading) {
+    <button class="ab-back" (click)="goBack()">← Back to surveys</button>
+
+    <!-- Survey header -->
+    <div class="ab-survey-header">
+      <div>
+        <h1 class="ab-title">{{ survey.title }}</h1>
+        <div class="ab-meta">
+          <span class="ab-type">{{ survey.survey_type }}</span>
+          <span class="ab-status-badge ab-s-{{ survey.status }}">{{ survey.status }}</span>
+        </div>
+        @if (survey.description) {
+          <p class="ab-desc">{{ survey.description }}</p>
+        }
+      </div>
+    </div>
+
+    <!-- Sections -->
+    <div class="ab-sections-header">
+      <span class="ab-sections-label">Sections ({{ survey.sections.length }})</span>
+      <button class="ab-add-btn" (click)="addSection()">
+        <mat-icon>add</mat-icon> Add Section
+      </button>
+    </div>
+
+    @if (survey.sections.length === 0) {
+      <div class="ab-empty">No sections yet. Add a section to get started.</div>
+    }
+
+    @for (section of survey.sections; track section.id) {
+      <div class="ab-section">
+
+        <!-- Section header -->
+        <div class="ab-section-head" (click)="toggle(section.id)">
+          <mat-icon class="ab-expand-icon">{{ expanded[section.id] ? 'expand_more' : 'chevron_right' }}</mat-icon>
+          <div class="ab-section-info">
+            <span class="ab-section-title">{{ section.title }}</span>
+            @if (section.subtitle) { <span class="ab-section-sub">{{ section.subtitle }}</span> }
+          </div>
+          <span class="ab-q-count">{{ section.questions.length }} question{{ section.questions.length !== 1 ? 's' : '' }}</span>
+          <button class="ab-icon-btn" (click)="editSection(section, $event)" title="Edit section">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+
+        <!-- Questions -->
+        @if (expanded[section.id]) {
+          <div class="ab-questions">
+            @for (q of section.questions; track q.id) {
+              <div class="ab-question">
+                <div class="ab-q-body">
+                  <div class="ab-q-label">{{ q.label }} @if (q.is_required) { <span class="ab-req">*</span> }</div>
+                  <div class="ab-q-meta">
+                    <span class="ab-q-type">{{ typeLabel(q.question_type) }}</span>
+                    @if (q.options.length) { <span class="ab-q-opts">{{ q.options.length }} options</span> }
+                    @if (q.helper_text) { <span class="ab-q-helper">{{ q.helper_text }}</span> }
+                  </div>
+                </div>
+                <button class="ab-icon-btn" (click)="editQuestion(q, section, $event)" title="Edit question">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button class="ab-icon-btn ab-icon-btn--danger" (click)="deleteQuestion(q, $event)" title="Delete question">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            }
+
+            <button class="ab-add-q-btn" (click)="addQuestion(section)">
+              <mat-icon>add</mat-icon> Add Question
+            </button>
+          </div>
+        }
+
+      </div>
+    }
+  }
+
+</div>

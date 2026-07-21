@@ -1,0 +1,6 @@
+.dialog-title-center {
+  text-align: center;
+  width: 100%;
+  text-transform: uppercase;
+  font-weight: normal !important;   /* Removes bold */
+}

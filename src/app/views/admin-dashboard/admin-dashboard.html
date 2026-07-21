@@ -1,0 +1,97 @@
+<div class="aid-shell">
+
+  <!-- Backdrop: shown on mobile when sidebar is open -->
+  @if (sidebarOpen) {
+    <div class="aid-backdrop" (click)="closeSidebar()"></div>
+  }
+
+  <!-- ── Left sidebar ── -->
+  <aside class="aid-sidebar" [class.aid-sidebar-show]="sidebarOpen">
+
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">VIEWS</div>
+
+      <button class="aid-nav-item" routerLink="/admin/overview" routerLinkActive="aid-nav-active">
+        <mat-icon>dashboard</mat-icon><span>Overview</span>
+      </button>
+
+      <button class="aid-nav-item" routerLink="/admin/submissions" routerLinkActive="aid-nav-active">
+        <mat-icon>assignment</mat-icon><span>All submissions</span>
+        @if (state.urgentFlags > 0) {
+          <span class="aid-badge-urg">{{ state.urgentFlags }} urgent</span>
+        }
+      </button>
+
+      <button class="aid-nav-item" routerLink="/admin/staff" routerLinkActive="aid-nav-active">
+        <mat-icon>people</mat-icon><span>Staff activity</span>
+      </button>
+
+      <button class="aid-nav-item" routerLink="/admin/wards" routerLinkActive="aid-nav-active">
+        <mat-icon>map</mat-icon><span>Ward breakdown</span>
+      </button>
+    </div>
+
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">FILTER BY WARD</div>
+      <select class="aid-select" [value]="state.filterWard" (change)="onFilterChange($event)">
+        <option value="">All data</option>
+        @for (w of state.allWards; track w) {
+          <option [value]="w">{{ w }} focus</option>
+        }
+      </select>
+    </div>
+
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">FILTER BY DATE</div>
+      <div class="aid-date-row">
+        <label class="aid-date-label">From</label>
+        <input type="date" class="aid-date-input"
+               [value]="state.filterDateFrom"
+               (change)="onDateFromChange($event)" />
+      </div>
+      <div class="aid-date-row">
+        <label class="aid-date-label">To</label>
+        <input type="date" class="aid-date-input"
+               [value]="state.filterDateTo"
+               (change)="onDateToChange($event)" />
+      </div>
+      @if (state.filterDateFrom || state.filterDateTo) {
+        <button class="aid-date-clear" (click)="clearDateFilter()">
+          <mat-icon>close</mat-icon> Clear dates
+        </button>
+      }
+    </div>
+
+    <div class="aid-nav-section">
+      <div class="aid-nav-label">ACTIONS</div>
+      <button class="aid-action-item" (click)="openBrief()"><mat-icon>open_in_new</mat-icon> Open client brief</button>
+      <button class="aid-action-item" onclick="window.print()"><mat-icon>print</mat-icon> Print view</button>
+      <button class="aid-action-item" (click)="refresh()"><mat-icon>refresh</mat-icon> Refresh data</button>
+    </div>
+
+    <div class="aid-nav-section aid-sidebar-manage">
+      <div class="aid-nav-label">MANAGE</div>
+      <button class="aid-action-item" routerLink="/admin/users" routerLinkActive="aid-act-active">
+        <mat-icon>manage_accounts</mat-icon> Manage users
+      </button>
+      <button class="aid-action-item" routerLink="/admin/page-access" routerLinkActive="aid-act-active">
+        <mat-icon>security</mat-icon> Page access
+      </button>
+      <button class="aid-action-item" routerLink="/admin/surveys" routerLinkActive="aid-act-active">
+        <mat-icon>dynamic_form</mat-icon> Manage surveys
+      </button>
+      <!-- Import data — commented out for now. Uncomment to re-enable.
+      <button class="aid-action-item" routerLink="/admin/import" routerLinkActive="aid-act-active">
+        <mat-icon>upload_file</mat-icon> Import data
+      </button>
+      -->
+    </div>
+
+  </aside>
+
+  <!-- ── Page content ── -->
+  <main class="aid-main">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

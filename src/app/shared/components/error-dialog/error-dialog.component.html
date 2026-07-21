@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>
+    <mat-icon color="warn" style="vertical-align: middle; margin-right: 8px;">
+      error_outline
+    </mat-icon>
+    {{ data.title ?? 'Error' }}
+  </h2>
+  
+  <mat-dialog-content>
+    <p>{{ data.errorMessage }}</p>
+  
+    @if (data.errorDetails) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Details</mat-panel-title>
+        </mat-expansion-panel-header>
+        <pre>{{ data.errorDetails }}</pre>
+      </mat-expansion-panel>
+    }
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-flat-button color="primary" mat-dialog-close="true">OK</button>
+  </mat-dialog-actions>
+  

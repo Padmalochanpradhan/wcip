@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Wcip
+=======
+# WCIPWeb
+>>>>>>> fc6e2014b938c6efcd7d58660338a6e73e782818
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
 

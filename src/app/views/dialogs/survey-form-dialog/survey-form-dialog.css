@@ -1,0 +1,11 @@
+.sfd-prompt-field {
+  width: 100%;
+}
+
+/* Force the textarea inside the Daily Prompt field to scroll instead of overflow */
+.sfd-prompt-field ::ng-deep textarea {
+  height: 80px !important;
+  overflow-y: auto !important;
+  resize: none !important;
+  box-sizing: border-box !important;
+}

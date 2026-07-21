@@ -1,0 +1,149 @@
+<div class="sl-page">
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="sl-loader">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (loadError) {
+    <div class="sl-error">
+      <mat-icon>error_outline</mat-icon>
+      <div>{{ loadError }}</div>
+    </div>
+  }
+
+  @if (!isLoading && !loadError) {
+    <div class="sl-header">
+      <div class="sl-header-top">
+        <div>
+          <button class="sl-back-btn" (click)="goBack()">← Back</button>
+          <h1 class="sl-title">My Submissions</h1>
+        </div>
+        <button class="sl-search-toggle" [class.sl-search-active]="showSearch || hasActiveFilters" (click)="toggleSearch()">
+          <mat-icon>{{ showSearch ? 'search_off' : 'manage_search' }}</mat-icon>
+          Advanced Search
+          @if (hasActiveFilters) { <span class="sl-active-dot"></span> }
+        </button>
+      </div>
+      <p class="sl-sub">
+        {{ filteredSubmissions.length }} of {{ submissions.length }} scan{{ submissions.length !== 1 ? 's' : '' }} recorded
+        @if (hasActiveFilters) { <span class="sl-filter-badge">filtered</span> }
+      </p>
+    </div>
+
+    <!-- Quick filter chips -->
+    @if (submissions.length > 0) {
+      <div class="sl-chips">
+        <button class="sl-chip" [class.sl-chip-active]="quickFilter === 'all'" (click)="quickFilter = 'all'">
+          All <span class="sl-chip-count">{{ submissions.length }}</span>
+        </button>
+        <button class="sl-chip sl-chip-urgent" [class.sl-chip-active]="quickFilter === 'urgent'" (click)="quickFilter = 'urgent'">
+          🚩 Urgent @if (urgentCount > 0) { <span class="sl-chip-count">{{ urgentCount }}</span> }
+        </button>
+        @for (chip of surveyChips; track chip.title) {
+          <button class="sl-chip" [class.sl-chip-active]="quickFilter === chip.title" (click)="quickFilter = chip.title">
+            {{ chip.title }} <span class="sl-chip-count">{{ chip.count }}</span>
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Advanced search panel -->
+    @if (showSearch) {
+      <div class="sl-search-panel">
+        <div class="sl-search-grid">
+
+          <div class="sl-field">
+            <label class="sl-field-label">Date from</label>
+            <input type="date" class="sl-input" [(ngModel)]="filterDateFrom">
+          </div>
+
+          <div class="sl-field">
+            <label class="sl-field-label">Date to</label>
+            <input type="date" class="sl-input" [(ngModel)]="filterDateTo">
+          </div>
+
+          <div class="sl-field">
+            <label class="sl-field-label">Survey</label>
+            <select class="sl-select" [(ngModel)]="filterSurvey">
+              <option value="">All surveys</option>
+              @for (s of surveyOptions; track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="sl-field">
+            <label class="sl-field-label">Ward</label>
+            <select class="sl-select" [(ngModel)]="filterWard">
+              <option value="">All wards</option>
+              @for (w of wardOptions; track w) {
+                <option [value]="w">{{ w }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="sl-field sl-field-action">
+            <button class="sl-clear-btn" (click)="clearFilters()" [disabled]="!hasActiveFilters">
+              <mat-icon>clear</mat-icon> Clear filters
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+
+    <!-- Empty states -->
+    @if (submissions.length === 0) {
+      <div class="sl-empty">
+        <mat-icon>inbox</mat-icon>
+        <div>No submissions yet.</div>
+        <div class="sl-empty-sub">Complete a field scan to see it here.</div>
+      </div>
+    } @else if (filteredSubmissions.length === 0) {
+      <div class="sl-empty">
+        <mat-icon>filter_list_off</mat-icon>
+        <div>No submissions match your filters.</div>
+        <button class="sl-clear-btn" style="margin-top:8px;" (click)="clearFilters()">Clear filters</button>
+      </div>
+    }
+
+    <!-- Submission cards -->
+    @for (sub of filteredSubmissions; track sub.id) {
+      <div class="sl-card" (click)="openDetail(sub.id)">
+        <div class="sl-card-top">
+          <div class="sl-survey-name">{{ sub.survey_title || 'Environmental Scan' }}</div>
+          <div class="sl-status-group">
+            <span class="sl-status {{ statusClass(sub.status) }}">{{ sub.status }}</span>
+            @if (flaggingEnabled && sub.status !== 'flagged') {
+              <button class="sl-flag-btn" [class.sl-flag-loading]="flagging.has(sub.id)" (click)="markFlagged($event, sub)" title="Mark as flagged">
+                @if (flagging.has(sub.id)) {
+                  <mat-icon class="sl-flag-spin">autorenew</mat-icon>
+                } @else {
+                  <mat-icon>flag</mat-icon>
+                }
+              </button>
+            }
+          </div>
+        </div>
+        <div class="sl-card-meta">
+          @if (sub.ward_name) {
+            <span><mat-icon class="sl-meta-icon">place</mat-icon>{{ sub.ward_name }}</span>
+          }
+          @if (sub.location_text) {
+            <span class="sl-location">{{ sub.location_text }}</span>
+          }
+          <span class="sl-date">{{ formatDate(sub.submitted_at || sub.created_at) }}</span>
+        </div>
+        @if (aiSnippet(sub)) {
+          <div class="sl-ai-snippet">{{ aiSnippet(sub) }}</div>
+        }
+        <mat-icon class="sl-chevron">chevron_right</mat-icon>
+      </div>
+    }
+  }
+
+</div>

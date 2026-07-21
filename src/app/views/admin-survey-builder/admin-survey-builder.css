@@ -1,0 +1,51 @@
+.ab-page { padding: 8px 20px 40px; max-width: 1100px; margin: 0 auto; }
+.ab-loader { display: flex; justify-content: center; padding: 48px; }
+.ab-error { display: flex; align-items: center; gap: 8px; color: #b00; padding: 24px 0; }
+.ab-back { background: none; border: none; color: #1d9e75; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 16px; display: block; }
+
+.ab-survey-header { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #ebebeb; margin-bottom: 20px; }
+.ab-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 8px; }
+.ab-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ab-type { font-size: 12px; background: #f3e5f5; color: #6a1b9a; padding: 2px 10px; border-radius: 20px; font-weight: 600; }
+.ab-status-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; text-transform: capitalize; }
+.ab-s-active   { background: #e8f5e9; color: #2e7d32; }
+.ab-s-draft    { background: #f5f5f5; color: #777; }
+.ab-s-archived { background: #fce4ec; color: #c62828; }
+.ab-desc { font-size: 13px; color: #666; margin: 0; }
+
+.ab-sections-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.ab-sections-label { font-size: 13px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.04em; }
+.ab-add-btn { display: flex; align-items: center; gap: 4px; background: #6a1b9a; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.ab-add-btn:hover { background: #4a148c; }
+.ab-add-btn mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+.ab-empty { color: #aaa; font-size: 14px; padding: 32px 0; text-align: center; }
+
+.ab-section { background: #fff; border-radius: 12px; border: 1px solid #ebebeb; margin-bottom: 10px; overflow: hidden; }
+.ab-section-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer; background: #fafafa; }
+.ab-section-head:hover { background: #f3e5f5; }
+.ab-expand-icon { color: #999; font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; }
+.ab-section-info { flex: 1; }
+.ab-section-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+.ab-section-sub { font-size: 12px; color: #aaa; margin-left: 8px; }
+.ab-q-count { font-size: 12px; color: #aaa; margin-right: 4px; }
+.ab-icon-btn { background: none; border: 1px solid #e0e0e0; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6a1b9a; flex-shrink: 0; }
+.ab-icon-btn:hover { background: #f3e5f5; }
+.ab-icon-btn mat-icon { font-size: 15px; width: 15px; height: 15px; }
+.ab-icon-btn--danger { color: #c62828; }
+.ab-icon-btn--danger:hover { background: #fce4ec; border-color: #e57373; }
+
+.ab-questions { padding: 8px 16px 16px; border-top: 1px solid #f0f0f0; }
+.ab-question { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+.ab-question:last-of-type { border-bottom: none; }
+.ab-q-body { flex: 1; }
+.ab-q-label { font-size: 14px; font-weight: 500; color: #333; }
+.ab-req { color: #e53935; margin-left: 2px; }
+.ab-q-meta { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
+.ab-q-type { font-size: 11px; background: #e8eaf6; color: #3949ab; padding: 1px 8px; border-radius: 10px; font-weight: 600; }
+.ab-q-opts { font-size: 11px; color: #888; }
+.ab-q-helper { font-size: 11px; color: #bbb; font-style: italic; }
+
+.ab-add-q-btn { display: flex; align-items: center; gap: 4px; background: none; border: 1px dashed #c8a0d8; color: #6a1b9a; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 10px; width: 100%; justify-content: center; }
+.ab-add-q-btn:hover { background: #f9f0ff; }
+.ab-add-q-btn mat-icon { font-size: 16px; width: 16px; height: 16px; }

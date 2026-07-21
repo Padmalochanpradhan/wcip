@@ -1,0 +1,68 @@
+.aim-page { padding: 8px 20px 32px; max-width: 1100px; margin: 0 auto; }
+
+.aim-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.aim-back { background: none; border: none; color: #1d9e75; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
+.aim-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
+.aim-sub { font-size: 13px; color: #888; margin: 0; }
+
+.aim-dropzone {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  background: #fff; border: 2px dashed #e0e0e0; border-radius: 12px; padding: 48px 24px; text-align: center;
+}
+.aim-dropzone mat-icon { font-size: 40px; width: 40px; height: 40px; color: #bbb; }
+.aim-dropzone-text { font-size: 14px; font-weight: 500; color: #444; }
+.aim-select-btn {
+  display: inline-flex; align-items: center; gap: 6px; background: #6a1b9a; color: #fff; border: none;
+  border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
+}
+.aim-select-btn:hover { background: #4a148c; }
+.aim-hint { font-size: 12px; color: #aaa; max-width: 420px; }
+
+.aim-error { display: flex; align-items: center; gap: 8px; color: #b00; padding: 16px 0; font-size: 14px; }
+
+.aim-preview { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #ebebeb; }
+.aim-preview-file { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; }
+.aim-preview-file mat-icon { color: #6a1b9a; }
+
+.aim-stats { display: flex; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+.aim-stat { display: flex; flex-direction: column; gap: 2px; }
+.aim-stat-value { font-size: 24px; font-weight: 700; color: #1a1a1a; }
+.aim-stat-label { font-size: 12px; color: #888; }
+
+.aim-warning {
+  display: flex; align-items: center; gap: 8px; background: #fff8e1; color: #8a6100;
+  border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px;
+}
+.aim-warning mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+
+.aim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+.aim-cancel-btn {
+  background: none; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 18px;
+  font-size: 14px; font-weight: 600; color: #555; cursor: pointer;
+}
+.aim-cancel-btn:hover { background: #f5f5f5; }
+.aim-import-btn {
+  display: flex; align-items: center; gap: 6px; background: #1d9e75; color: #fff; border: none;
+  border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.aim-import-btn:hover { background: #1f5b52; }
+.aim-import-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+.aim-progress { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px; color: #666; font-size: 14px; }
+
+.aim-result {
+  display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid #ebebeb;
+  border-radius: 12px; padding: 20px;
+}
+.aim-result mat-icon { color: #2e7d32; font-size: 28px; width: 28px; height: 28px; }
+.aim-result-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+.aim-result-detail { font-size: 13px; color: #888; }
+.aim-result-error { color: #b00; margin-top: 6px; }
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .aim-page      { padding: 8px 12px 24px; }
+  .aim-header    { flex-direction: column; align-items: flex-start; }
+  .aim-stats     { gap: 16px; }
+  .aim-dropzone  { padding: 32px 16px; }
+}

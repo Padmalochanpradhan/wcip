@@ -1,0 +1,67 @@
+<div class="asv-page">
+
+  <div class="asv-header">
+    <div>
+      <button class="asv-back" (click)="goBack()">← Back</button>
+      <h1 class="asv-title">Manage Surveys</h1>
+      <p class="asv-sub">{{ surveys.length }} survey{{ surveys.length !== 1 ? 's' : '' }}</p>
+    </div>
+    <div class="asv-header-actions">
+      <!-- Import Data — commented out for now. Uncomment to re-enable.
+      <button class="asv-import-btn" (click)="goToImport()">
+        <mat-icon>upload_file</mat-icon> Import Data
+      </button>
+      -->
+      <button class="asv-create-btn" (click)="createSurvey()">
+        <mat-icon>add</mat-icon> Create Survey
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="asv-loader"><mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner></div>
+  }
+
+  @if (loadError) {
+    <div class="asv-error"><mat-icon>error_outline</mat-icon> {{ loadError }}</div>
+  }
+
+  @if (!isLoading && !loadError) {
+    @if (surveys.length === 0) {
+      <div class="asv-empty">
+        <mat-icon>dynamic_form</mat-icon>
+        <div>No surveys yet. Create your first one.</div>
+      </div>
+    }
+
+    @for (survey of surveys; track survey.id) {
+      <div class="asv-card" (click)="openBuilder(survey.id)">
+        <div class="asv-card-icon">
+          <mat-icon>assignment</mat-icon>
+        </div>
+        <div class="asv-card-body">
+          <div class="asv-card-top">
+            <span class="asv-name">{{ survey.title }}</span>
+            <span class="asv-status {{ statusClass(survey.status) }}">{{ survey.status }}</span>
+          </div>
+          <div class="asv-desc">{{ survey.description }}</div>
+          <div class="asv-type">
+            Type: {{ survey.survey_type }}
+            @if (survey.location_name) {
+              <span class="asv-loc-tag">
+                {{ survey.location_name }}@if (survey.location_ward_name) { · {{ survey.location_ward_name }} }
+              </span>
+            }
+          </div>
+        </div>
+        <div class="asv-actions">
+          <button class="asv-edit-btn" (click)="editSurvey(survey, $event)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <mat-icon class="asv-chevron">chevron_right</mat-icon>
+        </div>
+      </div>
+    }
+  }
+
+</div>
