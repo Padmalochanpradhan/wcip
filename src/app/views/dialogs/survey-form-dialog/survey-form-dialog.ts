@@ -44,6 +44,7 @@ export class SurveyFormDialog implements OnInit {
 
     this.form = this.fb.group({
       title:        [s?.title        || '', Validators.required],
+      short_title:  [s?.short_title  || '', Validators.maxLength(60)],
       description:  [s?.description  || ''],
       survey_type:  [s?.survey_type  || 'general', Validators.required],
       icon:         [s?.icon         || 'pencil'],

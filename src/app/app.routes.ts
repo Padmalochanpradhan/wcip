@@ -18,6 +18,7 @@ import { AdminSurveyBuilder } from './views/admin-survey-builder/admin-survey-bu
 import { AdminImport } from './views/admin-import/admin-import';
 import { AdminPageAccess } from './views/admin-page-access/admin-page-access';
 import { DataExplorer } from './views/data-explorer/data-explorer';
+import { AdminBrief } from './views/admin-brief/admin-brief';
 import { authGuard } from './shared/guards/auth.guard';
 import { guestGuard } from './shared/guards/guest.guard';
 import { ChangePassword } from './views/change-password/change-password';
@@ -46,6 +47,7 @@ export const routes: Routes = [
       { path: 'access-denied', component: AccessDenied },
     ]
   },
+  { path: 'admin/brief', component: AdminBrief, canActivate: [authGuard] },
   {
     path: 'admin',
     component: AdminLayout,

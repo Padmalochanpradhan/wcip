@@ -1,7 +1,7 @@
 .aim-page { padding: 8px 20px 32px; max-width: 1100px; margin: 0 auto; }
 
 .aim-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-.aim-back { background: none; border: none; color: #2B7A6F; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
+.aim-back { background: none; border: none; color: #1d9e75; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block; }
 .aim-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
 .aim-sub { font-size: 13px; color: #888; margin: 0; }
 
@@ -42,7 +42,7 @@
 }
 .aim-cancel-btn:hover { background: #f5f5f5; }
 .aim-import-btn {
-  display: flex; align-items: center; gap: 6px; background: #2B7A6F; color: #fff; border: none;
+  display: flex; align-items: center; gap: 6px; background: #1d9e75; color: #fff; border: none;
   border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer;
 }
 .aim-import-btn:hover { background: #1f5b52; }

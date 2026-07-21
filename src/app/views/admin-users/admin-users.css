@@ -6,7 +6,7 @@
 }
 
 .au-back {
-  background: none; border: none; color: #2B7A6F;
+  background: none; border: none; color: #1d9e75;
   font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 8px; display: block;
 }
 
@@ -34,12 +34,12 @@
   outline: none; transition: border-color 0.15s;
   min-width: 240px;
 }
-.au-search:focus { border-color: #2B7A6F; }
+.au-search:focus { border-color: #1d9e75; }
 .au-search::placeholder { color: #bbb; }
 
 .au-add-btn {
   display: flex; align-items: center; gap: 6px;
-  background: #2B7A6F; color: #fff; border: none;
+  background: #1d9e75; color: #fff; border: none;
   border-radius: 8px; padding: 10px 18px; font-size: 14px;
   font-weight: 600; cursor: pointer; transition: background 0.15s;
   align-self: center; white-space: nowrap;

@@ -1,13 +1,14 @@
 .ud-content {
   max-height: 75vh;
-  padding: 8px 24px 16px;
+  padding: 20px 24px 16px;
 }
 
 /* ── Form grid: 2-column on desktop ── */
 .ud-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 16px;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .ud-field {
@@ -58,7 +59,7 @@
 /* ── Mobile: single column ── */
 @media (max-width: 599px) {
   .ud-content {
-    padding: 8px 16px 12px;
+    padding: 20px 16px 12px;
     max-height: 80vh;
   }
 

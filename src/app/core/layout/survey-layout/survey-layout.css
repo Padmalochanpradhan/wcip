@@ -10,7 +10,7 @@
 
 /* ── Header ── */
 .sl-header {
-  background: #2B7A6F;
+  background: #1d9e75;
   color: #fff;
   padding: 12px 20px;
   display: flex;
@@ -102,10 +102,10 @@
 }
 
 .sl-nav-item.sl-nav-active {
-  color: #2B7A6F;
+  color: #1d9e75;
 }
 
-.sl-nav-item:hover { color: #2B7A6F; }
+.sl-nav-item:hover { color: #1d9e75; }
 
 /* ── Mobile tweaks ── */
 @media (max-width: 480px) {

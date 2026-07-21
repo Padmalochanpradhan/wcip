@@ -19,6 +19,7 @@ export interface Location {
 export interface Survey {
   id: number;
   title: string;
+  short_title?: string | null;
   slug: string;
   description: string;
   icon: string;
@@ -126,4 +127,24 @@ export interface SurveySubmission {
   created_at: string;
   staff_name?: string;
   staff_email?: string;
+}
+
+// "Community context — public data benchmarks" on the Community Intelligence
+// Brief. census/brfss/eji are fetched live server-side; ncqa/samhsa have no
+// public API and are static, cited reference figures (see WCGetCommunityBenchmarks.js).
+export interface CommunityBenchmark {
+  source: string;
+  citation: string;
+  live: boolean;
+  placeholder?: boolean; // true when metrics[].value has not been verified against a real source yet
+  error?: string;        // set when a live fetch failed
+  metrics: { label: string; value: string }[];
+}
+
+export interface CommunityBenchmarks {
+  census: CommunityBenchmark;
+  brfss: CommunityBenchmark;
+  eji: CommunityBenchmark;
+  ncqa: CommunityBenchmark;
+  samhsa: CommunityBenchmark;
 }

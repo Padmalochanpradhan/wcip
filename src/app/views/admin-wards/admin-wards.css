@@ -1,4 +1,7 @@
-.awd-page { padding: 28px 32px 40px; }
+.awd-page {
+  padding: 28px 32px 40px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
 
 .awd-page-head { margin-bottom: 24px; }
 .awd-page-title { font-size: 26px; font-weight: 700; color: #085041; margin: 0 0 4px; }

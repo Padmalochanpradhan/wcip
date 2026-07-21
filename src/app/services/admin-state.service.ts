@@ -26,6 +26,7 @@ export class AdminStateService {
   trustBars:     { label: string; count: number; pct: number; color: string; share: string }[] = [];
   sentimentBars: { label: string; count: number; pct: number; color: string }[] = [];
   urgentSubs:    SurveySubmission[] = [];
+  topThemes:     { label: string; count: number; pct: number }[] = [];
 
   get total() { return this.filtered.length; }
 
@@ -186,7 +187,7 @@ export class AdminStateService {
     const mt  = Math.max(hi, mid, lo, 1);
     const tot = s.length || 1;
     this.trustBars = [
-      { label: 'High',     count: hi,  pct: hi  / mt * 100, color: '#2B7A6F', share: `${Math.round(hi  / tot * 100)}%` },
+      { label: 'High',     count: hi,  pct: hi  / mt * 100, color: '#1d9e75', share: `${Math.round(hi  / tot * 100)}%` },
       { label: 'Moderate', count: mid, pct: mid / mt * 100, color: '#E6A817', share: `${Math.round(mid / tot * 100)}%` },
       { label: 'Low',      count: lo,  pct: lo  / mt * 100, color: '#E53935', share: `${Math.round(lo  / tot * 100)}%` },
     ];
@@ -198,7 +199,7 @@ export class AdminStateService {
     const su = s.filter(x => this.sentiment(x) === 'urgent').length;
     const ms = Math.max(sp, sm, sn, su, 1);
     this.sentimentBars = [
-      { label: 'Positive', count: sp, pct: sp / ms * 100, color: '#2B7A6F' },
+      { label: 'Positive', count: sp, pct: sp / ms * 100, color: '#1d9e75' },
       { label: 'Mixed',    count: sm, pct: sm / ms * 100, color: '#E6A817' },
       { label: 'Negative', count: sn, pct: sn / ms * 100, color: '#E53935' },
       { label: 'Urgent',   count: su, pct: su / ms * 100, color: '#7B0000' },
@@ -209,6 +210,25 @@ export class AdminStateService {
       .filter(x => this.isUrgent(x))
       .sort((a, b) => (b.submitted_at || b.created_at) > (a.submitted_at || a.created_at) ? 1 : -1)
       .slice(0, 8);
+
+    // Top themes — same category-preferring-with-themes-fallback rule as the
+    // per-ward chips (see the ward stats loop above), aggregated globally.
+    const themeMap = new Map<string, number>();
+    for (const x of s) {
+      const category = x.ai_analysis?.category;
+      if (category) {
+        themeMap.set(category, (themeMap.get(category) || 0) + 1);
+      } else {
+        for (const theme of (x.ai_analysis?.themes ?? [])) {
+          themeMap.set(theme, (themeMap.get(theme) || 0) + 1);
+        }
+      }
+    }
+    const themeTotal = s.length || 1;
+    this.topThemes = [...themeMap.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([label, count]) => ({ label, count, pct: Math.round(count / themeTotal * 100) }));
   }
 
   isUrgent(s: SurveySubmission): boolean {

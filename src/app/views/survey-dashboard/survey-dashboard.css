@@ -54,7 +54,7 @@
 .sd-stat-connected {
   font-size: 16px;
   font-weight: 600;
-  color: #2B7A6F;
+  color: #1d9e75;
   margin-bottom: 4px;
 }
 
@@ -146,7 +146,7 @@
   height: 40px;
   border-radius: 10px;
   background: #e0f2f1;
-  color: #2B7A6F;
+  color: #1d9e75;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,7 +178,7 @@
 .sd-prompt-card {
   margin-top: 16px;
   background: #f0ede7;
-  border-left: 4px solid #2B7A6F;
+  border-left: 4px solid #1d9e75;
   border-radius: 0 8px 8px 0;
   padding: 14px 16px;
 }

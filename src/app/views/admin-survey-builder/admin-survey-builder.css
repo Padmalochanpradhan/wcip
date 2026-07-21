@@ -1,7 +1,7 @@
 .ab-page { padding: 8px 20px 40px; max-width: 1100px; margin: 0 auto; }
 .ab-loader { display: flex; justify-content: center; padding: 48px; }
 .ab-error { display: flex; align-items: center; gap: 8px; color: #b00; padding: 24px 0; }
-.ab-back { background: none; border: none; color: #2B7A6F; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 16px; display: block; }
+.ab-back { background: none; border: none; color: #1d9e75; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 16px; display: block; }
 
 .ab-survey-header { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #ebebeb; margin-bottom: 20px; }
 .ab-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin: 0 0 8px; }

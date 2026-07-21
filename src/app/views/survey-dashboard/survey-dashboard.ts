@@ -43,8 +43,8 @@ export class SurveyDashboard implements OnInit {
 
   readonly iconColor: Record<string, string> = {
     pencil:   '#E07020',
-    target:   '#2B7A6F',
-    scan:     '#2B7A6F',
+    target:   '#1d9e75',
+    scan:     '#1d9e75',
     leaf:     '#388E3C',
     default:  '#666',
   };

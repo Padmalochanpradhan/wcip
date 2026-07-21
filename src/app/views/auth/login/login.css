@@ -169,14 +169,14 @@
 }
 
 .dot.filled {
-  background: #2B7A6F;
+  background: #1d9e75;
 }
 
 /* ── Sign in button ── */
 .signin-btn {
   width: 100%;
   height: 48px;
-  background: #2B7A6F;
+  background: #1d9e75;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -209,7 +209,7 @@
 }
 
 .admin-link {
-  color: #2B7A6F;
+  color: #1d9e75;
   font-weight: 600;
   cursor: pointer;
   margin-left: 4px;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom, timeout, BehaviorSubject } from 'rxjs';
 import { AppEnvService } from './app-env.service';
-import { Survey, SurveyDetail, Ward, Location, SubmissionPayload, SurveySubmission, AirtableRow, AirtableImportResult } from '../models/survey.models';
+import { Survey, SurveyDetail, Ward, Location, SubmissionPayload, SurveySubmission, AirtableRow, AirtableImportResult, CommunityBenchmarks } from '../models/survey.models';
 
 @Injectable({ providedIn: 'root' })
 export class SurveyService {
@@ -25,7 +25,8 @@ export class SurveyService {
     const res = await firstValueFrom(
       this.http.post<any>(this.url('WCgetSurveys'), '{}', { headers: this.headers }).pipe(timeout(30000))
     );
-    const data = typeof res?.data === 'string' ? JSON.parse(res.data) : res?.data;
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
     return data ?? [];
   }
 
@@ -33,14 +34,16 @@ export class SurveyService {
     const res = await firstValueFrom(
       this.http.post<any>(this.url('WCgetSurveyDetail'), JSON.stringify({ id }), { headers: this.headers }).pipe(timeout(30000))
     );
-    return typeof res?.data === 'string' ? JSON.parse(res.data) : res?.data;
+    const unwrapped = this.unwrapLambda(res);
+    return typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
   }
 
   async getWards(): Promise<Ward[]> {
     const res = await firstValueFrom(
       this.http.post<any>(this.url('WCgetWards'), '{}', { headers: this.headers }).pipe(timeout(30000))
     );
-    const data = typeof res?.data === 'string' ? JSON.parse(res.data) : res?.data;
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
     return data ?? [];
   }
 
@@ -57,8 +60,9 @@ export class SurveyService {
     const res = await firstValueFrom(
       this.http.post<any>(this.url('WCgetTodayCount'), JSON.stringify({ user_id: userId }), { headers: this.headers }).pipe(timeout(30000))
     );
-    const data = typeof res?.data === 'string' ? JSON.parse(res.data) : res?.data;
-    const count = res?.count ?? data?.count ?? data?.[0]?.count ?? 0;
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
+    const count = unwrapped?.count ?? data?.count ?? data?.[0]?.count ?? 0;
     this._todayCount$.next(count);
     return count;
   }
@@ -102,6 +106,15 @@ export class SurveyService {
       ...s,
       ai_analysis: typeof s.ai_analysis === 'string' ? JSON.parse(s.ai_analysis) : s.ai_analysis
     }));
+  }
+
+  async getCommunityBenchmarks(): Promise<CommunityBenchmarks | null> {
+    const res = await firstValueFrom(
+      this.http.post<any>(this.url('WCGetCommunityBenchmarks'), '{}', { headers: this.headers }).pipe(timeout(30000))
+    );
+    const unwrapped = this.unwrapLambda(res);
+    const data = typeof unwrapped?.data === 'string' ? JSON.parse(unwrapped.data) : unwrapped?.data;
+    return data ?? null;
   }
 
   async getSubmissionDetail(id: number): Promise<SurveySubmission> {

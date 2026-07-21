@@ -373,4 +373,42 @@ describe('AdminStateService', () => {
       expect(ward1?.themes).toEqual(['Environmental', 'pothole reports']);
     });
   });
+
+  // ── topThemes ──────────────────────────────────────────────────────────
+  describe('topThemes', () => {
+    it('aggregates the Airtable "Topic" category across all submissions, sorted by frequency', () => {
+      service.submissions = [
+        makeSubmission({ id: 1, ai_analysis: makeAi({ category: 'Housing' }) }),
+        makeSubmission({ id: 2, ai_analysis: makeAi({ category: 'Housing' }) }),
+        makeSubmission({ id: 3, ai_analysis: makeAi({ category: 'Safety' }) }),
+      ];
+      service.compute();
+      expect(service.topThemes).toEqual([
+        { label: 'Housing', count: 2, pct: 67 },
+        { label: 'Safety', count: 1, pct: 33 },
+      ]);
+    });
+
+    it('falls back to granular AI themes for submissions with no stored category', () => {
+      service.submissions = [
+        makeSubmission({ id: 1, ai_analysis: makeAi({ themes: ['neighborhood safety'] }) }),
+      ];
+      service.compute();
+      expect(service.topThemes).toEqual([{ label: 'neighborhood safety', count: 1, pct: 100 }]);
+    });
+
+    it('is capped at the top 8 themes', () => {
+      service.submissions = Array.from({ length: 10 }, (_, i) =>
+        makeSubmission({ id: i + 1, ai_analysis: makeAi({ category: `Topic ${i}` }) })
+      );
+      service.compute();
+      expect(service.topThemes.length).toBe(8);
+    });
+
+    it('is empty when there are no submissions', () => {
+      service.submissions = [];
+      service.compute();
+      expect(service.topThemes).toEqual([]);
+    });
+  });
 });

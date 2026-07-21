@@ -7,8 +7,8 @@
 
 .aov-page-head { margin-bottom: 24px; }
 .aov-page-title {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 24px; font-weight: 700; color: #085041; margin: 0 0 4px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px; color: #085041; margin: 0 0 4px;
 }
 .aov-page-sub   { font-size: 13px; color: #888; margin: 0; font-family: inherit; }
 
@@ -29,11 +29,11 @@
   min-width: 90px;
 }
 
-.aov-stat-num  { font-size: 28px; font-weight: 700; color: #085041; line-height: 1.1; font-family: inherit; }
+.aov-stat-num  { font-size: 32px; color: #085041; line-height: 1.1; font-family: 'DM Serif Display', serif; }
 .aov-stat-lbl  { font-size: 10px; font-weight: 700; color: #999; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; font-family: inherit; }
 .aov-stat-note { font-size: 11px; color: #bbb; margin-top: 2px; font-family: inherit; }
 
-.aov-stat-total { border-top: 3px solid #2B7A6F; }
+.aov-stat-total { border-top: 3px solid #1d9e75; }
 
 .aov-stat-flag { border-top: 3px solid #c62828; }
 .aov-stat-flag .aov-stat-num { color: #c62828; }
@@ -148,25 +148,26 @@
   box-sizing: border-box;
   text-align: center;
   font-weight: 600;
+  font-size: 11px;
   color: #1f8060;
   background: #ddf1e7;
-  border-radius: 12px;
-  padding: 3px 0;
+  border-radius: 10px;
+  padding: 1px 0;
 }
 
 .aov-hbar-track {
   flex: 1;
   min-width: 60px;
-  height: 8px;
+  height: 5px;
   background: #f0f2f4;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .aov-hbar-fill {
   height: 100%;
-  background: #2B7A6F;
-  border-radius: 4px;
+  background: #1d9e75;
+  border-radius: 3px;
   transition: width 0.4s;
 }
 
@@ -229,7 +230,7 @@
 
 .aov-uc-ai {
   font-size: 12.5px;
-  color: #2B7A6F;
+  color: #1d9e75;
   font-style: italic;
   line-height: 1.5;
   margin-bottom: 10px;
@@ -240,7 +241,7 @@
 .aov-tag { font-size: 10px; font-weight: 600; border-radius: 12px; padding: 3px 9px; display: inline-block; }
 .aov-tag-ut { background: #fdecea; color: #c62828; }
 .aov-tag-tl { background: #fff3e0; color: #e65100; }
-.aov-tag-th { background: #e8f5f3; color: #2B7A6F; }
+.aov-tag-th { background: #e8f5f3; color: #1d9e75; }
 
 /* ── Tablet (768–1023px) ── */
 @media (max-width: 1023px) {

@@ -8,7 +8,7 @@
 }
 
 /* ── Header ── */
-.de-back { background: none; border: none; color: #2B7A6F; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 10px; display: block; }
+.de-back { background: none; border: none; color: #1d9e75; font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 10px; display: block; }
 
 .de-header { margin-bottom: 16px; }
 
@@ -18,7 +18,7 @@
   display: flex; align-items: center; gap: 8px;
   font-size: 20px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px;
 }
-.de-title mat-icon { color: #2B7A6F; }
+.de-title mat-icon { color: #1d9e75; }
 .de-sub { font-size: 13px; color: #888; margin: 0; }
 
 /* ── Layout ── */
@@ -50,12 +50,12 @@
   border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all 0.12s;
 }
 .de-source-btn:hover { background: #f0ede7; }
-.de-source-active { background: #e0f2f1 !important; border-color: #2B7A6F !important; }
+.de-source-active { background: #e0f2f1 !important; border-color: #1d9e75 !important; }
 .de-source-name { font-size: 13px; font-weight: 600; color: #1a1a1a; }
 .de-source-cat { font-size: 11px; color: #888; margin-top: 1px; }
 
 .de-source-desc { font-size: 12px; color: #666; line-height: 1.5; }
-.de-docs-link { color: #2B7A6F; font-size: 11px; margin-left: 6px; text-decoration: none; }
+.de-docs-link { color: #1d9e75; font-size: 11px; margin-left: 6px; text-decoration: none; }
 .de-docs-link:hover { text-decoration: underline; }
 
 .de-param { display: flex; flex-direction: column; gap: 4px; }
@@ -66,19 +66,19 @@
   border: 1px solid #ddd; border-radius: 6px; padding: 6px 10px;
   font-size: 13px; color: #333; background: #fafafa; width: 100%; box-sizing: border-box;
 }
-.de-input:focus, .de-select:focus { border-color: #2B7A6F; outline: none; }
+.de-input:focus, .de-select:focus { border-color: #1d9e75; outline: none; }
 
 .de-multiselect { display: flex; flex-wrap: wrap; gap: 4px; }
 .de-ms-chip {
   font-size: 11px; padding: 3px 9px; border-radius: 20px;
   border: 1px solid #ddd; background: #f5f5f5; color: #555; cursor: pointer; transition: all 0.12s;
 }
-.de-ms-active { background: #e0f2f1; border-color: #2B7A6F; color: #2B7A6F; font-weight: 600; }
+.de-ms-active { background: #e0f2f1; border-color: #1d9e75; color: #1d9e75; font-weight: 600; }
 .de-hint { font-size: 11px; color: #aaa; }
 
 .de-run-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  background: #2B7A6F; color: #fff; border: none; border-radius: 8px;
+  background: #1d9e75; color: #fff; border: none; border-radius: 8px;
   padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
   transition: background 0.15s;
 }
@@ -120,7 +120,7 @@
   border: 1px solid #ddd; border-radius: 6px; padding: 5px 10px; font-size: 12px;
   width: 180px;
 }
-.de-filter:focus { border-color: #2B7A6F; outline: none; }
+.de-filter:focus { border-color: #1d9e75; outline: none; }
 .de-copy-btn {
   display: flex; align-items: center; gap: 4px; background: none;
   border: 1px solid #ddd; border-radius: 6px; padding: 5px 10px;

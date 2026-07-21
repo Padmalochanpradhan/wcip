@@ -25,7 +25,7 @@
   white-space: nowrap;
 }
 
-.as-chip:hover { border-color: #2B7A6F; color: #2B7A6F; background: #f0faf9; }
+.as-chip:hover { border-color: #1d9e75; color: #1d9e75; background: #f0faf9; }
 
 .as-chip-active {
   background: #085041 !important;
@@ -73,7 +73,7 @@
   outline: none; transition: border-color 0.15s;
   min-width: 240px;
 }
-.as-quicksearch:focus { border-color: #2B7A6F; }
+.as-quicksearch:focus { border-color: #1d9e75; }
 .as-quicksearch::placeholder { color: #bbb; }
 
 /* ── Search toggle button ── */
@@ -84,8 +84,8 @@
   cursor: pointer; transition: all 0.15s; align-self: center; flex-shrink: 0;
 }
 .as-search-toggle mat-icon { font-size: 18px; width: 18px; height: 18px; }
-.as-search-toggle:hover    { border-color: #2B7A6F; color: #2B7A6F; background: #f0faf9; }
-.as-search-active          { border-color: #2B7A6F; color: #2B7A6F; background: #e0f2f1; }
+.as-search-toggle:hover    { border-color: #1d9e75; color: #1d9e75; background: #f0faf9; }
+.as-search-active          { border-color: #1d9e75; color: #1d9e75; background: #e0f2f1; }
 .as-active-dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: #e53935; position: absolute; top: 6px; right: 6px;
@@ -93,7 +93,7 @@
 
 /* ── Filter badge ── */
 .as-filter-badge {
-  font-size: 10px; font-weight: 700; background: #e0f2f1; color: #2B7A6F;
+  font-size: 10px; font-weight: 700; background: #e0f2f1; color: #1d9e75;
   padding: 1px 7px; border-radius: 10px; vertical-align: middle; margin-left: 4px;
   text-transform: uppercase;
 }
@@ -128,7 +128,7 @@
   border: 1px solid #ddd; border-radius: 7px; padding: 7px 10px;
   font-size: 13px; color: #333; background: #fafafa; width: 100%; box-sizing: border-box;
 }
-.as-input:focus, .as-select:focus { border-color: #2B7A6F; outline: none; background: #fff; }
+.as-input:focus, .as-select:focus { border-color: #1d9e75; outline: none; background: #fff; }
 
 .as-field-action { justify-content: flex-end; }
 
@@ -142,7 +142,7 @@
 .as-clear-btn mat-icon  { font-size: 16px; width: 16px; height: 16px; }
 
 .as-back {
-  background: none; border: none; color: #2B7A6F;
+  background: none; border: none; color: #1d9e75;
   font-size: 14px; font-weight: 500; cursor: pointer; padding: 0; margin-bottom: 10px; display: block;
 }
 
@@ -175,7 +175,7 @@
 .as-uc-headline { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
 
 .as-uc-ai {
-  font-size: 12.5px; color: #2B7A6F; font-style: italic;
+  font-size: 12.5px; color: #1d9e75; font-style: italic;
   line-height: 1.5; margin-bottom: 10px;
 }
 
@@ -184,7 +184,7 @@
 .as-tag { font-size: 10px; font-weight: 600; border-radius: 12px; padding: 3px 9px; display: inline-block; }
 .as-tag-ut { background: #fdecea; color: #c62828; }
 .as-tag-tl { background: #fff3e0; color: #e65100; }
-.as-tag-th { background: #e8f5f3; color: #2B7A6F; }
+.as-tag-th { background: #e8f5f3; color: #1d9e75; }
 
 /* ── Load more / show all footer ── */
 .as-loadmore {
@@ -198,13 +198,13 @@
   background: #085041; color: #fff; border: none; border-radius: 8px;
   padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
 }
-.as-loadmore-btn:hover { background: #2B7A6F; }
+.as-loadmore-btn:hover { background: #1d9e75; }
 
 .as-showall-btn {
   background: none; border: 1px solid #ddd; border-radius: 8px; color: #666;
   padding: 9px 14px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.12s;
 }
-.as-showall-btn:hover { border-color: #2B7A6F; color: #2B7A6F; background: #f0faf9; }
+.as-showall-btn:hover { border-color: #1d9e75; color: #1d9e75; background: #f0faf9; }
 
 /* ── Tablet ── */
 @media (max-width: 1023px) {

@@ -73,4 +73,8 @@ export class AdminDashboard implements OnInit, OnDestroy {
       this.snackBar.open('Data refreshed.', 'Close', { duration: 2000 });
     }
   }
+
+  openBrief() {
+    window.open('/admin/brief', '_blank');
+  }
 }
